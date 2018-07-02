@@ -165,7 +165,7 @@ public class GodsnoMainListController {
 	 */
 	private Collection<GodsjfDao> getList(SystemaWebUser appUser, SearchFilterGodsnoMainList recordToValidate, Map<String,String> maxWarningMap){
 		Collection<GodsjfDao> outputList = new ArrayList();
-		String defaultDaysBack = "7";
+		String defaultDaysBack = "10";
 		//---------------
     	//Get main list
 		//---------------
@@ -182,22 +182,17 @@ public class GodsnoMainListController {
 			}else{
 				urlRequestParams.append("&dftdg=" + defaultDaysBack);
 			}
+			//
+			if(strMgr.isNotNull(recordToValidate.getGotrnr()) ){
+				urlRequestParams.append("&gotrnr=" + recordToValidate.getGotrnr());
+			}
+			if(strMgr.isNotNull(recordToValidate.getGoturn()) ){
+				urlRequestParams.append("&goturn=" + recordToValidate.getGoturn());
+			}
+			if(strMgr.isNotNull(recordToValidate.getGobiln()) ){
+				urlRequestParams.append("&gobiln=" + recordToValidate.getGobiln());
+			}
 		}
-		
-		
-		/*
-		if(!"".equals(recordToValidate.getAvd())&& recordToValidate.getAvd()!=null ){ urlRequestParams.append("&avd=" + recordToValidate.getAvd()); }
-		if(!"".equals(recordToValidate.getFaktnr())&& recordToValidate.getFaktnr()!=null ){ urlRequestParams.append("&fn=" + recordToValidate.getFaktnr()); }
-		if(!"".equals(recordToValidate.getKundenr())&& recordToValidate.getKundenr()!=null ){ urlRequestParams.append("&fkn=" + recordToValidate.getKundenr()); }
-		if(!"".equals(recordToValidate.getRfa())&& recordToValidate.getRfa()!=null ){ urlRequestParams.append("&rfa=" + recordToValidate.getRfa()); }
-		if(!"".equals(recordToValidate.getFrom())&& recordToValidate.getFrom()!=null ){ urlRequestParams.append("&dtf=" + recordToValidate.getFrom()); }
-		if(!"".equals(recordToValidate.getTo())&& recordToValidate.getTo()!=null ){ urlRequestParams.append("&dtt=" + recordToValidate.getTo()); }
-		if(!"".equals(recordToValidate.getStatus())&& recordToValidate.getStatus()!=null ){ 
-			urlRequestParams.append("&st=" + recordToValidate.getStatus());
-		}else{
-			urlRequestParams.append("&st=*");
-		}
-		*/
 		
 		//session.setAttribute(TransportDispConstants.ACTIVE_URL_RPG_TRANSPORT_DISP, BASE_URL + "==>params: " + urlRequestParams.toString()); 
     	logger.info(Calendar.getInstance().getTime() + " CGI-start timestamp");

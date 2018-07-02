@@ -2,18 +2,18 @@
   var jq = jQuery.noConflict();
   var counterIndex = 0;
   
-  /*
-  jq(function() {
-	  jq("#from").datepicker({ 
-		  dateFormat: 'yymmdd'
-	  });
-	  jq("#to").datepicker({ 
-		  dateFormat: 'yymmdd'
-	  });
-
-  });
-  */
   
+  jq(function() {
+	  /*jq("#fromDate").datepicker({ 
+		  dateFormat: 'ddmmy'
+	  });*/
+  });
+  
+  jq(function() {
+      jq('#submit').click(function() { 
+    	  setBlockUI();
+  	  }); 
+  });    
   
   //-------------------
   //Datatables jquery

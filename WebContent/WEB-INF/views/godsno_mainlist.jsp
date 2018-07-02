@@ -6,7 +6,7 @@
 <!-- =====================end header ==========================-->
 	<%-- specific jQuery functions for this JSP (must reside under the resource map since this has been
 		specified in servlet.xml as static <mvc:resources mapping="/resources/**" location="WEB-INF/resources/" order="1"/> --%>
-	<SCRIPT type="text/javascript" src="resources/js/godsnoglobal_edit.js?ver=${user.versionEspedsg}"></SCRIPT>	
+	<SCRIPT type="text/javascript" src="resources/js/godsnoglobal.js?ver=${user.versionEspedsg}"></SCRIPT>	
 	<SCRIPT type="text/javascript" src="resources/js/godsno_mainlist.js?ver=${user.versionEspedsg}"></SCRIPT>
 	
 	<style type = "text/css">
@@ -21,10 +21,16 @@
 		<tr height="2"><td></td></tr>
 		<tr height="25"> 
 			<td width="20%" valign="bottom" class="tab" align="center" nowrap>
-				<a style="display:block;" href="godsno_mainlist.do?action=doFind">
+				<a style="display:block;" href="godsno_mainlist.do?action=doFind" >
 					<img style="vertical-align:middle;" src="resources/images/bulletGreen.png" width="6px" height="6px" border="0" alt="efaktura log">
-					<font class="tabLink"><spring:message code="systema.godsno.mainlist.tab"/></font>
+					<font class="tabLink" ><span id="activeTabList" onMouseOver="showPop('list_info');" onMouseOut="hidePop('list_info');"><spring:message code="systema.godsno.mainlist.tab"/></span></font>
 				</a>
+				<div class="text14" style="position: relative;" align="left">
+                <span style="position:absolute;top:2px;left:50px;" id="list_info" class="popupWithInputText text14"  >
+                	Standard antall dager tilbake: <b>${user.dftdg}</b><br/>
+					Hvis du ønsker å søke annat, bruk filtret<br/>
+				</span>	
+				</div>
 			</td>
 			<%--
 			<td width="1px" class="tabFantomSpace" align="center" nowrap><font class="tabDisabledLink">&nbsp;</font></td>
@@ -52,16 +58,22 @@
 				<td>
 				<form name="searchForm" id="searchForm" action="godsno_mainlist.do?action=doFind" method="post" >
 				<input type="hidden" name="todo" id="todo" value=''>
-				<table id="containerdatatableTable" width="50%" cellspacing="2" align="left">
+				<table id="containerdatatableTable" width="100%" cellspacing="2" align="left">
 				<tr>
 					<td class="text14" title="avd">&nbsp;Avd</td>
 					<td class="text14" title="sign">&nbsp;Signatur</td>
 					<td class="text14" title="gogn">&nbsp;Godsnr</td>
+					<td class="text14" title="gotrnr">&nbsp;Transittnr.</td>
+					<td class="text14" title="goturn">&nbsp;Turnr.</td>
+					<td class="text14" title="gobiln">&nbsp;Bilnr.</td>
 				</tr>
 				<tr>	
 					<td class="text14"><input type="text" class="inputText" name="avd" id="avd" size="8" maxlength="6" value='${searchFilter.avd}'></td>
 		        	<td class="text14"><input type="text" class="inputText" name="sign" id="sign" size="5" maxlength="4" value='${searchFilter.sign}'></td>
 		        	<td class="text14"><input type="text" class="inputText" name="gogn" id="gogn" size="16" maxlength="15" value='${searchFilter.gogn}'></td>
+		        	<td class="text14"><input type="text" class="inputText" name="gotrnr" id="gotrnr" size="21" maxlength="20" value='${searchFilter.gotrnr}'></td>
+		        	<td class="text14"><input type="text" class="inputText" name="goturn" id="goturn" size="18" maxlength="17" value='${searchFilter.goturn}'></td>
+		        	<td class="text14"><input type="text" class="inputText" name="gobiln" id="gobiln" size="14" maxlength="13" value='${searchFilter.gobiln}'></td>
 		        	
 			        <td class="text14">
 			        	<input class="inputFormSubmit" type="submit" name="submit" id="submit" value='Søk'>
