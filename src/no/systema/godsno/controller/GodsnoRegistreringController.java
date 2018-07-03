@@ -26,48 +26,50 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.springframework.web.bind.ServletRequestDataBinder;
-
+import org.springframework.ui.ModelMap;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 //application imports
-import no.systema.main.context.TdsAppContext;
 import no.systema.main.service.UrlCgiProxyService;
 import no.systema.main.validator.LoginValidator;
 import no.systema.main.util.AppConstants;
+import no.systema.main.util.DateTimeManager;
 import no.systema.main.util.JsonDebugger;
 import no.systema.main.util.io.PayloadContentFlusher;
 import no.systema.main.model.SystemaWebUser;
 import no.systema.main.util.StringManager;
-
 import no.systema.jservices.common.dao.GodsjfDao;
 
 //GODSNO
 import no.systema.godsno.service.GodsnoMainListService;
-import no.systema.godsno.filter.SearchFilterGodsnoMainList;
+import no.systema.godsno.validator.GodsnoRegistreringValidator;
 import no.systema.godsno.url.store.GodsnoUrlDataStore;
 import no.systema.godsno.util.GodsnoConstants;
 import no.systema.godsno.model.JsonGenericContainerDao;
 
 
 /**
- * Godsregistrering-NO main list Controller 
+ * Godsregistrering-NO Controller
  * 
  * @author oscardelatorre
- * @date 2018 June
+ * @date 2018 July
  * 
  */
 
 @Controller
 @SessionAttributes(AppConstants.SYSTEMA_WEB_USER_KEY)
 @Scope("session")
-public class GodsnoMainListController {
+public class GodsnoRegistreringController {
 	private static final JsonDebugger jsonDebugger = new JsonDebugger(3000);
-	private static Logger logger = Logger.getLogger(GodsnoMainListController.class.getName());
+	private static Logger logger = Logger.getLogger(GodsnoRegistreringController.class.getName());
 	private ModelAndView loginView = new ModelAndView("redirect:logout.do");
 	private ApplicationContext context;
 	private LoginValidator loginValidator = new LoginValidator();
 	//private RpgReturnResponseHandler rpgReturnResponseHandler = new RpgReturnResponseHandler();
 	private PayloadContentFlusher payloadContentFlusher = new PayloadContentFlusher();
 	private StringManager strMgr = new StringManager();
+	
 	@Autowired
 	private GodsnoMainListService godsnoMainListService;
 	
@@ -86,78 +88,106 @@ public class GodsnoMainListController {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value="godsno_mainlist.do", params="action=doFind",  method={RequestMethod.GET, RequestMethod.POST} )
-	public ModelAndView doFind(@ModelAttribute ("record") SearchFilterGodsnoMainList recordToValidate, BindingResult bindingResult, HttpSession session, HttpServletRequest request){
-		this.context = TdsAppContext.getApplicationContext();
-		Collection mainList = new ArrayList();
-		logger.info("Inside: doFind");
-		Map model = new HashMap();
+	@RequestMapping(value="godsno_edit.do", method={RequestMethod.GET, RequestMethod.POST} )
+	public ModelAndView doGodsnoEdit(ModelMap model, @ModelAttribute ("record") GodsjfDao recordToValidate, BindingResult bindingResult, HttpSession session, HttpServletRequest request){
+		ModelAndView successView = new ModelAndView("godsno_edit");
+		logger.info("Inside: doGodsnoEdit");
 		
-		ModelAndView successView = new ModelAndView("godsno_mainlist");
 		SystemaWebUser appUser = this.loginValidator.getValidUser(session);
-		String redirect = request.getParameter("rd");
+		
+		String action = request.getParameter("action");
+		boolean isValidRecord = true;
+		
 		//check user (should be in session already)
 		if(appUser==null){
 			return loginView;
 		
 		}else{
-			appUser.setActiveMenu(SystemaWebUser.ACTIVE_MENU_GODSREGNO);
+			//appUser.setActiveMenu(SystemaWebUser.ACTIVE_MENU_GODSREGNO);
 			logger.info(Calendar.getInstance().getTime() + " CONTROLLER start - timestamp");
-			logger.info("####!!!" + recordToValidate.getAvd());
-			//-----------
-			//Validation
-			//-----------
-			/* TODO
-			SadImportListValidator validator = new SadImportListValidator();
-			logger.info("Host via HttpServletRequest.getHeader('Host'): " + request.getHeader("Host"));
-		    validator.validate(recordToValidate, bindingResult);
-		    */
-		    //check for ERRORS
-			if(bindingResult.hasErrors()){
-	    		logger.info("[ERROR Validation] search-filter does not validate)");
-	    		//put domain objects and do go back to the successView from here
-	    		//drop downs
+			//logger.info("DATE:" + recordToValidate.getGogrdt());
+			if(GodsnoConstants.ACTION_UPDATE.equals(action)){
+				GodsnoRegistreringValidator validator = new GodsnoRegistreringValidator();
+				validator.validate(recordToValidate, bindingResult);
+			    //check for ERRORS
+				if(bindingResult.hasErrors()){
+		    		logger.info("[ERROR Validation] record does not validate)");
+		    		//put domain objects and do go back to the successView from here
+		    		//drop downs
+		    		isValidRecord = false;
+		    		
+			    }else{
+			    	//adjust some db-fields
+			    	this.adjustFieldsForUpdate(recordToValidate);
+		    		logger.info(Calendar.getInstance().getTime() + " CONTROLLER end - timestamp");
+		    		
+			    }
+			}
+			//--------------
+			//Fetch record
+			//--------------
+			if(strMgr.isNotNull(recordToValidate.getGogn()) ){
+				if(isValidRecord){
+					GodsjfDao updatedDao = this.getRecord(appUser, recordToValidate);
+					this.adjustFieldsForFetch(updatedDao);
+					model.addAttribute(GodsnoConstants.DOMAIN_RECORD, updatedDao);
+				}else{
+					//in case of validation errors
+					//model.addAttribute(GodsnoConstants.DOMAIN_RECORD, recordToValidate);
+				}
+			}
+			if(action==null || "".equals(action)){ action = "doUpdate"; }
+			model.addAttribute("action", action);
 			
-	    		successView.addObject(GodsnoConstants.DOMAIN_MODEL, model);
-	    		successView.addObject("searchFilter", recordToValidate);
-				return successView;
-	    		
-		    }else{
-				
-	    		Map maxWarningMap = new HashMap<String,String>();
-	    		SearchFilterGodsnoMainList searchFilter = (SearchFilterGodsnoMainList)session.getAttribute(GodsnoConstants.SESSION_SEARCH_FILTER);
-    			if(redirect!=null && !"".equals(redirect)){
-	    			recordToValidate = searchFilter;
-	    		}
-    			//get list
-    			mainList = this.getList(appUser, recordToValidate, maxWarningMap);
-	    		//--------------------------------------
-	    		//Final successView with domain objects
-	    		//--------------------------------------
-	    		//drop downs
-	    		//this.setCodeDropDownMgr(appUser, model);
-				model.put(GodsnoConstants.DOMAIN_LIST, mainList);
-	    		successView.addObject(GodsnoConstants.DOMAIN_MODEL , model);
-	    		//domain and search filter
-	    		//Put list for upcomming view (PDF, Excel, etc)
-	    		if(mainList!=null && (redirect==null || "".equals(redirect)) ){
-	    			session.setAttribute(session.getId() + GodsnoConstants.SESSION_LIST, mainList);
-	    			session.setAttribute(GodsnoConstants.SESSION_SEARCH_FILTER, recordToValidate);
-	    		}
-	    		if(redirect!=null && !"".equals(redirect)){
-	    			//when this function is called with a redirect in another function
-	    			successView.addObject("searchFilter", searchFilter);
-	    		}else{
-	    			//default
-	    			successView.addObject("searchFilter", recordToValidate);
-	    		}
-
-	    		logger.info(Calendar.getInstance().getTime() + " CONTROLLER end - timestamp");
-	    		return successView;
-		    }
+			//set some other model values
+			this.populateUI_ModelMap(model);
+			
+			//successView.addObject(GodsnoConstants.DOMAIN_MODEL , model);
+			return successView;
 		}
 	}
+	/**
+	 * 
+	 * @param recordToValidate
+	 */
+	private void adjustFieldsForUpdate(GodsjfDao recordToValidate){
+		recordToValidate.setGogrdt(this.convertToDate_ISO(recordToValidate.getGogrdt()));
+		recordToValidate.setGolsdt(this.convertToDate_ISO(recordToValidate.getGolsdt()));
+	}
+	private void adjustFieldsForFetch(GodsjfDao recordToValidate){
+		recordToValidate.setGogrdt(this.convertToDate_NO(recordToValidate.getGogrdt()));
+		recordToValidate.setGolsdt(this.convertToDate_NO(recordToValidate.getGolsdt()));
+	}
+	/**
+	 * 
+	 * @param value
+	 * @return
+	 */
+	private String convertToDate_ISO (String value){
+		DateTimeManager dateMgr = new DateTimeManager();
+		return dateMgr.getDateFormatted_ISO(value, DateTimeManager.NO_FORMAT);
+	}
+	/**
+	 * 
+	 * @param value
+	 * @return
+	 */
+	private String convertToDate_NO (String value){
+		DateTimeManager dateMgr = new DateTimeManager();
+		return dateMgr.getDateFormatted_NO(value, DateTimeManager.ISO_FORMAT);
+	}
 	
+	/**
+	 * 
+	 * @param model
+	 */
+	private void populateUI_ModelMap(ModelMap model){
+		LocalDateTime now = LocalDateTime.now();
+		String day = now.format(DateTimeFormatter.ofPattern("dd.MM.yy"));
+		String time = now.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+		model.addAttribute("today", day);
+		model.addAttribute("time", time);
+	}
 	
 	/**
 	 * 
@@ -165,9 +195,8 @@ public class GodsnoMainListController {
 	 * @param wssavd
 	 * @return
 	 */
-	private Collection<GodsjfDao> getList(SystemaWebUser appUser, SearchFilterGodsnoMainList recordToValidate, Map<String,String> maxWarningMap){
-		Collection<GodsjfDao> outputList = new ArrayList();
-		String defaultDaysBack = "10";
+	private GodsjfDao getRecord(SystemaWebUser appUser, GodsjfDao recordToValidate){
+		GodsjfDao record = new GodsjfDao();
 		//---------------
     	//Get main list
 		//---------------
@@ -178,22 +207,6 @@ public class GodsnoMainListController {
 		
 		if(strMgr.isNotNull(recordToValidate.getGogn()) ){
 			urlRequestParams.append("&gogn=" + recordToValidate.getGogn());
-		}else{
-			if(strMgr.isNotNull(appUser.getDftdg()) ){
-				urlRequestParams.append("&dftdg=" + appUser.getDftdg());
-			}else{
-				urlRequestParams.append("&dftdg=" + defaultDaysBack);
-			}
-			//
-			if(strMgr.isNotNull(recordToValidate.getGotrnr()) ){
-				urlRequestParams.append("&gotrnr=" + recordToValidate.getGotrnr());
-			}
-			if(strMgr.isNotNull(recordToValidate.getGoturn()) ){
-				urlRequestParams.append("&goturn=" + recordToValidate.getGoturn());
-			}
-			if(strMgr.isNotNull(recordToValidate.getGobiln()) ){
-				urlRequestParams.append("&gobiln=" + recordToValidate.getGobiln());
-			}
 		}
 		
 		//session.setAttribute(TransportDispConstants.ACTIVE_URL_RPG_TRANSPORT_DISP, BASE_URL + "==>params: " + urlRequestParams.toString()); 
@@ -206,11 +219,11 @@ public class GodsnoMainListController {
     	logger.info(Calendar.getInstance().getTime() +  " CGI-end timestamp");
     	if(jsonPayload!=null){
     		JsonGenericContainerDao listContainer = this.godsnoMainListService.getMainListContainer(jsonPayload);
-    		outputList = listContainer.getList();	
-    		//maxWarningMap.put(EfakturaConstants.DOMAIN_MAX_WARNING_OPEN_ORDERS, jsonOpenOrdersListContainer.getMaxWarning());
+    		for(GodsjfDao tmpRecord: listContainer.getList()){
+    			record = tmpRecord;
+    		}
     	}		
-	    
-		return outputList;
+		return record;
 	}
 	
 	//SERVICES

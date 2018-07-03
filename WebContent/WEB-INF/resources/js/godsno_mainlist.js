@@ -31,7 +31,7 @@
 	jq('#mainList').dataTable( {
 	  "jQueryUI": false,
 	  "dom": '<"top"f>rt<"bottom"lip><"clear">',
-	  "order": [[ 0, "desc" ]],
+	  "order": [[ 1, "desc" ]],
 	  "lengthMenu": [ 50, 75, 100]
 	} );
     //event on input field for search

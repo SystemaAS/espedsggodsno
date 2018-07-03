@@ -20,9 +20,9 @@
 	<table width="100%"  class="text14" cellspacing="0" border="0" cellpadding="0">
 		<tr height="2"><td></td></tr>
 		<tr height="25"> 
-			<td width="20%" valign="bottom" class="tab" align="center" nowrap>
+			<td width="15%" valign="bottom" class="tab" align="center" nowrap>
 				<a style="display:block;" href="godsno_mainlist.do?action=doFind" >
-					<img style="vertical-align:middle;" src="resources/images/bulletGreen.png" width="6px" height="6px" border="0" alt="efaktura log">
+					<img style="vertical-align:middle;" src="resources/images/bulletGreen.png" width="8px" height="8px" border="0" alt="efaktura log">
 					<font class="tabLink" ><span id="activeTabList" onMouseOver="showPop('list_info');" onMouseOut="hidePop('list_info');"><spring:message code="systema.godsno.mainlist.tab"/></span></font>
 				</a>
 				<div class="text14" style="position: relative;" align="left">
@@ -41,7 +41,7 @@
 				</a>
 			</td>
 			 --%>
-			<td width="80%" class="tabFantomSpace" align="center" nowrap><font class="tabDisabledLink">&nbsp;</font></td>
+			<td width="85%" class="tabFantomSpace" align="center" nowrap><font class="tabDisabledLink">&nbsp;</font></td>
 		</tr>
 	</table>
 	</td>
@@ -123,22 +123,28 @@
 					<table id="mainList" class="display compact cell-border" >
 						<thead>
 						<tr class="tableHeaderField" height="20" >
-							<th class="tableHeaderFieldFirst"><spring:message code="systema.godsno.mainlist.label.godsnr"/></th>   
+							<th width="2%" class="tableHeaderFieldFirst">Endre</th>
+							<th class="tableHeaderField"><spring:message code="systema.godsno.mainlist.label.godsnr"/></th>   
 		                    <th class="tableHeaderField"><spring:message code="systema.godsno.mainlist.label.transittnr"/></th>
 		                    <th class="tableHeaderField"><spring:message code="systema.godsno.mainlist.label.turnr"/></th>
 		                    <th class="tableHeaderField"><spring:message code="systema.godsno.mainlist.label.bilnr"/></th>
-		                    <th class="tableHeaderField"><spring:message code="systema.godsno.mainlist.label.avgtollsted.dato"/></th>
+		                    <th width="2%" class="tableHeaderField"><spring:message code="systema.godsno.mainlist.label.avgtollsted.dato"/></th>
 		                </tr> 
 		                </thead>
 		                
 		                <tbody>
 			            <c:forEach items="${model.list}" var="record" varStatus="counter">    
 			             <tr class="tableRow" height="20">  
-			               <td class="tableCellFirst" >${record.gogn}</td>
+			               <td align="center" width="2%" class="tableCellFirst" >
+			               		<a id="alinkEdit" style="display:block;" href="godsno_edit.do?action=doUpdate&gogn=${record.gogn}">
+			               			<img title="Endre post" style="vertical-align:bottom;" src="resources/images/update.gif" border="0" alt="edit">
+			               		</a>	
+			               </td>
+			               <td class="tableCell" >${record.gogn}</td>
 			               <td class="tableCell" >${record.gotrnr}</td>
 			               <td class="tableCell" >${record.goturn}</td>
 			               <td class="tableCell" >${record.gobiln}</td>
-			               <td class="tableCell" >${record.goavg}</td>
+			               <td width="2%" class="tableCell" >${record.goavg}</td>
 			            </tr> 
 			            </c:forEach>
 			            </tbody>
