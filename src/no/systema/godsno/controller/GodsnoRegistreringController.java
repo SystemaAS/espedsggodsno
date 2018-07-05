@@ -4,7 +4,7 @@ import java.lang.reflect.Field;
 import java.util.*;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-
+import java.math.BigDecimal;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -50,6 +50,7 @@ import no.systema.godsno.model.JsonGenericContainerDao;
 import no.systema.godsno.mapper.url.request.UrlRequestParameterMapper;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.beans.propertyeditors.CustomNumberEditor;
+import org.springframework.core.convert.ConversionService;
 
 /**
  * Godsregistrering-NO Controller
@@ -70,7 +71,7 @@ public class GodsnoRegistreringController {
 	private StringManager strMgr = new StringManager();
 	private UrlRequestParameterMapper urlRequestParameterMapper = new UrlRequestParameterMapper();
 	
-
+	
 	@Autowired
 	private GodsnoService godsnoService;
 	
@@ -81,12 +82,8 @@ public class GodsnoRegistreringController {
 		}
 	}
 	
-	@InitBinder
-	public void initBinder(WebDataBinder binder) {
-		//this is required in order to convert all strings to a number-type (GodsjfDao) before starting with the controller ModelAttribute
-		binder.registerCustomEditor( Integer.class, new CustomNumberEditor(Integer.class, true));
-
-	}	
+	
+		  
 	/**
 	 * 
 	 * @param recordToValidate
@@ -103,6 +100,8 @@ public class GodsnoRegistreringController {
 		SystemaWebUser appUser = this.loginValidator.getValidUser(session);
 		
 		String action = request.getParameter("action");
+		String updateFlag = request.getParameter("updateFlag");
+		
 		boolean isValidRecord = true;
 		
 		//check user (should be in session already)
@@ -130,8 +129,17 @@ public class GodsnoRegistreringController {
 					StringBuffer errMsg = new StringBuffer();
 					int dmlRetval = 0;
 					if(strMgr.isNotNull( recordToValidate.getGogn()) ){
-						logger.info("doUpdate");
-						dmlRetval = this.updateRecord(appUser.getUser(), recordToValidate, GodsnoConstants.MODE_UPDATE, errMsg);
+						//Add or Update
+						if(strMgr.isNotNull(updateFlag)){
+							logger.info("doUpdate");
+							logger.info("gogrdt:" + recordToValidate.getGogrdt());
+							dmlRetval = this.updateRecord(appUser.getUser(), recordToValidate, GodsnoConstants.MODE_UPDATE, errMsg);
+							
+						}else{
+							logger.info("doCreate");
+							dmlRetval = this.updateRecord(appUser.getUser(), recordToValidate, GodsnoConstants.MODE_ADD, errMsg);
+						}
+						
 						logger.info(Calendar.getInstance().getTime() + " CONTROLLER end - timestamp");
 					}
 					if(dmlRetval<0){
@@ -148,6 +156,7 @@ public class GodsnoRegistreringController {
 					GodsjfDao updatedDao = this.getRecord(appUser, recordToValidate);
 					this.adjustFieldsForFetch(updatedDao);
 					model.addAttribute(GodsnoConstants.DOMAIN_RECORD, updatedDao);
+					model.addAttribute("updateFlag", "1");
 				}else{
 					//in case of validation errors
 					model.addAttribute(GodsnoConstants.DOMAIN_RECORD, recordToValidate);
@@ -155,7 +164,7 @@ public class GodsnoRegistreringController {
 			}
 			
 			if(action==null || "".equals(action)){ 
-				action = "doUpdate"; 
+				action = "doUpdate";
 			}
 			model.addAttribute("action", action);
 			
@@ -221,6 +230,12 @@ public class GodsnoRegistreringController {
 	private void adjustFieldsForUpdate(GodsjfDao recordToValidate){
 		recordToValidate.setGogrdt(this.convertToDate_ISO(recordToValidate.getGogrdt()));
 		recordToValidate.setGolsdt(this.convertToDate_ISO(recordToValidate.getGolsdt()));
+		
+		//Numbers... since the fucking Spring converter is not working ...
+		if(recordToValidate.getGotrdt()==null){ recordToValidate.setGotrdt(0); }
+		if(recordToValidate.getGogrkl()==null){ recordToValidate.setGogrkl(0); }
+		if(recordToValidate.getGolskl()==null){ recordToValidate.setGolskl(0); }
+		
 	}
 	private void adjustFieldsForFetch(GodsjfDao recordToValidate){
 		recordToValidate.setGogrdt(this.convertToDate_NO(recordToValidate.getGogrdt()));

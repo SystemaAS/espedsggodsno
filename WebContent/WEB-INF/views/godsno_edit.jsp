@@ -57,8 +57,9 @@
 				<form action="godsno_edit.do" name="editForm" id="editForm" method="post">
 				<input type="hidden" name="applicationUser" id="applicationUser" value='${user.user}'>
 				<input type="hidden" name="action" id="action" value='${action}'>
-				<c:if test="${not empty record.gogn}">
+				<c:if test="${not empty updateFlag}">
 					<input type="hidden" name="gogn" id="gogn" value="${record.gogn}">
+					<input type="hidden" name="updateFlag" id="updateFlag" value="${updateFlag}">
 				</c:if>
 				<table width="80%" align="left" border="0" cellspacing="0" cellpadding="0">
 				 	<tr >
@@ -75,6 +76,15 @@
 					 	<td>
 						<table width="100%" class="tableBorderWithRoundCorners3D_RoundOnlyOnBottom" border="0" cellspacing="2" cellpadding="1">
 					 		<tr height="5px"><tb></tb></tr>
+					 		<c:if test="${empty updateFlag}">
+						 		<tr >
+						 			<td class="text14">Godsnr:&nbsp;</td>
+						 			<td class="text14">
+						 				<input type="text" required oninvalid="this.setCustomValidity('Obligatorisk')" oninput="setCustomValidity('')" class="inputTextMediumBlueMandatoryField" name="gogn" id="gogn" size="21" maxlength="15" value="">
+						 				<font class="text16RedBold" >*</font>
+						 			</td>
+						 		</tr>
+					 		</c:if>
 					 		<tr >
 					 			<td class="text14">Manuelltnr</td>
 					 			<td class="text14">
@@ -82,9 +92,10 @@
 					 			</td>
 					 		</tr>
 					 		<tr >
-					 			<td class="text14"><font class="text16RedBold" >*</font><span title="gogren">Grensepassering</span></td>
+					 			<td class="text14"><span title="gogren">Grensepassering</span></td>
 					 			<td class="text14">
 					 				<input type="text" required oninvalid="this.setCustomValidity('Obligatorisk')" oninput="setCustomValidity('')" class="inputTextMediumBlueMandatoryField" name="gogren" id="gogren" size="21" maxlength="20" value="${record.gogren}">
+					 				<font class="text16RedBold" >*</font>
 					 			</td>
 					 			<td class="text14">
 					 				<img style="vertical-align:middle;" src="resources/images/calendar.gif" width="12px" height="12px" border="0" alt="dato">
@@ -118,9 +129,10 @@
 					 			</td>
 					 		</tr>
 					 		<tr >
-					 			<td class="text14"><font class="text16RedBold" >*</font><span title="gobiln">Kjennetegn</span></td>
+					 			<td class="text14"><span title="gobiln">Kjennetegn</span></td>
 					 			<td class="text14">
 					 				<input type="text" required oninvalid="this.setCustomValidity('Obligatorisk')" oninput="setCustomValidity('')" class="inputTextMediumBlueMandatoryField" name="gobiln" id="gobiln" size="21" maxlength="13" value="${record.gobiln}">
+					 				<font class="text16RedBold" >*</font>
 					 			</td>
 					 		</tr>
 					 		<tr >
@@ -130,9 +142,10 @@
 					 			</td>
 					 		</tr>
 					 		<tr >
-					 			<td class="text14"><font class="text16RedBold" >*</font><span title="gomott">Varemottaker</span></td>
+					 			<td class="text14"><span title="gomott">Varemottaker</span></td>
 					 			<td class="text14">
 					 				<input type="text" required oninvalid="this.setCustomValidity('Obligatorisk')" oninput="setCustomValidity('')" class="inputTextMediumBlueMandatoryField" name="gomott" id="gomott" size="21" maxlength="15" value="${record.gomott}">
+					 				<font class="text16RedBold" >*</font>
 					 			</td>
 					 		</tr>
 					 		<tr height="10"><td></td></tr>

@@ -11,6 +11,7 @@
 		  dateFormat: 'ddmmy'
 	  });
 	  
+	  //Custom Validity
 	  jq('#gogren').focus(function() {
 	    	if(jq('#gogren').val()!=''){
 	    		refreshCustomValidity(jq('#gogren')[0]);
@@ -24,6 +25,11 @@
 	  jq('#gomott').focus(function() {
 	    	if(jq('#gomott').val()!=''){
 	    		refreshCustomValidity(jq('#gomott')[0]);
+	  		}
+	  	});
+	  jq('#gogn').focus(function() {
+	    	if(jq('#gogn').val()!=''){
+	    		refreshCustomValidity(jq('#gogn')[0]);
 	  		}
 	  	});
   });

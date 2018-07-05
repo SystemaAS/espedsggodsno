@@ -31,35 +31,46 @@ public class UrlRequestParameterMapper {
 			for(Field field: object.getFields()){
 				try{
 					field.setAccessible(true);//we must do this in order to access private fields
-					String value = (String)field.get(object); 
-					if(value==null){
-						sb.append("");
-					}else{
-						//CRUCIAL! to encode the value in order to handle all special characters (%,&,",',()...) before JSON-call
-						//& will be converted into "%26", %="%25", etc. 
-						//Refer to URLEncode special characters for further info)
-						value = URLEncoder.encode(value, "UTF-8");
-						
+					Object fieldType = field.getType();
+					//System.out.println(fieldType);
+					if(fieldType.equals(int.class)){
+						int value = (int)field.get(object);
 						sb.append(GodsnoConstants.URL_CHAR_DELIMETER_FOR_PARAMS_WITH_HTML_REQUEST + field.getName() + "=");
-						sb.append(value.trim());
-					}
-				}catch(Exception e){
-					//Try Integer
-					if(field.get(object) instanceof Integer){
-						Integer value = (Integer)field.get(object); 
+						sb.append(value);
+						
+					}else if(fieldType.equals(Integer.class)){
+						//logger.info("XXX:" + field.get(object));
+						Integer value = (Integer)field.get(object);
+						//logger.info(field.getName() + ":" + value);
+						sb.append(GodsnoConstants.URL_CHAR_DELIMETER_FOR_PARAMS_WITH_HTML_REQUEST + field.getName() + "=");
+						sb.append(value);
+						
+					}else if(fieldType.equals(BigDecimal.class)){
+						BigDecimal value = (BigDecimal)field.get(object); 
 						sb.append(GodsnoConstants.URL_CHAR_DELIMETER_FOR_PARAMS_WITH_HTML_REQUEST + field.getName() + "=");
 						sb.append(value);
 					
-					}else if(field.get(object) instanceof Double){
+					}else if(fieldType.equals(Double.class)){
 						Double value = (Double)field.get(object); 
 						sb.append(GodsnoConstants.URL_CHAR_DELIMETER_FOR_PARAMS_WITH_HTML_REQUEST + field.getName() + "=");
 						sb.append(value);
 					}else{
-						logger.info(" [INFO]data type not yet supported...");
+						String value = (String)field.get(object); 
+						if(value==null){
+							sb.append("");
+						}else{
+							//CRUCIAL! to encode the value in order to handle all special characters (%,&,",',()...) before JSON-call
+							//& will be converted into "%26", %="%25", etc. 
+							//Refer to URLEncode special characters for further info)
+							value = URLEncoder.encode(value, "UTF-8");
+							
+							sb.append(GodsnoConstants.URL_CHAR_DELIMETER_FOR_PARAMS_WITH_HTML_REQUEST + field.getName() + "=");
+							sb.append(value.trim());
+						}
 					}
+				}catch(Exception e){
+					logger.info(" [INFO]data type not yet supported...");
 					//add more instances if you need...					
-										
-					
 				}
 			}
 		}catch(Exception e){
@@ -87,41 +98,47 @@ public class UrlRequestParameterMapper {
 				//logger.info(field.getName());
 				try{
 					field.setAccessible(true);//we must do this in order to access private fields
-					String value = (String)field.get(object); 
-					if(value==null){
-						sb.append("");
-					}else{
-						//CRUCIAL! to encode the value in order to handle all special characters (%,&,",',()...) before JSON-call
-						//& will be converted into "%26", %="%25", etc. 
-						//Refer to URLEncode special characters for further info)
-						value = URLEncoder.encode(value, "UTF-8");
+					Object fieldType = field.getType();
+					//logger.info("TYPE:" + fieldType);
+					if(fieldType.equals(int.class)){
+						int value = (int)field.get(object);
+						sb.append(GodsnoConstants.URL_CHAR_DELIMETER_FOR_PARAMS_WITH_HTML_REQUEST + field.getName() + "=");
+						sb.append(value);
 						
-						sb.append(GodsnoConstants.URL_CHAR_DELIMETER_FOR_PARAMS_WITH_HTML_REQUEST + field.getName() + "=");
-						sb.append(value.trim());
-					}
-				}catch(Exception e){
-					//Try Integer
-					if(field.get(object) instanceof Integer){
-						Integer value = (Integer)field.get(object); 
+					}else if(fieldType.equals(Integer.class)){
+						//logger.info("XXX:" + field.get(object));
+						Integer value = (Integer)field.get(object);
+						//logger.info(field.getName() + ":" + value);
 						sb.append(GodsnoConstants.URL_CHAR_DELIMETER_FOR_PARAMS_WITH_HTML_REQUEST + field.getName() + "=");
 						sb.append(value);
-					
-					}else if(field.get(object) instanceof Double){
-						Double value = (Double)field.get(object); 
-						sb.append(GodsnoConstants.URL_CHAR_DELIMETER_FOR_PARAMS_WITH_HTML_REQUEST + field.getName() + "=");
-						sb.append(value);
-					} else if(field.get(object) instanceof Float){
-						Float value = (Float)field.get(object); 
-						sb.append(GodsnoConstants.URL_CHAR_DELIMETER_FOR_PARAMS_WITH_HTML_REQUEST + field.getName() + "=");
-						sb.append(value);
-					} else if(field.get(object) instanceof BigDecimal){
+						
+					}else if(fieldType.equals(BigDecimal.class)){
 						BigDecimal value = (BigDecimal)field.get(object); 
 						sb.append(GodsnoConstants.URL_CHAR_DELIMETER_FOR_PARAMS_WITH_HTML_REQUEST + field.getName() + "=");
 						sb.append(value);
-					} else{
-						logger.info(" [INFO]data type not yet supported... field:" + field.getName() + " error Message:" + e.getMessage());
-						
+					
+					}else if(fieldType.equals(Double.class)){
+						Double value = (Double)field.get(object); 
+						sb.append(GodsnoConstants.URL_CHAR_DELIMETER_FOR_PARAMS_WITH_HTML_REQUEST + field.getName() + "=");
+						sb.append(value);
+					
+					}else{
+						String value = (String)field.get(object); 
+						if(value==null){
+							sb.append("");
+						}else{
+							//CRUCIAL! to encode the value in order to handle all special characters (%,&,",',()...) before JSON-call
+							//& will be converted into "%26", %="%25", etc. 
+							//Refer to URLEncode special characters for further info)
+							value = URLEncoder.encode(value, "UTF-8");
+							
+							sb.append(GodsnoConstants.URL_CHAR_DELIMETER_FOR_PARAMS_WITH_HTML_REQUEST + field.getName() + "=");
+							sb.append(value.trim());
+						}
 					}
+				}catch(Exception e){
+					
+					logger.info(" [INFO]data type not yet supported... field:" + field.getName() + " error Message:" + e.getMessage());
 					//add more instances if you need...					
 				    continue;
 				    	

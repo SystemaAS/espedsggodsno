@@ -135,7 +135,7 @@
 			            <c:forEach items="${model.list}" var="record" varStatus="counter">    
 			             <tr class="tableRow" height="20">  
 			               <td align="center" width="2%" class="tableCellFirst" >
-			               		<a id="alinkEdit_${counter.count}" style="display:block;" href="godsno_edit.do?gogn=${record.gogn}" onClick="setBlockUI()" >
+			               		<a id="alinkEdit_${counter.count}" style="display:block;" href="godsno_edit.do?updateFlag=1&gogn=${record.gogn}" onClick="setBlockUI()" >
 			               			<img title="Endre post" style="vertical-align:bottom;" src="resources/images/update.gif" border="0" alt="edit">
 			               		</a>	
 			               </td>
