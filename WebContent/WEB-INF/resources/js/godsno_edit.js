@@ -10,15 +10,32 @@
 	  jq("#golsdt").datepicker({ 
 		  dateFormat: 'ddmmy'
 	  });
+	  
+	  jq('#gogren').focus(function() {
+	    	if(jq('#gogren').val()!=''){
+	    		refreshCustomValidity(jq('#gogren')[0]);
+	  		}
+	  });
+	  jq('#gobiln').focus(function() {
+	    	if(jq('#gobiln').val()!=''){
+	    		refreshCustomValidity(jq('#gobiln')[0]);
+	  		}
+	  	});
+	  jq('#gomott').focus(function() {
+	    	if(jq('#gomott').val()!=''){
+	    		refreshCustomValidity(jq('#gomott')[0]);
+	  		}
+	  	});
   });
   
-  /*
+  
+  
   jq(function() {
-      jq('#submit').click(function() { 
+      jq('#editForm').submit(function() { 
     	  setBlockUI();
-  	  }); 
+  	  });
+
   });    
-  */
   
   
 	 

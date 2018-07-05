@@ -17,8 +17,8 @@ import no.systema.main.mapper.jsonjackson.general.ObjectMapperAbstractGrandFathe
  * @date Jun 22, 2015
  * 
  */
-public class JsonGodsnoMainListMapper extends ObjectMapperAbstractGrandFather {
-	private static final Logger logger = Logger.getLogger(JsonGodsnoMainListMapper.class.getName());
+public class JsonGodsnoMapper extends ObjectMapperAbstractGrandFather {
+	private static final Logger logger = Logger.getLogger(JsonGodsnoMapper.class.getName());
 	/**
 	 * 
 	 * @param utfPayload

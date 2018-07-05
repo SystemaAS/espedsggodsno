@@ -4,13 +4,7 @@
   
   
   jq(function() {
-	  /*jq("#fromDate").datepicker({ 
-		  dateFormat: 'ddmmy'
-	  });*/
-  });
-  
-  jq(function() {
-      jq('#submit').click(function() { 
+      jq('#searchForm').submit(function() {
     	  setBlockUI();
   	  }); 
   });    

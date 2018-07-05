@@ -5,8 +5,7 @@
 <jsp:include page="/WEB-INF/views/headerGodsno.jsp" />
 <!-- =====================end header ==========================-->
 	<%-- specific jQuery functions for this JSP (must reside under the resource map since this has been
-		specified in servlet.xml as static <mvc:resources mapping="/resources/**" location="WEB-INF/resources/" order="1"/> --%>
-	<SCRIPT type="text/javascript" src="resources/js/godsnoglobal.js?ver=${user.versionEspedsg}"></SCRIPT>	
+		specified in servlet.xml as static <mvc:resources mapping="/resources/**" location="WEB-INF/resources/" order="1"/> --%>	
 	<SCRIPT type="text/javascript" src="resources/js/godsno_mainlist.js?ver=${user.versionEspedsg}"></SCRIPT>
 	
 	<style type = "text/css">
@@ -136,7 +135,7 @@
 			            <c:forEach items="${model.list}" var="record" varStatus="counter">    
 			             <tr class="tableRow" height="20">  
 			               <td align="center" width="2%" class="tableCellFirst" >
-			               		<a id="alinkEdit" style="display:block;" href="godsno_edit.do?action=doUpdate&gogn=${record.gogn}">
+			               		<a id="alinkEdit_${counter.count}" style="display:block;" href="godsno_edit.do?gogn=${record.gogn}" onClick="setBlockUI()" >
 			               			<img title="Endre post" style="vertical-align:bottom;" src="resources/images/update.gif" border="0" alt="edit">
 			               		</a>	
 			               </td>

@@ -20,7 +20,7 @@
 		<tr height="2"><td></td></tr>
 		<tr height="25"> 
 			<td width="15%" valign="bottom" class="tabDisabled" align="center" nowrap>
-				<a style="display:block;" href="godsno_mainlist.do?action=doFind" >
+				<a style="display:block;" href="godsno_mainlist.do?action=doFind" onClick="setBlockUI();">
 					<img style="vertical-align:middle;" src="resources/images/bulletGreen.png" width="8px" height="8px" border="0" alt="efaktura log">
 					<font class="tabDisabledLink" ><span id="activeTabList" ><spring:message code="systema.godsno.mainlist.tab"/></span></font>
 				</a>
@@ -82,9 +82,9 @@
 					 			</td>
 					 		</tr>
 					 		<tr >
-					 			<td class="text14"><span title="gogren">Grensepassering</span></td>
+					 			<td class="text14"><font class="text16RedBold" >*</font><span title="gogren">Grensepassering</span></td>
 					 			<td class="text14">
-					 				<input type="text" class="inputTextMediumBlue" name="gogren" id="gogren" size="21" maxlength="20" value="${record.gogren}">
+					 				<input type="text" required oninvalid="this.setCustomValidity('Obligatorisk')" oninput="setCustomValidity('')" class="inputTextMediumBlueMandatoryField" name="gogren" id="gogren" size="21" maxlength="20" value="${record.gogren}">
 					 			</td>
 					 			<td class="text14">
 					 				<img style="vertical-align:middle;" src="resources/images/calendar.gif" width="12px" height="12px" border="0" alt="dato">
@@ -98,7 +98,17 @@
 					 				<span title="gogrkl">Kl.</span>
 					 			</td>
 					 			<td class="text14">
-					 				<input onKeyPress="return numberKey(event)" type="text" class="inputTextMediumBlue" name="gogrkl" id="gogrkl" size="5" maxlength="4" value="${record.gogrkl}">
+					 			
+					 				<c:choose>
+						 				<c:when test="${record.gogrkl > 0}">
+						 					<input onKeyPress="return numberKey(event)" type="text" class="inputTextMediumBlue" name="gogrkl" id="gogrkl" size="5" maxlength="4" value="${record.gogrkl}">
+						 				</c:when>
+										<c:otherwise>
+											<input onKeyPress="return numberKey(event)" type="text" class="inputTextMediumBlue" name="gogrkl" id="gogrkl" size="5" maxlength="4" value="">
+										</c:otherwise>
+									</c:choose>
+					 			
+					 				
 					 			</td>
 					 		</tr>
 					 		<tr >
@@ -108,9 +118,9 @@
 					 			</td>
 					 		</tr>
 					 		<tr >
-					 			<td class="text14"><span title="gobiln">Kjennetegn</span></td>
+					 			<td class="text14"><font class="text16RedBold" >*</font><span title="gobiln">Kjennetegn</span></td>
 					 			<td class="text14">
-					 				<input type="text" class="inputTextMediumBlue" name="gobiln" id="gobiln" size="21" maxlength="13" value="${record.gobiln}">
+					 				<input type="text" required oninvalid="this.setCustomValidity('Obligatorisk')" oninput="setCustomValidity('')" class="inputTextMediumBlueMandatoryField" name="gobiln" id="gobiln" size="21" maxlength="13" value="${record.gobiln}">
 					 			</td>
 					 		</tr>
 					 		<tr >
@@ -120,9 +130,9 @@
 					 			</td>
 					 		</tr>
 					 		<tr >
-					 			<td class="text14"><span title="gomott">Varemottaker</span></td>
+					 			<td class="text14"><font class="text16RedBold" >*</font><span title="gomott">Varemottaker</span></td>
 					 			<td class="text14">
-					 				<input type="text" class="inputTextMediumBlue" name="gomott" id="gomott" size="21" maxlength="15" value="${record.gomott}">
+					 				<input type="text" required oninvalid="this.setCustomValidity('Obligatorisk')" oninput="setCustomValidity('')" class="inputTextMediumBlueMandatoryField" name="gomott" id="gomott" size="21" maxlength="15" value="${record.gomott}">
 					 			</td>
 					 		</tr>
 					 		<tr height="10"><td></td></tr>
@@ -145,7 +155,14 @@
 					 				<span title="golskl">Kl.</span>
 					 			</td>
 					 			<td class="text14">
-					 				<input onKeyPress="return numberKey(event)" type="text" class="inputTextMediumBlue" name="golskl" id="golskl" size="5" maxlength="4" value="${record.golskl}">
+					 				<c:choose>
+						 				<c:when test="${record.golskl > 0}">
+						 					<input onKeyPress="return numberKey(event)" type="text" class="inputTextMediumBlue" name="golskl" id="golskl" size="5" maxlength="4" value="${record.golskl}">
+						 				</c:when>
+										<c:otherwise>
+											<input onKeyPress="return numberKey(event)" type="text" class="inputTextMediumBlue" name="golskl" id="golskl" size="5" maxlength="4" value="">
+										</c:otherwise>
+									</c:choose>
 					 			</td>
 					 		</tr>
 					 		
@@ -168,7 +185,26 @@
 									</table>
 								</td>
 							</tr>
-							</spring:hasBindErrors>			 				
+							</spring:hasBindErrors>	
+							
+							<%-- -------------------------- --%>
+							<%-- Validation errors on model --%>
+							<%-- -------------------------- --%>
+							<c:if test="${not empty model.errorMessage}">
+								<tr>
+								<td>
+						           	<table class="tabThinBorderWhiteWithSideBorders" width="100%" align="left" border="0" cellspacing="0" cellpadding="0">
+						           	<tr>
+									<td valign="bottom" class="textError">					
+							            <ul>
+							            	<li >${model.errorMessage}</li>
+							            </ul>
+									</td>
+									</tr>
+									</table>
+								</td>
+								</tr>		
+							</c:if>		 				
 			 				
 			 				<tr height="20"><td></td></tr>
 			 				
@@ -178,7 +214,7 @@
 			 					<table width="100%" border="0" cellspacing="1" cellpadding="1">
 				 					<tr>
 				 					<td align="right" class="text14" valign="top">
-				 						<input class="inputFormSubmit" type="submit" name="submit" value='Lagre'>&nbsp;
+				 						<input class="inputFormSubmit" type="submit" name="submit" id="submit" value='Lagre'>&nbsp;
 				 					</td>
 				 					</tr>
 			 					</table>

@@ -7,7 +7,7 @@ import org.springframework.validation.Errors;
 import no.systema.main.util.StringManager;
 import no.systema.main.validator.DateValidator;
 import no.systema.jservices.common.dao.GodsjfDao;
-
+import org.springframework.validation.ValidationUtils;
 
 /**
  * 
@@ -37,8 +37,10 @@ public class GodsnoRegistreringValidator implements Validator {
 	public void validate(Object obj, Errors errors) { 
 		//Check for Mandatory fields
 		GodsjfDao record = (GodsjfDao)obj;
-		//ValidationUtils.rejectIfEmptyOrWhitespace(errors, "hereff", "systema.ebooking.orders.form.update.error.null.from.hereff");
-		
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "gogren", "systema.godsno.edit.form.update.error.null.grensepassering");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "gobiln", "systema.godsno.edit.form.update.error.null.kjennetegn");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "gomott", "systema.godsno.edit.form.update.error.null.varemottaker");
+	
 		//Check rules
 		if(record!=null){
 			//------

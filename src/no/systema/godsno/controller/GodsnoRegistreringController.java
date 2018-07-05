@@ -42,12 +42,14 @@ import no.systema.main.util.StringManager;
 import no.systema.jservices.common.dao.GodsjfDao;
 
 //GODSNO
-import no.systema.godsno.service.GodsnoMainListService;
+import no.systema.godsno.service.GodsnoService;
 import no.systema.godsno.validator.GodsnoRegistreringValidator;
 import no.systema.godsno.url.store.GodsnoUrlDataStore;
 import no.systema.godsno.util.GodsnoConstants;
 import no.systema.godsno.model.JsonGenericContainerDao;
-
+import no.systema.godsno.mapper.url.request.UrlRequestParameterMapper;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.beans.propertyeditors.CustomNumberEditor;
 
 /**
  * Godsregistrering-NO Controller
@@ -64,14 +66,13 @@ public class GodsnoRegistreringController {
 	private static final JsonDebugger jsonDebugger = new JsonDebugger(3000);
 	private static Logger logger = Logger.getLogger(GodsnoRegistreringController.class.getName());
 	private ModelAndView loginView = new ModelAndView("redirect:logout.do");
-	private ApplicationContext context;
 	private LoginValidator loginValidator = new LoginValidator();
-	//private RpgReturnResponseHandler rpgReturnResponseHandler = new RpgReturnResponseHandler();
-	private PayloadContentFlusher payloadContentFlusher = new PayloadContentFlusher();
 	private StringManager strMgr = new StringManager();
+	private UrlRequestParameterMapper urlRequestParameterMapper = new UrlRequestParameterMapper();
 	
+
 	@Autowired
-	private GodsnoMainListService godsnoMainListService;
+	private GodsnoService godsnoService;
 	
 	@PostConstruct
 	public void initIt() throws Exception {
@@ -79,7 +80,13 @@ public class GodsnoRegistreringController {
 			logger.setLevel(Level.DEBUG);
 		}
 	}
-		
+	
+	@InitBinder
+	public void initBinder(WebDataBinder binder) {
+		//this is required in order to convert all strings to a number-type (GodsjfDao) before starting with the controller ModelAttribute
+		binder.registerCustomEditor( Integer.class, new CustomNumberEditor(Integer.class, true));
+
+	}	
 	/**
 	 * 
 	 * @param recordToValidate
@@ -119,8 +126,18 @@ public class GodsnoRegistreringController {
 			    }else{
 			    	//adjust some db-fields
 			    	this.adjustFieldsForUpdate(recordToValidate);
-		    		logger.info(Calendar.getInstance().getTime() + " CONTROLLER end - timestamp");
-		    		
+			    	//Start DML operations if applicable
+					StringBuffer errMsg = new StringBuffer();
+					int dmlRetval = 0;
+					if(strMgr.isNotNull( recordToValidate.getGogn()) ){
+						logger.info("doUpdate");
+						dmlRetval = this.updateRecord(appUser.getUser(), recordToValidate, GodsnoConstants.MODE_UPDATE, errMsg);
+						logger.info(Calendar.getInstance().getTime() + " CONTROLLER end - timestamp");
+					}
+					if(dmlRetval<0){
+						isValidRecord = false;
+						model.put(GodsnoConstants.ASPECT_ERROR_MESSAGE, errMsg.toString());
+					}
 			    }
 			}
 			//--------------
@@ -133,10 +150,13 @@ public class GodsnoRegistreringController {
 					model.addAttribute(GodsnoConstants.DOMAIN_RECORD, updatedDao);
 				}else{
 					//in case of validation errors
-					//model.addAttribute(GodsnoConstants.DOMAIN_RECORD, recordToValidate);
+					model.addAttribute(GodsnoConstants.DOMAIN_RECORD, recordToValidate);
 				}
 			}
-			if(action==null || "".equals(action)){ action = "doUpdate"; }
+			
+			if(action==null || "".equals(action)){ 
+				action = "doUpdate"; 
+			}
 			model.addAttribute("action", action);
 			
 			//set some other model values
@@ -145,6 +165,54 @@ public class GodsnoRegistreringController {
 			//successView.addObject(GodsnoConstants.DOMAIN_MODEL , model);
 			return successView;
 		}
+	}
+	
+	/**
+	 * 
+	 * @param applicationUser
+	 * @param recordToValidate
+	 * @param mode
+	 * @param errMsg
+	 * @return
+	 */
+	private int updateRecord(String applicationUser, GodsjfDao recordToValidate, String mode, StringBuffer errMsg ){
+		int retval = 0;
+		//---------------
+    	//Get main list
+		//---------------
+		final String BASE_URL = GodsnoUrlDataStore.GODSNO_BASE_GODSJF_DML_UPDATE_URL;
+		//add URL-parameters
+		String urlRequestParamsKeys = "user=" + applicationUser + "&mode=" + mode;
+		String urlRequestParams = this.urlRequestParameterMapper.getUrlParameterValidString((recordToValidate));
+		//add params
+		urlRequestParams = urlRequestParamsKeys + urlRequestParams;
+		
+		//session.setAttribute(TransportDispConstants.ACTIVE_URL_RPG_TRANSPORT_DISP, BASE_URL + "==>params: " + urlRequestParams.toString()); 
+    	logger.info(Calendar.getInstance().getTime() + " CGI-start timestamp");
+    	logger.info("URL: " + BASE_URL);
+    	logger.info("URL PARAMS: " + urlRequestParams);
+    	
+    	String jsonPayload = this.urlCgiProxyService.getJsonContent(BASE_URL, urlRequestParams.toString());
+    	//Debug --> 
+    	logger.debug(jsonDebugger.debugJsonPayloadWithLog4J(jsonPayload));
+    	logger.info(Calendar.getInstance().getTime() +  " CGI-end timestamp");
+    	if(jsonPayload!=null){
+    		//TODO
+    		JsonGenericContainerDao container = this.godsnoService.getContainer(jsonPayload);
+    		if(container!=null){
+    			if(strMgr.isNotNull(container.getErrMsg())){
+    				errMsg.append(container.getErrMsg());
+    				//Update successfully done!
+		    		logger.info("[ERROR] Record update - Error: " + errMsg.toString());
+		    		
+    			}else{
+    				//Update successfully done!
+		    		logger.info("[INFO] Record successfully updated, OK ");
+    			}
+    		}
+    	}		
+
+		return retval;
 	}
 	/**
 	 * 
@@ -218,7 +286,7 @@ public class GodsnoRegistreringController {
     	logger.debug(jsonDebugger.debugJsonPayloadWithLog4J(jsonPayload));
     	logger.info(Calendar.getInstance().getTime() +  " CGI-end timestamp");
     	if(jsonPayload!=null){
-    		JsonGenericContainerDao listContainer = this.godsnoMainListService.getMainListContainer(jsonPayload);
+    		JsonGenericContainerDao listContainer = this.godsnoService.getContainer(jsonPayload);
     		for(GodsjfDao tmpRecord: listContainer.getList()){
     			record = tmpRecord;
     		}

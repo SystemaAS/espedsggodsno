@@ -41,7 +41,7 @@ import no.systema.main.util.StringManager;
 import no.systema.jservices.common.dao.GodsjfDao;
 
 //GODSNO
-import no.systema.godsno.service.GodsnoMainListService;
+import no.systema.godsno.service.GodsnoService;
 import no.systema.godsno.filter.SearchFilterGodsnoMainList;
 import no.systema.godsno.url.store.GodsnoUrlDataStore;
 import no.systema.godsno.util.GodsnoConstants;
@@ -68,8 +68,10 @@ public class GodsnoMainListController {
 	//private RpgReturnResponseHandler rpgReturnResponseHandler = new RpgReturnResponseHandler();
 	private PayloadContentFlusher payloadContentFlusher = new PayloadContentFlusher();
 	private StringManager strMgr = new StringManager();
+	
+	
 	@Autowired
-	private GodsnoMainListService godsnoMainListService;
+	private GodsnoService godsnoService;
 	
 	@PostConstruct
 	public void initIt() throws Exception {
@@ -205,7 +207,7 @@ public class GodsnoMainListController {
     	logger.debug(jsonDebugger.debugJsonPayloadWithLog4J(jsonPayload));
     	logger.info(Calendar.getInstance().getTime() +  " CGI-end timestamp");
     	if(jsonPayload!=null){
-    		JsonGenericContainerDao listContainer = this.godsnoMainListService.getMainListContainer(jsonPayload);
+    		JsonGenericContainerDao listContainer = this.godsnoService.getContainer(jsonPayload);
     		outputList = listContainer.getList();	
     		//maxWarningMap.put(EfakturaConstants.DOMAIN_MAX_WARNING_OPEN_ORDERS, jsonOpenOrdersListContainer.getMaxWarning());
     	}		
