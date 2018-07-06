@@ -108,7 +108,7 @@
 				 	<tr >
 			    		<td class="text14" width="70%" align="left" >&nbsp;&nbsp;
 			    			<%-- --------------------------- --%>
-			    			<%-- eFkatura MENU --%>
+			    			<%--  MENU --%>
 			    			<%-- --------------------------- --%>
 			    			<a tabindex=-1 href="godsno_mainlist.do?action=doFind">
 			    				&nbsp;<font 
@@ -175,7 +175,28 @@
 			     </table> 
 			</td>
 	    </tr>
-	    	<tr class="text" height="8"><td></td></tr>
+    	<tr class="text" height="8"><td></td></tr>
+		
+		<%-- Validation errors --%>
+		<spring:hasBindErrors name="record"> <%-- name must equal the command object name in the Controller --%>
+		<tr>
+			<td colspan="20">
+            	<table align="left" border="0" cellspacing="0" cellpadding="0">
+            	<tr>
+				<td class="textError">					
+		            <ul>
+		            <c:forEach var="error" items="${errors.allErrors}">
+		                <li >
+		                	<spring:message code="${error.code}" text="${error.defaultMessage}"/> 
+		                </li>
+		            </c:forEach>
+		            </ul>
+				</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+		</spring:hasBindErrors>	
 		    
 	    <%-- Validation Error section --%>
 	    <c:if test="${errorMessage!=null}">

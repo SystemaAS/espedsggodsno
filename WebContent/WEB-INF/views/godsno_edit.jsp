@@ -25,7 +25,6 @@
 					<font class="tabDisabledLink" ><span id="activeTabList" ><spring:message code="systema.godsno.mainlist.tab"/></span></font>
 				</a>
 			</td>
-			<td width="1px" class="tabFantomSpace" align="center" nowrap><font class="tabDisabledLink">&nbsp;</font></td>
 			<td width="15%" valign="bottom" class="tab" align="center" nowrap>
 				<img style="vertical-align:bottom;" src="resources/images/update.gif" border="0" alt="general list">
 				<font class="tabLink">Forhåndsregistrering</font>
@@ -78,15 +77,15 @@
 					 		<tr height="5px"><tb></tb></tr>
 					 		<c:if test="${empty updateFlag}">
 						 		<tr >
-						 			<td class="text14">Godsnr:&nbsp;</td>
+						 			<td class="text14"><span title="gogn">Godsnr:&nbsp;</span></td>
 						 			<td class="text14">
-						 				<input type="text" required oninvalid="this.setCustomValidity('Obligatorisk')" oninput="setCustomValidity('')" class="inputTextMediumBlueMandatoryField" name="gogn" id="gogn" size="21" maxlength="15" value="">
+						 				<input type="text" required oninvalid="this.setCustomValidity('Obligatorisk')" oninput="setCustomValidity('')" class="inputTextMediumBlueMandatoryField" name="gogn" id="gogn" size="21" maxlength="15" value="${record.gogn}">
 						 				<font class="text16RedBold" >*</font>
 						 			</td>
 						 		</tr>
 					 		</c:if>
 					 		<tr >
-					 			<td class="text14">Manuelltnr</td>
+					 			<td class="text14"><span title="todo">Manuelltnr</span></td>
 					 			<td class="text14">
 					 				<input onKeyPress="return numberKey(event)" style="text-align: right" type="text" class="inputTextMediumBlue" name="todo" id="todo" size="4" maxlength="3" value="">
 					 			</td>
@@ -179,45 +178,7 @@
 					 			</td>
 					 		</tr>
 					 		
-							<%-- Validation errors --%>
-							<spring:hasBindErrors name="record"> <%-- name must equal the command object name in the Controller --%>
-							<tr>
-								<td colspan="20">
-					            	<table align="left" border="0" cellspacing="0" cellpadding="0">
-					            	<tr>
-									<td class="textError">					
-							            <ul>
-							            <c:forEach var="error" items="${errors.allErrors}">
-							                <li >
-							                	<spring:message code="${error.code}" text="${error.defaultMessage}"/>
-							                </li>
-							            </c:forEach>
-							            </ul>
-									</td>
-									</tr>
-									</table>
-								</td>
-							</tr>
-							</spring:hasBindErrors>	
-							
-							<%-- -------------------------- --%>
-							<%-- Validation errors on model --%>
-							<%-- -------------------------- --%>
-							<c:if test="${not empty model.errorMessage}">
-								<tr>
-								<td>
-						           	<table class="tabThinBorderWhiteWithSideBorders" width="100%" align="left" border="0" cellspacing="0" cellpadding="0">
-						           	<tr>
-									<td valign="bottom" class="textError">					
-							            <ul>
-							            	<li >${model.errorMessage}</li>
-							            </ul>
-									</td>
-									</tr>
-									</table>
-								</td>
-								</tr>		
-							</c:if>		 				
+								 				
 			 				
 			 				<tr height="20"><td></td></tr>
 			 				
@@ -234,9 +195,11 @@
 			 					</td>
 		 					</tr>
 		 					<tr height="5"><td></td></tr>
+		 					
 			            </table>
 			            </td>
 		            </tr>
+
 	            </table>
 	            </form>
             </td>

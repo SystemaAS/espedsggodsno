@@ -20,10 +20,8 @@
 		<tr height="2"><td></td></tr>
 		<tr height="25"> 
 			<td width="15%" valign="bottom" class="tab" align="center" nowrap>
-				<a style="display:block;" href="godsno_mainlist.do?action=doFind" >
-					<img style="vertical-align:middle;" src="resources/images/bulletGreen.png" width="8px" height="8px" border="0" alt="efaktura log">
-					<font class="tabLink" ><span id="activeTabList" onMouseOver="showPop('list_info');" onMouseOut="hidePop('list_info');"><spring:message code="systema.godsno.mainlist.tab"/></span></font>
-				</a>
+				<img style="vertical-align:middle;" src="resources/images/bulletGreen.png" width="8px" height="8px" border="0" alt="efaktura log">
+				<font class="tabLink" ><span id="activeTabList" onMouseOver="showPop('list_info');" onMouseOut="hidePop('list_info');"><spring:message code="systema.godsno.mainlist.tab"/></span></font>
 				<div class="text14" style="position: relative;" align="left">
                 <span style="position:absolute;top:2px;left:50px;" id="list_info" class="popupWithInputText text14"  >
                 	Standard antall dager tilbake: <b>${user.dftdg}</b><br/>
@@ -31,15 +29,12 @@
 				</span>	
 				</div>
 			</td>
-			<%--
-			<td width="1px" class="tabFantomSpace" align="center" nowrap><font class="tabDisabledLink">&nbsp;</font></td>
-			<td width="20%" valign="bottom" class="tabDisabled" align="center" nowrap>
-				<a style="display:block;" href="transportdisp_workflow_getTrip.do?user=${user.user}&tuavd=${searchFilter.avd}&tupro=${searchFilter.tur}">
-					<img style="vertical-align:bottom;" src="resources/images/list.gif" border="0" alt="general list">
-					<font class="tabDisabledLink"><spring:message code="systema.transportdisp.workflow.trip.tab"/></font>
+			<td width="15%" valign="bottom" class="tabDisabled" align="center" nowrap>
+				<a style="display:block;" href="godsno_edit.do" onClick="setBlockUI();">
+					<img style="vertical-align:middle;" src="resources/images/add.png" width="8px" height="8px" border="0" alt="efaktura log">
+					<font class="tabDisabledLink" ><span id="activeTabList" ><spring:message code="systema.godsno.createnew.tab"/></span></font>
 				</a>
 			</td>
-			 --%>
 			<td width="85%" class="tabFantomSpace" align="center" nowrap><font class="tabDisabledLink">&nbsp;</font></td>
 		</tr>
 	</table>

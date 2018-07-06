@@ -101,7 +101,9 @@ public class GodsnoRegistreringController {
 		
 		String action = request.getParameter("action");
 		String updateFlag = request.getParameter("updateFlag");
-		
+		if(strMgr.isNotNull(updateFlag)){
+			model.addAttribute("updateFlag", "1");
+		}
 		boolean isValidRecord = true;
 		
 		//check user (should be in session already)
@@ -109,9 +111,8 @@ public class GodsnoRegistreringController {
 			return loginView;
 		
 		}else{
-			//appUser.setActiveMenu(SystemaWebUser.ACTIVE_MENU_GODSREGNO);
 			logger.info(Calendar.getInstance().getTime() + " CONTROLLER start - timestamp");
-			//logger.info("DATE:" + recordToValidate.getGogrdt());
+			
 			if(GodsnoConstants.ACTION_UPDATE.equals(action)){
 				GodsnoRegistreringValidator validator = new GodsnoRegistreringValidator();
 				validator.validate(recordToValidate, bindingResult);
@@ -132,35 +133,39 @@ public class GodsnoRegistreringController {
 						//Add or Update
 						if(strMgr.isNotNull(updateFlag)){
 							logger.info("doUpdate");
-							logger.info("gogrdt:" + recordToValidate.getGogrdt());
 							dmlRetval = this.updateRecord(appUser.getUser(), recordToValidate, GodsnoConstants.MODE_UPDATE, errMsg);
 							
 						}else{
 							logger.info("doCreate");
 							dmlRetval = this.updateRecord(appUser.getUser(), recordToValidate, GodsnoConstants.MODE_ADD, errMsg);
 						}
-						
 						logger.info(Calendar.getInstance().getTime() + " CONTROLLER end - timestamp");
 					}
 					if(dmlRetval<0){
 						isValidRecord = false;
-						model.put(GodsnoConstants.ASPECT_ERROR_MESSAGE, errMsg.toString());
+						model.addAttribute(GodsnoConstants.ASPECT_ERROR_MESSAGE, errMsg.toString());
+					}else{
+						//Create OK. Prepare for upcoming Update
+						model.addAttribute("updateFlag", "1");
 					}
 			    }
 			}
 			//--------------
 			//Fetch record
 			//--------------
+			
 			if(strMgr.isNotNull(recordToValidate.getGogn()) ){
 				if(isValidRecord){
 					GodsjfDao updatedDao = this.getRecord(appUser, recordToValidate);
 					this.adjustFieldsForFetch(updatedDao);
 					model.addAttribute(GodsnoConstants.DOMAIN_RECORD, updatedDao);
-					model.addAttribute("updateFlag", "1");
+					
 				}else{
 					//in case of validation errors
+					this.adjustFieldsForFetch(recordToValidate);
 					model.addAttribute(GodsnoConstants.DOMAIN_RECORD, recordToValidate);
 				}
+				
 			}
 			
 			if(action==null || "".equals(action)){ 
@@ -213,7 +218,7 @@ public class GodsnoRegistreringController {
     				errMsg.append(container.getErrMsg());
     				//Update successfully done!
 		    		logger.info("[ERROR] Record update - Error: " + errMsg.toString());
-		    		
+		    		retval = -1;
     			}else{
     				//Update successfully done!
 		    		logger.info("[INFO] Record successfully updated, OK ");
@@ -233,7 +238,11 @@ public class GodsnoRegistreringController {
 		
 		//Numbers... since the fucking Spring converter is not working ...
 		if(recordToValidate.getGotrdt()==null){ recordToValidate.setGotrdt(0); }
+		//date and time
+		if(recordToValidate.getGogrdt()==null){ recordToValidate.setGogrdt("0"); }
 		if(recordToValidate.getGogrkl()==null){ recordToValidate.setGogrkl(0); }
+		//date and time
+		if(recordToValidate.getGolsdt()==null){ recordToValidate.setGolsdt("0"); }
 		if(recordToValidate.getGolskl()==null){ recordToValidate.setGolskl(0); }
 		
 	}
