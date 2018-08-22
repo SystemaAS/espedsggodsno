@@ -9,7 +9,11 @@
 	<SCRIPT type="text/javascript" src="resources/js/godsno_mainlist.js?ver=${user.versionEspedsg}"></SCRIPT>
 	
 	<style type = "text/css">
-	.ui-datepicker { font-size:9pt;}
+		.ui-datepicker { font-size:9pt;}
+		
+		/* ON-HOLD...this line will align the datatable search field in the left */
+		/*.dataTables_wrapper .mainListFilter .dataTables_filter {float:left}*/
+		/*.dataTables_wrapper .mainListFilter .dataTables_length {float:right}*/
 	</style>
 
 <table width="100%"  class="text14" cellspacing="0" border="0" cellpadding="0">
@@ -57,6 +61,7 @@
 					<td class="text14" title="avd">&nbsp;Avd</td>
 					<td class="text14" title="sign">&nbsp;Signatur</td>
 					<td class="text14" title="gogn">&nbsp;Godsnr</td>
+					<td class="text14" title="gomott">&nbsp;Varemottaker</td>
 					<td class="text14" title="gotrnr">&nbsp;Transittnr.</td>
 					<td class="text14" title="goturn">&nbsp;Turnr.</td>
 					<td class="text14" title="gobiln">&nbsp;Bilnr.</td>
@@ -65,6 +70,7 @@
 					<td class="text14"><input type="text" class="inputText" name="avd" id="avd" size="8" maxlength="6" value='${searchFilter.avd}'></td>
 		        	<td class="text14"><input type="text" class="inputText" name="sign" id="sign" size="5" maxlength="4" value='${searchFilter.sign}'></td>
 		        	<td class="text14"><input type="text" class="inputText" name="gogn" id="gogn" size="16" maxlength="15" value='${searchFilter.gogn}'></td>
+		        	<td class="text14"><input type="text" class="inputText" name="gomott" id="gomott" size="16" maxlength="15" value='${searchFilter.gomott}'></td>
 		        	<td class="text14"><input type="text" class="inputText" name="gotrnr" id="gotrnr" size="21" maxlength="20" value='${searchFilter.gotrnr}'></td>
 		        	<td class="text14"><input type="text" class="inputText" name="goturn" id="goturn" size="18" maxlength="17" value='${searchFilter.goturn}'></td>
 		        	<td class="text14"><input type="text" class="inputText" name="gobiln" id="gobiln" size="14" maxlength="13" value='${searchFilter.gobiln}'></td>
@@ -118,8 +124,9 @@
 						<thead>
 						<tr class="tableHeaderField" height="20" >
 							<th width="2%" class="tableHeaderFieldFirst">Endre</th>
-							<th class="tableHeaderField"><spring:message code="systema.godsno.mainlist.label.godsnr"/></th>   
-		                    <th class="tableHeaderField"><spring:message code="systema.godsno.mainlist.label.transittnr"/></th>
+							<th class="tableHeaderField"><spring:message code="systema.godsno.mainlist.label.godsnr"/></th> 
+							<th class="tableHeaderField"><spring:message code="systema.godsno.mainlist.label.godsmottaker"/></th> 
+							<th class="tableHeaderField"><spring:message code="systema.godsno.mainlist.label.transittnr"/></th>
 		                    <th class="tableHeaderField"><spring:message code="systema.godsno.mainlist.label.turnr"/></th>
 		                    <th class="tableHeaderField"><spring:message code="systema.godsno.mainlist.label.bilnr"/></th>
 		                    <th width="2%" class="tableHeaderField"><spring:message code="systema.godsno.mainlist.label.avgtollsted.dato"/></th>
@@ -135,6 +142,7 @@
 			               		</a>	
 			               </td>
 			               <td class="tableCell" >${record.gogn}</td>
+			               <td class="tableCell" >${record.gomott}</td>
 			               <td class="tableCell" >${record.gotrnr}</td>
 			               <td class="tableCell" >${record.goturn}</td>
 			               <td class="tableCell" >${record.gobiln}</td>

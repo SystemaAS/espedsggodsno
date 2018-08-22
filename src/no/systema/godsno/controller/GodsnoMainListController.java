@@ -187,6 +187,9 @@ public class GodsnoMainListController {
 				urlRequestParams.append("&dftdg=" + defaultDaysBack);
 			}
 			//
+			if(strMgr.isNotNull(recordToValidate.getGomott()) ){
+				urlRequestParams.append("&gomott=" + recordToValidate.getGomott());
+			}
 			if(strMgr.isNotNull(recordToValidate.getGotrnr()) ){
 				urlRequestParams.append("&gotrnr=" + recordToValidate.getGotrnr());
 			}
