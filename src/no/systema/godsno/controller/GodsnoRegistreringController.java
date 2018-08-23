@@ -89,6 +89,8 @@ public class GodsnoRegistreringController {
 		SystemaWebUser appUser = this.loginValidator.getValidUser(session);
 		
 		String action = request.getParameter("action");
+		String avd = request.getParameter("avd");
+		String sign = request.getParameter("sign");
 		String updateFlag = request.getParameter("updateFlag");
 		if(strMgr.isNotNull(updateFlag)){
 			model.addAttribute("updateFlag", "1");
@@ -101,6 +103,8 @@ public class GodsnoRegistreringController {
 		
 		}else{
 			logger.info("ASAVD:" + appUser.getAsavd());
+			
+			
 			logger.info(Calendar.getInstance().getTime() + " CONTROLLER start - timestamp");
 			
 			if(GodsnoConstants.ACTION_UPDATE.equals(action)){
@@ -162,6 +166,8 @@ public class GodsnoRegistreringController {
 				action = "doUpdate";
 			}
 			model.addAttribute("action", action);
+			logger.info("AVD:" + avd);
+			model.addAttribute("avd", avd);
 			
 			//set some other model values
 			this.populateUI_ModelMap(model);

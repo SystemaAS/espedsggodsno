@@ -56,6 +56,7 @@
 				<form action="godsno_edit.do" name="editForm" id="editForm" method="post">
 				<input type="hidden" name="applicationUser" id="applicationUser" value='${user.user}'>
 				<input type="hidden" name="action" id="action" value='${action}'>
+				<input type="hidden" name="avd" id="avd" value='${avd}'>
 				<c:if test="${not empty updateFlag}">
 					<input type="hidden" name="gogn" id="gogn" value="${record.gogn}">
 					<input type="hidden" name="updateFlag" id="updateFlag" value="${updateFlag}">
@@ -197,17 +198,19 @@
 			 				<tr height="20"><td></td></tr>
 			 				
 			 				<%-- SUBMIT button --%>
-			 				<tr>
-			 					<td colspan="10">
-			 					<table width="100%" border="0" cellspacing="1" cellpadding="1">
-				 					<tr>
-				 					<td align="right" class="text14" valign="top">
-				 						<input class="inputFormSubmit" type="submit" name="submit" id="submit" value='Lagre'>&nbsp;
+			 				<c:if test="${record.gotrnr != '*SLETTET'}">
+				 				<tr>
+				 					<td colspan="10">
+				 					<table width="100%" border="0" cellspacing="1" cellpadding="1">
+					 					<tr>
+					 					<td align="right" class="text14" valign="top">
+					 						<input class="inputFormSubmit" type="submit" name="submit" id="submit" value='Lagre'>&nbsp;
+					 					</td>
+					 					</tr>
+				 					</table>
 				 					</td>
-				 					</tr>
-			 					</table>
-			 					</td>
-		 					</tr>
+			 					</tr>
+		 					</c:if>
 		 					<tr height="5"><td></td></tr>
 		 					
 			            </table>

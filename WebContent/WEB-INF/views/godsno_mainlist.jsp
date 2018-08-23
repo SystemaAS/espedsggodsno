@@ -34,7 +34,7 @@
 				</div>
 			</td>
 			<td width="15%" valign="bottom" class="tabDisabled" align="center" nowrap>
-				<a style="display:block;" href="godsno_edit.do" onClick="setBlockUI();">
+				<a id="createNewOrderTabIdLink" style="display:block;" runat="server" href="#">
 					<img style="vertical-align:middle;" src="resources/images/add.png" width="8px" height="8px" border="0" alt="efaktura log">
 					<font class="tabDisabledLink" ><span id="activeTabList" ><spring:message code="systema.godsno.createnew.tab"/></span></font>
 				</a>
@@ -171,15 +171,13 @@
 		<tr>
 		<td>
 			<div id="dialogCreateNewOrder" title="Dialog">
-				<form  action="tror_mainordergate.do" name="createNewOrderForm" id="createNewOrderForm" method="post">
-				 	<input type="hidden" name="actionGS" id="actionGS" value='doUpdate'/>
-					<input type="hidden" name="applicationUser" id="applicationUser" value='${user.user}'>
-					
+				<form  action="godsno_edit.do" name="createNewOrderForm" id="createNewOrderForm" method="post">
+				 	
 					<p class="text14" >&nbsp;Velg inng.parametre</p>
 					 				
 					<table>
 						<tr>
-							<td class="text14MediumBlue">Avd&nbsp;&nbsp;
+							<td class="text14MediumBlue">Avd&nbsp;
 								<select class="selectMediumBlueE2" name="avd" id="avd" autofocus>
 			 						<option value="">-velg-</option>
 			 						<c:forEach var="record" items="${model.avdList}" >
@@ -187,9 +185,8 @@
 									</c:forEach>  
 								</select>
 							</td>
-						</tr>
-						<tr>
-							<td class="text14MediumBlue">Sign&nbsp;&nbsp;
+							<td width="5"></td>
+							<td class="text14MediumBlue">Sign&nbsp;
 								<select class="selectMediumBlueE2" name="sign" id="sign" >
 			 						<option value="">-velg-</option>
 			 						<c:forEach var="record" items="${model.signatureList}" >
@@ -198,6 +195,7 @@
 								</select>
 							</td>
 						</tr>
+						
 					</table>
 						
 				</form>
