@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -32,6 +33,13 @@ import org.springframework.web.bind.ServletRequestDataBinder;
 import no.systema.main.context.TdsAppContext;
 import no.systema.main.service.UrlCgiProxyService;
 import no.systema.main.validator.LoginValidator;
+import no.systema.z.main.maintenance.model.jsonjackson.dbtable.JsonMaintMainKodtaContainer;
+import no.systema.z.main.maintenance.model.jsonjackson.dbtable.JsonMaintMainKodtaRecord;
+import no.systema.z.main.maintenance.model.jsonjackson.dbtable.JsonMaintMainKodtsfSyparfContainer;
+import no.systema.z.main.maintenance.model.jsonjackson.dbtable.JsonMaintMainKodtsfSyparfRecord;
+import no.systema.z.main.maintenance.service.MaintMainKodtaService;
+import no.systema.z.main.maintenance.service.MaintMainKodtsfSyparfService;
+import no.systema.z.main.maintenance.url.store.MaintenanceMainUrlDataStore;
 import no.systema.main.util.AppConstants;
 import no.systema.main.util.JsonDebugger;
 import no.systema.main.util.io.PayloadContentFlusher;
@@ -46,7 +54,7 @@ import no.systema.godsno.filter.SearchFilterGodsnoMainList;
 import no.systema.godsno.url.store.GodsnoUrlDataStore;
 import no.systema.godsno.util.GodsnoConstants;
 import no.systema.godsno.model.JsonGenericContainerDao;
-
+import no.systema.godsno.util.manager.CodeDropDownMgr;
 
 /**
  * Godsregistrering-NO main list Controller 
@@ -69,9 +77,16 @@ public class GodsnoMainListController {
 	private PayloadContentFlusher payloadContentFlusher = new PayloadContentFlusher();
 	private StringManager strMgr = new StringManager();
 	
+	@Autowired
+	private UrlCgiProxyService urlCgiProxyService;
+	
+	@Autowired
+	private CodeDropDownMgr codeDropDownMgr;
 	
 	@Autowired
 	private GodsnoService godsnoService;
+	
+		
 	
 	@PostConstruct
 	public void initIt() throws Exception {
@@ -103,9 +118,10 @@ public class GodsnoMainListController {
 			return loginView;
 		
 		}else{
+			
 			appUser.setActiveMenu(SystemaWebUser.ACTIVE_MENU_GODSREGNO);
 			logger.info(Calendar.getInstance().getTime() + " CONTROLLER start - timestamp");
-			logger.info("####!!!" + recordToValidate.getAvd());
+			logger.info("####!!!" + recordToValidate.getSign());
 			//-----------
 			//Validation
 			//-----------
@@ -133,13 +149,20 @@ public class GodsnoMainListController {
 	    		}
     			//get list
     			mainList = this.getList(appUser, recordToValidate, maxWarningMap);
-	    		//--------------------------------------
+    			//--------------------------------------
 	    		//Final successView with domain objects
 	    		//--------------------------------------
 	    		//drop downs
+    			List signatureList = this.codeDropDownMgr.getSignatures(appUser.getUser());
+    			List avdList = this.codeDropDownMgr.getAvdList(appUser.getUser());
+    			model.put(GodsnoConstants.RESOURCE_MODEL_KEY_SIGNATURE_LIST, signatureList);
+    			model.put(GodsnoConstants.RESOURCE_MODEL_KEY_AVD_LIST, avdList);
+    			
 	    		//this.setCodeDropDownMgr(appUser, model);
 				model.put(GodsnoConstants.DOMAIN_LIST, mainList);
-	    		successView.addObject(GodsnoConstants.DOMAIN_MODEL , model);
+	    		
+				successView.addObject(GodsnoConstants.DOMAIN_MODEL , model);
+	    		
 	    		//domain and search filter
 	    		//Put list for upcomming view (PDF, Excel, etc)
 	    		if(mainList!=null && (redirect==null || "".equals(redirect)) ){
@@ -218,13 +241,7 @@ public class GodsnoMainListController {
 		return outputList;
 	}
 	
-	//SERVICES
-	@Qualifier ("urlCgiProxyService")
-	private UrlCgiProxyService urlCgiProxyService;
-	@Autowired
-	@Required
-	public void setUrlCgiProxyService (UrlCgiProxyService value){ this.urlCgiProxyService = value; }
-	public UrlCgiProxyService getUrlCgiProxyService(){ return this.urlCgiProxyService; }
+	
 	
 	
 }

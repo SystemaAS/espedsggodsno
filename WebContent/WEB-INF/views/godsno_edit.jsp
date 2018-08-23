@@ -82,14 +82,14 @@
 						 				<input type="text" required oninvalid="this.setCustomValidity('Obligatorisk')" oninput="setCustomValidity('')" class="inputTextMediumBlueMandatoryField" name="gogn" id="gogn" size="21" maxlength="15" value="${record.gogn}">
 						 				<font class="text16RedBold" >*</font>
 						 			</td>
+						 		</tr>							 		
+						 		<tr >
+						 			<td class="text14"><span title="todo">Manuelltnr</span></td>
+						 			<td class="text14">
+						 				<input onKeyPress="return numberKey(event)" style="text-align: right" type="text" class="inputTextMediumBlue" name="todo" id="todo" size="4" maxlength="3" value="">
+						 			</td>
 						 		</tr>
 					 		</c:if>
-					 		<tr >
-					 			<td class="text14"><span title="todo">Manuelltnr</span></td>
-					 			<td class="text14">
-					 				<input onKeyPress="return numberKey(event)" style="text-align: right" type="text" class="inputTextMediumBlue" name="todo" id="todo" size="4" maxlength="3" value="">
-					 			</td>
-					 		</tr>
 					 		<tr >
 					 			<td class="text14"><span title="gogren">Grensepassering</span></td>
 					 			<td class="text14">

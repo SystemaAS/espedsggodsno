@@ -45,7 +45,9 @@ public final class GodsnoConstants {
 	public static final String RESOURCE_MODEL_KEY_MONTH_LIST = "monthList";
 	public static final String RESOURCE_MODEL_KEY_CURRENCY_CODE_LIST = "currencyCodeList";
 	public static final String RESOURCE_MODEL_KEY_COUNTRY_CODE_LIST = "countryCodeList";
-	public static final String RESOURCE_MODEL_KEY_SIGN_LIST = "signList";
+	public static final String RESOURCE_MODEL_KEY_SIGNATURE_LIST = "signatureList";
+	public static final String RESOURCE_MODEL_KEY_AVD_LIST = "avdList";
+	
 	/*N/A at the moment
 	public static final String RESOURCE_MODEL_KEY_LANGUAGE_LIST = "languageList";
 	public static final String RESOURCE_MODEL_KEY_HOURS_LIST = "hoursList";

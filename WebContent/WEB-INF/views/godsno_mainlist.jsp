@@ -130,6 +130,7 @@
 		                    <th align="left" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.turnr"/></th>
 		                    <th align="left" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.bilnr"/></th>
 		                    <th width="2%" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.avgtollsted.dato"/></th>
+		                    <th width="2%" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.delete"/></th>
 		                </tr> 
 		                </thead>
 		                
@@ -147,6 +148,11 @@
 			               <td class="tableCell" >${record.goturn}</td>
 			               <td class="tableCell" >${record.gobiln}</td>
 			               <td width="2%" class="tableCell" >${record.goavg}</td>
+			               <td align="center" width="2%" class="tableCell" >
+			               		<a id="alinkDelete_${counter.count}" style="display:block;" href="godsno_delete.do?gogn=${record.gogn}" onClick="setBlockUI()" >
+			               			<img title="Endre post" style="vertical-align:bottom;" src="resources/images/delete.gif" border="0" alt="edit">
+			               		</a>	
+			               </td>
 			            </tr> 
 			            </c:forEach>
 			            </tbody>
@@ -159,12 +165,49 @@
 				</tr>
 			</table>
 			</td>
-			</tr>
-			</table>
+		</tr>
+		
+		<%-- Pop-up window --%>
+		<tr>
+		<td>
+			<div id="dialogCreateNewOrder" title="Dialog">
+				<form  action="tror_mainordergate.do" name="createNewOrderForm" id="createNewOrderForm" method="post">
+				 	<input type="hidden" name="actionGS" id="actionGS" value='doUpdate'/>
+					<input type="hidden" name="applicationUser" id="applicationUser" value='${user.user}'>
+					
+					<p class="text14" >&nbsp;Velg inng.parametre</p>
+					 				
+					<table>
+						<tr>
+							<td class="text14MediumBlue">Avd&nbsp;&nbsp;
+								<select class="selectMediumBlueE2" name="avd" id="avd" autofocus>
+			 						<option value="">-velg-</option>
+			 						<c:forEach var="record" items="${model.avdList}" >
+				 				  		<option value="${record.koakon}"<c:if test="${user.asavd == record.koakon}"> selected </c:if> >${record.koakon}</option>
+									</c:forEach>  
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td class="text14MediumBlue">Sign&nbsp;&nbsp;
+								<select class="selectMediumBlueE2" name="sign" id="sign" >
+			 						<option value="">-velg-</option>
+			 						<c:forEach var="record" items="${model.signatureList}" >
+				 				  		<option value="${record.kosfsi}"<c:if test="${user.signatur == record.kosfsi}"> selected </c:if> >${record.kosfsi}</option>
+									</c:forEach>  
+								</select>
+							</td>
+						</tr>
+					</table>
+						
+				</form>
+			</div>
 		</td>
 		</tr>
-		<tr height="10"><td></td></tr>
-	</table>
+		
+		
+</table>
+		
 		
 <!-- ======================= footer ===========================-->
 <jsp:include page="/WEB-INF/views/footer.jsp" />

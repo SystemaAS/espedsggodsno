@@ -1,10 +1,8 @@
 package no.systema.godsno.controller;
 
-import java.lang.reflect.Field;
 import java.util.*;
 import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import java.math.BigDecimal;
+
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -14,18 +12,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Required;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.ui.ModelMap;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -36,7 +29,6 @@ import no.systema.main.validator.LoginValidator;
 import no.systema.main.util.AppConstants;
 import no.systema.main.util.DateTimeManager;
 import no.systema.main.util.JsonDebugger;
-import no.systema.main.util.io.PayloadContentFlusher;
 import no.systema.main.model.SystemaWebUser;
 import no.systema.main.util.StringManager;
 import no.systema.jservices.common.dao.GodsjfDao;
@@ -48,9 +40,6 @@ import no.systema.godsno.url.store.GodsnoUrlDataStore;
 import no.systema.godsno.util.GodsnoConstants;
 import no.systema.godsno.model.JsonGenericContainerDao;
 import no.systema.godsno.mapper.url.request.UrlRequestParameterMapper;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.beans.propertyeditors.CustomNumberEditor;
-import org.springframework.core.convert.ConversionService;
 
 /**
  * Godsregistrering-NO Controller
@@ -111,6 +100,7 @@ public class GodsnoRegistreringController {
 			return loginView;
 		
 		}else{
+			logger.info("ASAVD:" + appUser.getAsavd());
 			logger.info(Calendar.getInstance().getTime() + " CONTROLLER start - timestamp");
 			
 			if(GodsnoConstants.ACTION_UPDATE.equals(action)){
@@ -183,6 +173,59 @@ public class GodsnoRegistreringController {
 	
 	/**
 	 * 
+	 * @param model
+	 * @param recordToValidate
+	 * @param bindingResult
+	 * @param session
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value="godsno_delete.do", method={RequestMethod.GET, RequestMethod.POST} )
+	public ModelAndView doGodsnoDelete(ModelMap model, @ModelAttribute ("record") GodsjfDao recordToValidate, BindingResult bindingResult, HttpSession session, HttpServletRequest request){
+		ModelAndView successView = new ModelAndView("redirect:godsno_mainlist.do?action=doFind&rd=1");
+		logger.info("Inside: doGodsnoDelete");
+		final String DELETE_TEXT_ON_DB = "*SLETTET";
+		
+		SystemaWebUser appUser = this.loginValidator.getValidUser(session);
+		
+		//check user (should be in session already)
+		if(appUser==null){
+			return loginView;
+		
+		}else{
+			//----------------------------
+			//Fetch record and update it 
+			//----------------------------
+			if(strMgr.isNotNull(recordToValidate.getGogn()) ){
+				int dmlRetval = 0;
+				StringBuffer errMsg = new StringBuffer();
+				//fetch record
+				GodsjfDao recordToDelete = this.getRecord(appUser, recordToValidate);
+				if(recordToDelete!=null && strMgr.isNotNull( recordToDelete.getGogn()) ){
+					//adjust some db-fields
+					recordToDelete.setGotrnr(DELETE_TEXT_ON_DB);
+					this.adjustFieldsForUpdate(recordToDelete);
+					logger.info("doDelete");
+					//Update with delete flag
+					dmlRetval = this.updateRecord(appUser.getUser(), recordToDelete, GodsnoConstants.MODE_UPDATE, errMsg);
+					if(dmlRetval<0){
+						logger.info("ERROR on delete ... ??? check your code");
+						model.addAttribute(GodsnoConstants.ASPECT_ERROR_MESSAGE, errMsg.toString());
+						
+					}else{
+						logger.info("doDelete = OK");
+					}
+					
+				}
+				
+			}
+
+			return successView;
+		}
+	}
+	
+	/**
+	 * 
 	 * @param applicationUser
 	 * @param recordToValidate
 	 * @param mode
@@ -246,6 +289,10 @@ public class GodsnoRegistreringController {
 		if(recordToValidate.getGolskl()==null){ recordToValidate.setGolskl(0); }
 		
 	}
+	/**
+	 * 
+	 * @param recordToValidate
+	 */
 	private void adjustFieldsForFetch(GodsjfDao recordToValidate){
 		
 		recordToValidate.setGogrdt(this.convertToDate_NO(recordToValidate.getGogrdt()));
