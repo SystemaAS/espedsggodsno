@@ -65,7 +65,7 @@
 					 	<td >
 						<table width="100%" class="dashboardFrameHeader" border="0" cellspacing="1" cellpadding="0">
 					 		<tr height="15">
-					 			<td class="text14White">&nbsp;Godsnr:&nbsp;${record.gogn}</td>
+					 			<td class="text14White">&nbsp;Godsnr:&nbsp;<font style="color: yellow;">${record.gogn}</font></td>
 					 			
 			 				</tr>
 			            </table>
@@ -101,7 +101,14 @@
 					 				<span title="gogrdt">Dato</span>
 					 			</td>
 					 			<td class="text14">
-					 				<input onKeyPress="return numberKey(event)" type="text" class="inputTextMediumBlue" name="gogrdt" id="gogrdt" size="7" maxlength="6" value="${record.gogrdt}">
+					 				<c:choose>
+						 				<c:when test="${record.gogrdt != '0'}">
+						 					<input onKeyPress="return numberKey(event)" type="text" class="inputTextMediumBlue" name="gogrdt" id="gogrdt" size="7" maxlength="6" value="${record.gogrdt}">
+						 				</c:when>
+						 				<c:otherwise>
+						 					<input onKeyPress="return numberKey(event)" type="text" class="inputTextMediumBlue" name="gogrdt" id="gogrdt" size="7" maxlength="6" value="">
+						 				</c:otherwise>
+					 				</c:choose>
 					 			</td>
 					 			<td class="text14">
 					 				<img style="vertical-align:middle;" src="resources/images/clock2.png" width="12px" height="12px" border="0" alt="kl">
@@ -160,7 +167,14 @@
 					 				<span title="golsdt">Dato</span>
 					 			</td>
 					 			<td class="text14">
-					 				<input onKeyPress="return numberKey(event)" type="text" class="inputTextMediumBlue" name="golsdt" id="golsdt" size="7" maxlength="6" value="${record.golsdt}">
+					 				<c:choose>
+						 				<c:when test="${record.golsdt != '0'}">
+						 					<input onKeyPress="return numberKey(event)" type="text" class="inputTextMediumBlue" name="golsdt" id="golsdt" size="7" maxlength="6" value="${record.golsdt}">
+						 				</c:when>
+						 				<c:otherwise>
+						 					<input onKeyPress="return numberKey(event)" type="text" class="inputTextMediumBlue" name="golsdt" id="golsdt" size="7" maxlength="6" value="">
+						 				</c:otherwise>
+					 				</c:choose>
 					 			</td>
 					 			<td class="text14">
 					 				<img style="vertical-align:middle;" src="resources/images/clock2.png" width="12px" height="12px" border="0" alt="kl">

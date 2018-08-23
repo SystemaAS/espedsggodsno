@@ -247,6 +247,7 @@ public class GodsnoRegistreringController {
 		
 	}
 	private void adjustFieldsForFetch(GodsjfDao recordToValidate){
+		
 		recordToValidate.setGogrdt(this.convertToDate_NO(recordToValidate.getGogrdt()));
 		recordToValidate.setGolsdt(this.convertToDate_NO(recordToValidate.getGolsdt()));
 	}
@@ -256,8 +257,13 @@ public class GodsnoRegistreringController {
 	 * @return
 	 */
 	private String convertToDate_ISO (String value){
-		DateTimeManager dateMgr = new DateTimeManager();
-		return dateMgr.getDateFormatted_ISO(value, DateTimeManager.NO_FORMAT);
+		String retval = null;
+		
+		if(strMgr.isNotNull(value)){
+			DateTimeManager dateMgr = new DateTimeManager();
+			retval = dateMgr.getDateFormatted_ISO(value, DateTimeManager.NO_FORMAT);
+		}
+		return retval;
 	}
 	/**
 	 * 
@@ -265,6 +271,7 @@ public class GodsnoRegistreringController {
 	 * @return
 	 */
 	private String convertToDate_NO (String value){
+		
 		DateTimeManager dateMgr = new DateTimeManager();
 		return dateMgr.getDateFormatted_NO(value, DateTimeManager.ISO_FORMAT);
 	}

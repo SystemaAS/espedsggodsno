@@ -124,12 +124,12 @@
 						<thead>
 						<tr class="tableHeaderField" height="20" >
 							<th width="2%" class="tableHeaderFieldFirst">Endre</th>
-							<th class="tableHeaderField"><spring:message code="systema.godsno.mainlist.label.godsnr"/></th> 
-							<th class="tableHeaderField"><spring:message code="systema.godsno.mainlist.label.godsmottaker"/></th> 
-							<th class="tableHeaderField"><spring:message code="systema.godsno.mainlist.label.transittnr"/></th>
-		                    <th class="tableHeaderField"><spring:message code="systema.godsno.mainlist.label.turnr"/></th>
-		                    <th class="tableHeaderField"><spring:message code="systema.godsno.mainlist.label.bilnr"/></th>
-		                    <th width="2%" class="tableHeaderField"><spring:message code="systema.godsno.mainlist.label.avgtollsted.dato"/></th>
+							<th align="left" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.godsnr"/></th> 
+							<th align="left" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.godsmottaker"/></th> 
+							<th align="left" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.transittnr"/></th>
+		                    <th align="left" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.turnr"/></th>
+		                    <th align="left" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.bilnr"/></th>
+		                    <th width="2%" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.avgtollsted.dato"/></th>
 		                </tr> 
 		                </thead>
 		                
@@ -141,7 +141,7 @@
 			               			<img title="Endre post" style="vertical-align:bottom;" src="resources/images/update.gif" border="0" alt="edit">
 			               		</a>	
 			               </td>
-			               <td class="tableCell" >${record.gogn}</td>
+			               <td class="tableCell" style="color:navy;">${record.gogn}</td>
 			               <td class="tableCell" >${record.gomott}</td>
 			               <td class="tableCell" >${record.gotrnr}</td>
 			               <td class="tableCell" >${record.goturn}</td>
