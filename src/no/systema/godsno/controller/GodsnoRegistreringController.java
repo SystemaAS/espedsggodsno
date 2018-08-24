@@ -33,6 +33,7 @@ import no.systema.main.util.DateTimeManager;
 import no.systema.main.util.JsonDebugger;
 import no.systema.main.model.SystemaWebUser;
 import no.systema.main.util.StringManager;
+import no.systema.main.util.DateTimeManager;
 import no.systema.jservices.common.dao.GodsafDao;
 import no.systema.jservices.common.dao.GodsjfDao;
 
@@ -41,6 +42,7 @@ import no.systema.godsno.service.GodsnoService;
 import no.systema.godsno.validator.GodsnoRegistreringValidator;
 import no.systema.godsno.url.store.GodsnoUrlDataStore;
 import no.systema.godsno.util.GodsnoConstants;
+import no.systema.godsno.util.manager.GodsnrManager;
 import no.systema.godsno.model.JsonContainerDaoGODSAF;
 import no.systema.godsno.model.JsonContainerDaoGODSJF;
 import no.systema.godsno.filter.SearchFilterGodsnoMainList;
@@ -63,8 +65,9 @@ public class GodsnoRegistreringController {
 	private ModelAndView loginView = new ModelAndView("redirect:logout.do");
 	private LoginValidator loginValidator = new LoginValidator();
 	private StringManager strMgr = new StringManager();
+	DateTimeManager dateMgr = new DateTimeManager();
 	private UrlRequestParameterMapper urlRequestParameterMapper = new UrlRequestParameterMapper();
-	
+	private GodsnrManager godsnrMgr = new GodsnrManager();
 	
 	@Autowired
 	private GodsnoService godsnoService;
@@ -166,16 +169,24 @@ public class GodsnoRegistreringController {
 			}
 			
 			if(action==null || "".equals(action)){ 
-				action = "doUpdate";
-				//get Godsnr seed since we will be creating a new record...
-				Collection<GodsafDao> list = this.getBeviljningsKodeList(appUser);
-				String godsnrBevKode = this.getGodsnrBevKode_PatternA(avd, list);
-				logger.info("bev.kode (PATTERN A):" + godsnrBevKode);
-				if(godsnrBevKode==null){
-					godsnrBevKode = this.getGodsnrBevKode_PatternB(avd, list);
-					logger.info("bev.kode (PATTERN B):" + godsnrBevKode);
-				}
+				action = "doUpdate";	
 				
+			}else if (action.equals(GodsnoConstants.ACTION_CREATE)){
+				//get Godsnr bev.kode since we will be creating a new record...
+				Collection<GodsafDao> list = this.getBeviljningsKodeList(appUser);
+				//STEP 1: Calculate the godsNr bev.kode
+				this.godsnrMgr.getGodsnrBevKode_PatternA(avd, list);
+				logger.info("bev.kode (PATTERN A):" + this.godsnrMgr.getGodsNrBevKode());
+				if(this.godsnrMgr.getGodsNrBevKode()==null){
+					godsnrMgr.getGodsnrBevKode_PatternB(avd, list);
+					logger.info("bev.kode (PATTERN B):" + this.godsnrMgr.getGodsNrBevKode());
+					if(this.godsnrMgr.getGodsNrBevKode()==null){
+						this.godsnrMgr.setGodsNrBevKode("XXXXX");
+					}
+				}
+				//STEP 2: Calculate the godsNr with: Year + bev.kode + daynr: yyyy12345ddd
+				godsnrMgr.setGodsNr(this.godsnrMgr.getGodsNrBevKode());
+				model.addAttribute("godsnr", godsnrMgr.getGodsNr());
 			}
 			
 			model.addAttribute("action", action);
@@ -188,207 +199,6 @@ public class GodsnoRegistreringController {
 			//successView.addObject(GodsnoConstants.DOMAIN_MODEL , model);
 			return successView;
 		}
-	}
-	/**
-	 * 
-	 * @param avd
-	 * @param list
-	 * @return
-	 */
-	private String getGodsnrBevKode_PatternA(String avd, Collection<GodsafDao> list){
-		String retval = null;
-		boolean match = false;
-		
-		//STEP 1 - perfect match
-		for (GodsafDao record: list){
-			logger.info(record.getGflavd() + " " + record.getGflbko());
-			match = Pattern.matches("\\d{4}", record.getGflavd());
-			if(match){ 
-				if(this.compareAvdsPatternA(record.getGflavd(), avd, 0)){
-					logger.info("Match STEP 1:" + record.getGflavd());
-					retval = record.getGflbko();
-					break;
-				}
-			}
-		}
-		//STEP 2 - X000 match
-		if(!match){
-			for (GodsafDao record: list){
-				//logger.info(record.getGflavd() + " " + record.getGflbko());
-				match = Pattern.matches("[X]\\d{3}", record.getGflavd());
-				if(match){ 
-					if(this.compareAvdsPatternA(record.getGflavd(), avd, 1)){
-						logger.info("Match STEP 2:" + record.getGflavd());
-						retval = record.getGflbko();
-						break;
-					}
-				}
-			}
-		}
-		//STEP 3 - XX00 match
-		if(!match){
-			for (GodsafDao record: list){
-				//logger.info(record.getGflavd() + " " + record.getGflbko());
-				match = Pattern.matches("[X][X]\\d{2}", record.getGflavd());
-				if(match){ 
-					if(this.compareAvdsPatternA(record.getGflavd(), avd, 2)){
-						logger.info("Match STEP 3:" + record.getGflavd());
-						retval = record.getGflbko();
-						break;
-					}
-				}
-			}
-		}
-		//STEP 4 - XXX0 match
-		if(!match){
-			for (GodsafDao record: list){
-				//logger.info(record.getGflavd() + " " + record.getGflbko());
-				match = Pattern.matches("[X][X][X]\\d{1}", record.getGflavd());
-				if(match){ 
-					if(this.compareAvdsPatternA(record.getGflavd(), avd, 3)){
-						logger.info("Match STEP 4:" + record.getGflavd());
-						retval = record.getGflbko();
-						break;
-					}
-				}
-			}
-		}
-		
-		return retval;
-		
-	}
-	/**
-	 * 
-	 * @param avd
-	 * @param list
-	 * @return
-	 */
-	private String getGodsnrBevKode_PatternB(String avd, Collection<GodsafDao> list){
-		String retval = null;
-		boolean match = false;
-		
-		//STEP 1 - perfect match
-		for (GodsafDao record: list){
-			logger.info(record.getGflavd() + " " + record.getGflbko());
-			match = Pattern.matches("\\d{4}", record.getGflavd());
-			if(match){ 
-				if(this.compareAvdsPatternB(record.getGflavd(), avd, 0)){
-					logger.info("Match STEP 1:" + record.getGflavd());
-					retval = record.getGflbko();
-					break;
-				}
-			}
-		}
-		//STEP 2 - 111X match
-		if(!match){
-			for (GodsafDao record: list){
-				//logger.info(record.getGflavd() + " " + record.getGflbko());
-				match = Pattern.matches("\\d{3}[X]", record.getGflavd());
-				if(match){ 
-					if(this.compareAvdsPatternB(record.getGflavd(), avd, 3)){
-						logger.info("Match STEP 2:" + record.getGflavd());
-						retval = record.getGflbko();
-						break;
-					}
-				}
-			}
-		}
-		//STEP 3 - 11XX match
-		if(!match){
-			for (GodsafDao record: list){
-				//logger.info(record.getGflavd() + " " + record.getGflbko());
-				match = Pattern.matches("\\d{2}[X][X]", record.getGflavd());
-				if(match){ 
-					if(this.compareAvdsPatternB(record.getGflavd(), avd, 2)){
-						logger.info("Match STEP 3:" + record.getGflavd());
-						retval = record.getGflbko();
-						break;
-					}
-				}
-			}
-		}
-		//STEP 4 - 1XXX match
-		if(!match){
-			for (GodsafDao record: list){
-				//logger.info(record.getGflavd() + " " + record.getGflbko());
-				match = Pattern.matches("\\d{1}[X][X][X]", record.getGflavd());
-				if(match){ 
-					if(this.compareAvdsPatternB(record.getGflavd(), avd, 1)){
-						logger.info("Match STEP 4:" + record.getGflavd());
-						retval = record.getGflbko();
-						break;
-					}
-				}
-			}
-		}
-		
-		return retval;
-		
-	}
-	/**
-	 * PATTERN A : Wildcards at the beginning of the value e.g.: X001, XX01, XXX1
-	 * @param record
-	 * @param avd
-	 * @param index
-	 * @return
-	 */
-	private boolean compareAvdsPatternA (String record, String avd, int index){
-		boolean retval = false;
-		if(index == 0){ 
-			int a = Integer.parseInt(record);
-			int b = Integer.parseInt(avd);
-			if(a == b){
-				retval = true;
-			}		
-		}else{
-			String tmp = record.replaceAll("X", "");
-			int tmpInt = Integer.parseInt(tmp);
-			//prepare by chopping "X"
-			String avdRebuilt = avd;
-			if(avd.length() == 4){
-				avdRebuilt = avd.substring(index);
-				
-			}else if(avd.length() == 3){
-				avdRebuilt = avd.substring(index-1);
-			}
-			int avdRebuildInt = Integer.parseInt(avdRebuilt);
-			//now compare by number comparison
-			if(tmpInt == avdRebuildInt){
-				retval = true;
-			}
-		}
-		return retval;
-	}
-	/**
-	 * PATTERN B : Wildcards at the end of the value e.g.: 1XXX, 10XX, 100X
-	 * @param record
-	 * @param avd
-	 * @param index
-	 * @return
-	 */
-	private boolean compareAvdsPatternB (String record, String avd, int index){
-		boolean retval = false;
-		if(index == 0){ 
-			int a = Integer.parseInt(record);
-			int b = Integer.parseInt(avd);
-			if(a == b){
-				retval = true;
-			}		
-		}else{
-			String tmp = record.replaceAll("X", "");
-			int tmpInt = Integer.parseInt(tmp);
-			//prepare by chopping "X"
-			String avdRebuilt = avd;
-			if(avd.length() == 4){
-				avdRebuilt = avd.substring(0,index);
-			}
-			int avdRebuildInt = Integer.parseInt(avdRebuilt);
-			//now compare by number comparison
-			if(tmpInt == avdRebuildInt){
-				retval = true;
-			}
-		}
-		return retval;
 	}
 	
 	/**

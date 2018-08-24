@@ -80,14 +80,14 @@
 						 		<tr >
 						 			<td class="text14"><span title="gogn">Godsnr:&nbsp;</span></td>
 						 			<td class="text14">
-						 				<input type="text" required oninvalid="this.setCustomValidity('Obligatorisk')" oninput="setCustomValidity('')" class="inputTextMediumBlueMandatoryField" name="gogn" id="gogn" size="21" maxlength="15" value="${record.gogn}">
+						 				<input readonly type="text" class="inputTextReadOnly" name="gogn" id="gogn" size="20" maxlength="15" value="${godsnr}">
 						 				<font class="text16RedBold" >*</font>
 						 			</td>
 						 		</tr>							 		
 						 		<tr >
 						 			<td class="text14"><span title="todo">Manuelltnr</span></td>
 						 			<td class="text14">
-						 				<input onKeyPress="return numberKey(event)" style="text-align: right" type="text" class="inputTextMediumBlue" name="todo" id="todo" size="4" maxlength="3" value="">
+						 				<input onKeyPress="return numberKey(event)" style="text-align: right" type="text" class="inputTextMediumBlue" name="gognCounter" id="gognCounter" size="4" maxlength="3" value="">
 						 			</td>
 						 		</tr>
 					 		</c:if>

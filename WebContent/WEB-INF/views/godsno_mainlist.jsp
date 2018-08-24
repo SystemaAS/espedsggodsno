@@ -172,6 +172,7 @@
 		<td>
 			<div id="dialogCreateNewOrder" title="Dialog">
 				<form  action="godsno_edit.do" name="createNewOrderForm" id="createNewOrderForm" method="post">
+				 	<input type="hidden" name="action" id="action" value="doCreate">
 				 	<p class="text14" >&nbsp;Velg inng.parametre</p>
 					 				
 					<table>
