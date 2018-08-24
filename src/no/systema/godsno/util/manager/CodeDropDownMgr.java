@@ -6,11 +6,8 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Required;
 import org.springframework.stereotype.Service;
 
-import no.systema.godsno.controller.GodsnoMainListController;
 import no.systema.main.service.UrlCgiProxyService;
 import no.systema.main.util.JsonDebugger;
 import no.systema.z.main.maintenance.model.jsonjackson.dbtable.JsonMaintMainKodtaContainer;
@@ -63,7 +60,7 @@ public class CodeDropDownMgr {
     		if(container!=null){
 	        	list = (List<JsonMaintMainKodtsfSyparfRecord>)container.getList();
 	        	for(JsonMaintMainKodtsfSyparfRecord record: list){
-	        		logger.info(record.getKosfsi());
+	        		//logger.info(record.getKosfsi());
 	        	}
 	        }
     	}
