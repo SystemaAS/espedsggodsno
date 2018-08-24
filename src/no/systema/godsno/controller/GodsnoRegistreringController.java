@@ -1,6 +1,8 @@
 package no.systema.godsno.controller;
 
 import java.util.*;
+import java.util.regex.*;
+
 import javax.annotation.PostConstruct;
 
 
@@ -31,6 +33,7 @@ import no.systema.main.util.DateTimeManager;
 import no.systema.main.util.JsonDebugger;
 import no.systema.main.model.SystemaWebUser;
 import no.systema.main.util.StringManager;
+import no.systema.jservices.common.dao.GodsafDao;
 import no.systema.jservices.common.dao.GodsjfDao;
 
 //GODSNO
@@ -38,7 +41,9 @@ import no.systema.godsno.service.GodsnoService;
 import no.systema.godsno.validator.GodsnoRegistreringValidator;
 import no.systema.godsno.url.store.GodsnoUrlDataStore;
 import no.systema.godsno.util.GodsnoConstants;
-import no.systema.godsno.model.JsonGenericContainerDao;
+import no.systema.godsno.model.JsonContainerDaoGODSAF;
+import no.systema.godsno.model.JsonContainerDaoGODSJF;
+import no.systema.godsno.filter.SearchFilterGodsnoMainList;
 import no.systema.godsno.mapper.url.request.UrlRequestParameterMapper;
 
 /**
@@ -103,8 +108,6 @@ public class GodsnoRegistreringController {
 		
 		}else{
 			logger.info("ASAVD:" + appUser.getAsavd());
-			
-			
 			logger.info(Calendar.getInstance().getTime() + " CONTROLLER start - timestamp");
 			
 			if(GodsnoConstants.ACTION_UPDATE.equals(action)){
@@ -164,7 +167,17 @@ public class GodsnoRegistreringController {
 			
 			if(action==null || "".equals(action)){ 
 				action = "doUpdate";
+				//get Godsnr seed since we will be creating a new record...
+				Collection<GodsafDao> list = this.getBeviljningsKodeList(appUser);
+				String godsnrBevKode = this.getGodsnrBevKode_PatternA(avd, list);
+				logger.info("bev.kode (PATTERN A):" + godsnrBevKode);
+				if(godsnrBevKode==null){
+					godsnrBevKode = this.getGodsnrBevKode_PatternB(avd, list);
+					logger.info("bev.kode (PATTERN B):" + godsnrBevKode);
+				}
+				
 			}
+			
 			model.addAttribute("action", action);
 			logger.info("AVD:" + avd);
 			model.addAttribute("avd", avd);
@@ -175,6 +188,207 @@ public class GodsnoRegistreringController {
 			//successView.addObject(GodsnoConstants.DOMAIN_MODEL , model);
 			return successView;
 		}
+	}
+	/**
+	 * 
+	 * @param avd
+	 * @param list
+	 * @return
+	 */
+	private String getGodsnrBevKode_PatternA(String avd, Collection<GodsafDao> list){
+		String retval = null;
+		boolean match = false;
+		
+		//STEP 1 - perfect match
+		for (GodsafDao record: list){
+			logger.info(record.getGflavd() + " " + record.getGflbko());
+			match = Pattern.matches("\\d{4}", record.getGflavd());
+			if(match){ 
+				if(this.compareAvdsPatternA(record.getGflavd(), avd, 0)){
+					logger.info("Match STEP 1:" + record.getGflavd());
+					retval = record.getGflbko();
+					break;
+				}
+			}
+		}
+		//STEP 2 - X000 match
+		if(!match){
+			for (GodsafDao record: list){
+				//logger.info(record.getGflavd() + " " + record.getGflbko());
+				match = Pattern.matches("[X]\\d{3}", record.getGflavd());
+				if(match){ 
+					if(this.compareAvdsPatternA(record.getGflavd(), avd, 1)){
+						logger.info("Match STEP 2:" + record.getGflavd());
+						retval = record.getGflbko();
+						break;
+					}
+				}
+			}
+		}
+		//STEP 3 - XX00 match
+		if(!match){
+			for (GodsafDao record: list){
+				//logger.info(record.getGflavd() + " " + record.getGflbko());
+				match = Pattern.matches("[X][X]\\d{2}", record.getGflavd());
+				if(match){ 
+					if(this.compareAvdsPatternA(record.getGflavd(), avd, 2)){
+						logger.info("Match STEP 3:" + record.getGflavd());
+						retval = record.getGflbko();
+						break;
+					}
+				}
+			}
+		}
+		//STEP 4 - XXX0 match
+		if(!match){
+			for (GodsafDao record: list){
+				//logger.info(record.getGflavd() + " " + record.getGflbko());
+				match = Pattern.matches("[X][X][X]\\d{1}", record.getGflavd());
+				if(match){ 
+					if(this.compareAvdsPatternA(record.getGflavd(), avd, 3)){
+						logger.info("Match STEP 4:" + record.getGflavd());
+						retval = record.getGflbko();
+						break;
+					}
+				}
+			}
+		}
+		
+		return retval;
+		
+	}
+	/**
+	 * 
+	 * @param avd
+	 * @param list
+	 * @return
+	 */
+	private String getGodsnrBevKode_PatternB(String avd, Collection<GodsafDao> list){
+		String retval = null;
+		boolean match = false;
+		
+		//STEP 1 - perfect match
+		for (GodsafDao record: list){
+			logger.info(record.getGflavd() + " " + record.getGflbko());
+			match = Pattern.matches("\\d{4}", record.getGflavd());
+			if(match){ 
+				if(this.compareAvdsPatternB(record.getGflavd(), avd, 0)){
+					logger.info("Match STEP 1:" + record.getGflavd());
+					retval = record.getGflbko();
+					break;
+				}
+			}
+		}
+		//STEP 2 - 111X match
+		if(!match){
+			for (GodsafDao record: list){
+				//logger.info(record.getGflavd() + " " + record.getGflbko());
+				match = Pattern.matches("\\d{3}[X]", record.getGflavd());
+				if(match){ 
+					if(this.compareAvdsPatternB(record.getGflavd(), avd, 3)){
+						logger.info("Match STEP 2:" + record.getGflavd());
+						retval = record.getGflbko();
+						break;
+					}
+				}
+			}
+		}
+		//STEP 3 - 11XX match
+		if(!match){
+			for (GodsafDao record: list){
+				//logger.info(record.getGflavd() + " " + record.getGflbko());
+				match = Pattern.matches("\\d{2}[X][X]", record.getGflavd());
+				if(match){ 
+					if(this.compareAvdsPatternB(record.getGflavd(), avd, 2)){
+						logger.info("Match STEP 3:" + record.getGflavd());
+						retval = record.getGflbko();
+						break;
+					}
+				}
+			}
+		}
+		//STEP 4 - 1XXX match
+		if(!match){
+			for (GodsafDao record: list){
+				//logger.info(record.getGflavd() + " " + record.getGflbko());
+				match = Pattern.matches("\\d{1}[X][X][X]", record.getGflavd());
+				if(match){ 
+					if(this.compareAvdsPatternB(record.getGflavd(), avd, 1)){
+						logger.info("Match STEP 4:" + record.getGflavd());
+						retval = record.getGflbko();
+						break;
+					}
+				}
+			}
+		}
+		
+		return retval;
+		
+	}
+	/**
+	 * PATTERN A : Wildcards at the beginning of the value e.g.: X001, XX01, XXX1
+	 * @param record
+	 * @param avd
+	 * @param index
+	 * @return
+	 */
+	private boolean compareAvdsPatternA (String record, String avd, int index){
+		boolean retval = false;
+		if(index == 0){ 
+			int a = Integer.parseInt(record);
+			int b = Integer.parseInt(avd);
+			if(a == b){
+				retval = true;
+			}		
+		}else{
+			String tmp = record.replaceAll("X", "");
+			int tmpInt = Integer.parseInt(tmp);
+			//prepare by chopping "X"
+			String avdRebuilt = avd;
+			if(avd.length() == 4){
+				avdRebuilt = avd.substring(index);
+				
+			}else if(avd.length() == 3){
+				avdRebuilt = avd.substring(index-1);
+			}
+			int avdRebuildInt = Integer.parseInt(avdRebuilt);
+			//now compare by number comparison
+			if(tmpInt == avdRebuildInt){
+				retval = true;
+			}
+		}
+		return retval;
+	}
+	/**
+	 * PATTERN B : Wildcards at the end of the value e.g.: 1XXX, 10XX, 100X
+	 * @param record
+	 * @param avd
+	 * @param index
+	 * @return
+	 */
+	private boolean compareAvdsPatternB (String record, String avd, int index){
+		boolean retval = false;
+		if(index == 0){ 
+			int a = Integer.parseInt(record);
+			int b = Integer.parseInt(avd);
+			if(a == b){
+				retval = true;
+			}		
+		}else{
+			String tmp = record.replaceAll("X", "");
+			int tmpInt = Integer.parseInt(tmp);
+			//prepare by chopping "X"
+			String avdRebuilt = avd;
+			if(avd.length() == 4){
+				avdRebuilt = avd.substring(0,index);
+			}
+			int avdRebuildInt = Integer.parseInt(avdRebuilt);
+			//now compare by number comparison
+			if(tmpInt == avdRebuildInt){
+				retval = true;
+			}
+		}
+		return retval;
 	}
 	
 	/**
@@ -261,7 +475,7 @@ public class GodsnoRegistreringController {
     	logger.info(Calendar.getInstance().getTime() +  " CGI-end timestamp");
     	if(jsonPayload!=null){
     		//TODO
-    		JsonGenericContainerDao container = this.godsnoService.getContainer(jsonPayload);
+    		JsonContainerDaoGODSJF container = this.godsnoService.getContainerGodsjf(jsonPayload);
     		if(container!=null){
     			if(strMgr.isNotNull(container.getErrMsg())){
     				errMsg.append(container.getErrMsg());
@@ -370,12 +584,44 @@ public class GodsnoRegistreringController {
     	logger.debug(jsonDebugger.debugJsonPayloadWithLog4J(jsonPayload));
     	logger.info(Calendar.getInstance().getTime() +  " CGI-end timestamp");
     	if(jsonPayload!=null){
-    		JsonGenericContainerDao listContainer = this.godsnoService.getContainer(jsonPayload);
+    		JsonContainerDaoGODSJF listContainer = this.godsnoService.getContainerGodsjf(jsonPayload);
     		for(GodsjfDao tmpRecord: listContainer.getList()){
     			record = tmpRecord;
     		}
     	}		
 		return record;
+	}
+	
+	/**
+	 * 
+	 * @param appUser
+	 * @param wssavd
+	 * @return
+	 */
+	private Collection<GodsafDao> getBeviljningsKodeList(SystemaWebUser appUser){
+		Collection<GodsafDao> outputList = new ArrayList<GodsafDao>();
+		//---------------
+    	//Get main list
+		//---------------
+		final String BASE_URL = GodsnoUrlDataStore.GODSNO_BASE_GODSAF_LIST_URL;
+		//add URL-parameters
+		StringBuffer urlRequestParams = new StringBuffer();
+		urlRequestParams.append("user=" + appUser.getUser());
+		
+		//session.setAttribute(TransportDispConstants.ACTIVE_URL_RPG_TRANSPORT_DISP, BASE_URL + "==>params: " + urlRequestParams.toString()); 
+    	logger.info(Calendar.getInstance().getTime() + " CGI-start timestamp");
+    	logger.info("URL: " + BASE_URL);
+    	logger.info("URL PARAMS: " + urlRequestParams);
+    	String jsonPayload = this.urlCgiProxyService.getJsonContent(BASE_URL, urlRequestParams.toString());
+    	//Debug --> 
+    	logger.debug(jsonDebugger.debugJsonPayloadWithLog4J(jsonPayload));
+    	logger.info(Calendar.getInstance().getTime() +  " CGI-end timestamp");
+    	if(jsonPayload!=null){
+    		JsonContainerDaoGODSAF listContainer = this.godsnoService.getContainerGodsaf(jsonPayload);
+    		outputList = listContainer.getList();	
+    	}		
+	    
+		return outputList;
 	}
 	
 	//SERVICES

@@ -6,7 +6,9 @@ package no.systema.godsno.service;
 import org.springframework.stereotype.Service;
 
 import no.systema.godsno.mapper.JsonGodsnoMapper;
-import no.systema.godsno.model.JsonGenericContainerDao;
+import no.systema.godsno.model.JsonContainerDaoGODSJF;
+import no.systema.godsno.model.JsonContainerDaoGODSAF;
+
 
 /**
  * 
@@ -18,14 +20,30 @@ import no.systema.godsno.model.JsonGenericContainerDao;
 @Service
 public class GodsnoService {
 
+	
 	/**
 	 * 
 	 */
-	public JsonGenericContainerDao getContainer(String utfPayload) {
-		JsonGenericContainerDao container = null;
+	public JsonContainerDaoGODSJF getContainerGodsjf(String utfPayload) {
+		JsonContainerDaoGODSJF container = null;
 		try{
 			JsonGodsnoMapper mapper = new JsonGodsnoMapper();
-			container = mapper.getContainer(utfPayload);
+			container = mapper.getContainerGodsjf(utfPayload);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return container;
+	}
+	/**
+	 * 
+	 * @param utfPayload
+	 * @return
+	 */
+	public JsonContainerDaoGODSAF getContainerGodsaf(String utfPayload) {
+		JsonContainerDaoGODSAF container = null;
+		try{
+			JsonGodsnoMapper mapper = new JsonGodsnoMapper();
+			container = mapper.getContainerGodsaf(utfPayload);
 		}catch(Exception e){
 			e.printStackTrace();
 		}

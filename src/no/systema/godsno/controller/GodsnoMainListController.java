@@ -14,32 +14,19 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Required;
+
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import org.springframework.web.bind.ServletRequestDataBinder;
 
 
 //application imports
 import no.systema.main.context.TdsAppContext;
 import no.systema.main.service.UrlCgiProxyService;
 import no.systema.main.validator.LoginValidator;
-import no.systema.z.main.maintenance.model.jsonjackson.dbtable.JsonMaintMainKodtaContainer;
-import no.systema.z.main.maintenance.model.jsonjackson.dbtable.JsonMaintMainKodtaRecord;
-import no.systema.z.main.maintenance.model.jsonjackson.dbtable.JsonMaintMainKodtsfSyparfContainer;
-import no.systema.z.main.maintenance.model.jsonjackson.dbtable.JsonMaintMainKodtsfSyparfRecord;
-import no.systema.z.main.maintenance.service.MaintMainKodtaService;
-import no.systema.z.main.maintenance.service.MaintMainKodtsfSyparfService;
-import no.systema.z.main.maintenance.url.store.MaintenanceMainUrlDataStore;
 import no.systema.main.util.AppConstants;
 import no.systema.main.util.JsonDebugger;
 import no.systema.main.util.io.PayloadContentFlusher;
@@ -53,7 +40,7 @@ import no.systema.godsno.service.GodsnoService;
 import no.systema.godsno.filter.SearchFilterGodsnoMainList;
 import no.systema.godsno.url.store.GodsnoUrlDataStore;
 import no.systema.godsno.util.GodsnoConstants;
-import no.systema.godsno.model.JsonGenericContainerDao;
+import no.systema.godsno.model.JsonContainerDaoGODSJF;
 import no.systema.godsno.util.manager.CodeDropDownMgr;
 
 /**
@@ -184,10 +171,13 @@ public class GodsnoMainListController {
 	}
 	
 	
+	
+	
 	/**
 	 * 
 	 * @param appUser
-	 * @param wssavd
+	 * @param recordToValidate
+	 * @param maxWarningMap
 	 * @return
 	 */
 	private Collection<GodsjfDao> getList(SystemaWebUser appUser, SearchFilterGodsnoMainList recordToValidate, Map<String,String> maxWarningMap){
@@ -233,15 +223,12 @@ public class GodsnoMainListController {
     	logger.debug(jsonDebugger.debugJsonPayloadWithLog4J(jsonPayload));
     	logger.info(Calendar.getInstance().getTime() +  " CGI-end timestamp");
     	if(jsonPayload!=null){
-    		JsonGenericContainerDao listContainer = this.godsnoService.getContainer(jsonPayload);
+    		JsonContainerDaoGODSJF listContainer = this.godsnoService.getContainerGodsjf(jsonPayload);
     		outputList = listContainer.getList();	
-    		//maxWarningMap.put(EfakturaConstants.DOMAIN_MAX_WARNING_OPEN_ORDERS, jsonOpenOrdersListContainer.getMaxWarning());
     	}		
 	    
 		return outputList;
 	}
-	
-	
 	
 	
 }

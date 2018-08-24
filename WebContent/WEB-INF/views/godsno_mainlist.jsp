@@ -166,14 +166,13 @@
 			</table>
 			</td>
 		</tr>
-		
+					
 		<%-- Pop-up window --%>
 		<tr>
 		<td>
 			<div id="dialogCreateNewOrder" title="Dialog">
 				<form  action="godsno_edit.do" name="createNewOrderForm" id="createNewOrderForm" method="post">
-				 	
-					<p class="text14" >&nbsp;Velg inng.parametre</p>
+				 	<p class="text14" >&nbsp;Velg inng.parametre</p>
 					 				
 					<table>
 						<tr>
@@ -181,7 +180,7 @@
 								<select class="selectMediumBlueE2" name="avd" id="avd" autofocus>
 			 						<option value="">-velg-</option>
 			 						<c:forEach var="record" items="${model.avdList}" >
-				 				  		<option value="${record.koakon}"<c:if test="${user.asavd == record.koakon}"> selected </c:if> >${record.koakon}</option>
+				 				  		<option value="${record.koaavd}"<c:if test="${record.koaavd == user.asavd}"> selected </c:if> >${record.koaavd}</option>
 									</c:forEach>  
 								</select>
 							</td>

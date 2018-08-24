@@ -91,13 +91,15 @@ public class CodeDropDownMgr {
     		JsonMaintMainKodtaContainer container = this.maintMainKodtaService.getList(jsonPayload);
 	        if(container!=null){
 	        	list = (List<JsonMaintMainKodtaRecord>)container.getList();
+	        	for(JsonMaintMainKodtaRecord rec: list){
+	        		//logger.info(rec.getKoaavd());
+	        	}
 	        }
     	}
     	return list;
 
 	}
-	
-	
+
 	
 	
 }
