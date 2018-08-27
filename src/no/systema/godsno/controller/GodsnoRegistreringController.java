@@ -172,10 +172,12 @@ public class GodsnoRegistreringController {
 										//(1) Create main record
 										logger.info("doCreate");
 										dmlRetval = this.updateRecord(appUser.getUser(), recordToValidate, GodsnoConstants.MODE_ADD, errMsg);
-										//(2) Update counter record
-										logger.info("doUpdate - teller (Godsgf)");
-										GodsgfDao godsgfDao  = this.increaseCounter(godsNrOriginalValue, tmpRecord.getGggn2());
-										int dmlSec = this.updateRecordGodsnrCounter(appUser.getUser(), godsgfDao, GodsnoConstants.MODE_UPDATE, errMsg);
+										if(dmlRetval>=0){
+											//(2) Update counter record
+											logger.info("doUpdate - teller (Godsgf)");
+											GodsgfDao godsgfDao  = this.increaseCounter(godsNrOriginalValue, tmpRecord.getGggn2());
+											int dmlSec = this.updateRecordGodsnrCounter(appUser.getUser(), godsgfDao, GodsnoConstants.MODE_UPDATE, errMsg);
+										}
 									}else{
 										logger.info("Record in teller table DOES NOT exist...");
 										//set complete godsnr with counter
@@ -183,9 +185,12 @@ public class GodsnoRegistreringController {
 										recordToValidate.setGogn(recordToValidate.getGogn() + firstCounter);
 										logger.info("doCreate");
 										dmlRetval = this.updateRecord(appUser.getUser(), recordToValidate, GodsnoConstants.MODE_ADD, errMsg);
-										logger.info("doCreate - teller (Godsgf)");
-										GodsgfDao godsgfDao  = this.increaseCounter(godsNrOriginalValue, firstCounter);
-										int dmlSec = this.updateRecordGodsnrCounter(appUser.getUser(), godsgfDao, GodsnoConstants.MODE_ADD, errMsg);
+										if(dmlRetval>=0){
+											//(2) Update counter record
+											logger.info("doCreate - teller (Godsgf)");
+											GodsgfDao godsgfDao  = this.increaseCounter(godsNrOriginalValue, firstCounter);
+											int dmlSec = this.updateRecordGodsnrCounter(appUser.getUser(), godsgfDao, GodsnoConstants.MODE_ADD, errMsg);
+										}
 									}
 								}
 							}
