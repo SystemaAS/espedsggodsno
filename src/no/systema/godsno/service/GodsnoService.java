@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import no.systema.godsno.mapper.JsonGodsnoMapper;
 import no.systema.godsno.model.JsonContainerDaoGODSJF;
 import no.systema.godsno.model.JsonContainerDaoGODSAF;
+import no.systema.godsno.model.JsonContainerDaoGODSGF;
 
 
 /**
@@ -44,6 +45,17 @@ public class GodsnoService {
 		try{
 			JsonGodsnoMapper mapper = new JsonGodsnoMapper();
 			container = mapper.getContainerGodsaf(utfPayload);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return container;
+	}
+	
+	public JsonContainerDaoGODSGF getContainerGodsgf(String utfPayload) {
+		JsonContainerDaoGODSGF container = null;
+		try{
+			JsonGodsnoMapper mapper = new JsonGodsnoMapper();
+			container = mapper.getContainerGodsgf(utfPayload);
 		}catch(Exception e){
 			e.printStackTrace();
 		}

@@ -80,14 +80,21 @@
 						 		<tr >
 						 			<td class="text14"><span title="gogn">Godsnr:&nbsp;</span></td>
 						 			<td class="text14">
-						 				<input readonly type="text" class="inputTextReadOnly" name="gogn" id="gogn" size="20" maxlength="15" value="${godsnr}">
-						 				<font class="text16RedBold" >*</font>
+						 				<c:choose>
+						 				<c:when test="${fn:contains(godsnr,'ERROR') || fn:contains(godsnr,'FEIL')}" >
+						 					<input readonly type="text" class="inputTextReadOnly" style="color:red;" name="gogn" id="gogn" size="35"  value="${godsnr}">
+						 				</c:when>
+						 				<c:otherwise>
+						 					<input readonly type="text" class="inputTextReadOnly" name="gogn" id="gogn" size="25"  value="${godsnr}">
+						 				</c:otherwise>
+						 				</c:choose>
+						 				<font class="text16RedBold" >*</font>		
 						 			</td>
 						 		</tr>							 		
 						 		<tr >
-						 			<td class="text14"><span title="todo">Manuelltnr</span></td>
+						 			<td class="text14"><span title="gognManualCounter">Manuelltnr</span></td>
 						 			<td class="text14">
-						 				<input onKeyPress="return numberKey(event)" style="text-align: right" type="text" class="inputTextMediumBlue" name="gognCounter" id="gognCounter" size="4" maxlength="3" value="">
+						 				<input onKeyPress="return numberKey(event)" style="text-align: right" type="text" class="inputTextMediumBlue" name="gognManualCounter" id="gognManualCounter" size="4" maxlength="2" value="">
 						 			</td>
 						 		</tr>
 					 		</c:if>
@@ -198,7 +205,7 @@
 			 				<tr height="20"><td></td></tr>
 			 				
 			 				<%-- SUBMIT button --%>
-			 				<c:if test="${record.gotrnr != '*SLETTET'}">
+			 				<c:if test="${record.gotrnr != '*SLETTET' && (!fn:contains(godsnr,'ERROR') && !fn:contains(godsnr,'FEIL')) }">
 				 				<tr>
 				 					<td colspan="10">
 				 					<table width="100%" border="0" cellspacing="1" cellpadding="1">

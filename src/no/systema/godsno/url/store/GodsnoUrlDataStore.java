@@ -24,12 +24,17 @@ public final class GodsnoUrlDataStore {
 	//-------------------------
 	//http://gw.systema.no:8080/syjservicesgodsno/syjsSYGODSJF_U.do?user=OSCAR&mode=U/A/D&gogn=1234567890123...etc
 	static public String GODSNO_BASE_GODSJF_DML_UPDATE_URL = AppConstants.HTTP_ROOT_SERVLET_JSERVICES + "/syjservicesgodsno/syjsSYGODSJF_U.do";
+	//http://gw.systema.no:8080/syjservicesgodsno/syjsSYGODSGF_U.do?user=OSCAR&mode=U/A/D&gogn=1234567890123...etc
+	static public String GODSNO_BASE_GODSGF_DML_UPDATE_URL = AppConstants.HTTP_ROOT_SERVLET_JSERVICES + "/syjservicesgodsno/syjsSYGODSGF_U.do";
+					;
 
 	//--------------------------------------------
 	//[1] AUX LISTs for GODSREG.Nr functionality
 	//--------------------------------------------
 	//http://gw.systema.no:8080/syjservicesgodsno/syjsSYGODSAF.do?user=OSCAR
 	static public String GODSNO_BASE_GODSAF_LIST_URL = AppConstants.HTTP_ROOT_SERVLET_JSERVICES + "/syjservicesgodsno/syjsSYGODSAF.do";
+	//http://gw.systema.no:8080/syjservicesgodsno/syjsSYGODSGF.do?user=OSCAR&gggn1=2018010622390
+	static public String GODSNO_BASE_GODSGF_LIST_URL = AppConstants.HTTP_ROOT_SERVLET_JSERVICES + "/syjservicesgodsno/syjsSYGODSGF.do";
 
 	
 }

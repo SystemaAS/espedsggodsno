@@ -1,24 +1,32 @@
 package no.systema.godsno.util.manager;
 
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.regex.Pattern;
-
 import org.apache.log4j.Logger;
-
 import no.systema.jservices.common.dao.GodsafDao;
 import no.systema.main.util.DateTimeManager;
+import no.systema.main.util.JsonDebugger;
 import no.systema.main.util.StringManager;
 
+/**
+ * Pure manager class. Not possible to use as a wired serviced due to bean related class attributes
+ * 
+ * @author oscardelatorre
+ * @date 2018 Aug
+ * 
+ */
 public class GodsnrManager {
 
 	private static Logger logger = Logger.getLogger(GodsnrManager.class.getName());
+	private static final JsonDebugger jsonDebugger = new JsonDebugger(3000);
 	private StringManager strMgr = new StringManager();
 	DateTimeManager dateMgr = new DateTimeManager();
 	
 	private String godsNr;
 	public String getGodsNr(){ return this.godsNr;}
-	public void setGodsNr(String godsnrBevKode){
+	public void setGodsNr(String value){ this.godsNr=value;}
+	
+	public void setGodsNrWithBevKode(String godsnrBevKode){
 		StringBuffer bf = new StringBuffer();
 		bf.append(dateMgr.getYear());
 		bf.append(this.adjustBevKode(godsnrBevKode));
@@ -30,7 +38,13 @@ public class GodsnrManager {
 	public String getGodsNrBevKode(){ return this.godsNrBevKode;}
 	public void setGodsNrBevKode(String value){ this.godsNrBevKode=value;}
 	
-
+	
+	private String stdEnhetsKode;
+	public String getStdEnhetsKode(){ return this.stdEnhetsKode;}
+	public void setStdEnhetsKode(String value){ this.stdEnhetsKode=value;}
+	
+	
+	
 	/**
 	 * 
 	 * @param avd
@@ -48,6 +62,7 @@ public class GodsnrManager {
 				if(this.compareAvdsPatternA(record.getGflavd(), avd, 0)){
 					logger.info("Match STEP 1:" + record.getGflavd());
 					this.godsNrBevKode = record.getGflbko();
+					this.stdEnhetsKode = record.getGfenh();
 					break;
 				}
 			}
@@ -61,6 +76,7 @@ public class GodsnrManager {
 					if(this.compareAvdsPatternA(record.getGflavd(), avd, 1)){
 						logger.info("Match STEP 2:" + record.getGflavd());
 						this.godsNrBevKode = record.getGflbko();
+						this.stdEnhetsKode = record.getGfenh();
 						break;
 					}
 				}
@@ -75,6 +91,7 @@ public class GodsnrManager {
 					if(this.compareAvdsPatternA(record.getGflavd(), avd, 2)){
 						logger.info("Match STEP 3:" + record.getGflavd());
 						this.godsNrBevKode = record.getGflbko();
+						this.stdEnhetsKode = record.getGfenh();
 						break;
 					}
 				}
@@ -89,6 +106,7 @@ public class GodsnrManager {
 					if(this.compareAvdsPatternA(record.getGflavd(), avd, 3)){
 						logger.info("Match STEP 4:" + record.getGflavd());
 						this.godsNrBevKode = record.getGflbko();
+						this.stdEnhetsKode = record.getGfenh();
 						break;
 					}
 				}
@@ -116,6 +134,7 @@ public class GodsnrManager {
 				if(this.compareAvdsPatternB(record.getGflavd(), avd, 0)){
 					logger.info("Match STEP 1:" + record.getGflavd());
 					this.godsNrBevKode = record.getGflbko();
+					this.stdEnhetsKode = record.getGfenh();
 					break;
 				}
 			}
@@ -129,6 +148,7 @@ public class GodsnrManager {
 					if(this.compareAvdsPatternB(record.getGflavd(), avd, 3)){
 						logger.info("Match STEP 2:" + record.getGflavd());
 						this.godsNrBevKode = record.getGflbko();
+						this.stdEnhetsKode = record.getGfenh();
 						break;
 					}
 				}
@@ -143,6 +163,7 @@ public class GodsnrManager {
 					if(this.compareAvdsPatternB(record.getGflavd(), avd, 2)){
 						logger.info("Match STEP 3:" + record.getGflavd());
 						this.godsNrBevKode = record.getGflbko();
+						this.stdEnhetsKode = record.getGfenh();
 						break;
 					}
 				}
@@ -157,6 +178,7 @@ public class GodsnrManager {
 					if(this.compareAvdsPatternB(record.getGflavd(), avd, 1)){
 						logger.info("Match STEP 4:" + record.getGflavd());
 						this.godsNrBevKode = record.getGflbko();
+						this.stdEnhetsKode = record.getGfenh();
 						break;
 					}
 				}
