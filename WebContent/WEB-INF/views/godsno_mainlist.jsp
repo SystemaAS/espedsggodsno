@@ -48,7 +48,7 @@
 		<tr>
 		<td>
 			<input type="hidden" name="applicationUser" id="applicationUser" value='${user.user}'>
-	
+			<input type="hidden" name="language" id="language" value='${user.usrLang}'>
 			<%-- this table wrapper is necessary to apply the css class with the thin border --%>
 			<table width="100%" class="tabThinBorderWhite" border="0" cellspacing="0" cellpadding="0">
 			<tr height="3"><td></td></tr> 

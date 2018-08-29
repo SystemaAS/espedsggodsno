@@ -22,15 +22,24 @@
 
   jq(document).ready(function() {
     //init table (no ajax, no columns since the payload is already there by means of HTML produced on the back-end)
+	var lang = jq('#language').val();
+	
 	jq('#mainList').dataTable( {
 	  "jQueryUI": false,
-	  "dom": '<"mainListFilter"f>t<"bottom"lip><"clear">', //look at mainListFilter on JSP SCRIPT-tag
+	  "dom": '<"top"f>t<"bottom"lip><"clear">', //look at mainListFilter on JSP SCRIPT-tag
 	  "order": [[ 1, "desc" ]],
-	  "lengthMenu": [ 75, 100, 200]
+	  "lengthMenu": [ 75, 100, 200],
+	  "language": {
+		  "url": getLanguage(lang)
+      },
+	  "fnDrawCallback": function( oSettings ) {
+    	jq('.dataTables_filter input').addClass("inputText12LightYellow");
+    	}
 	} );
-	//css styling
-    jq('.dataTables_filter input').addClass("inputText12LightYellow");
+	//css styling not working with language localization. We must use fnDrawCallback function above
+    //jq('.dataTables_filter input').addClass("inputText12LightYellow");
     
+   
     //event on input field for search
     jq('input.mainList_filter').on( 'keyup click', function () {
     		filtersInit();
