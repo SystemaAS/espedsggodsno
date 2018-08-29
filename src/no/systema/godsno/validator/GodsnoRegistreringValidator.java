@@ -37,6 +37,7 @@ public class GodsnoRegistreringValidator implements Validator {
 	public void validate(Object obj, Errors errors) { 
 		//Check for Mandatory fields
 		GodsjfDao record = (GodsjfDao)obj;
+		
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "gogren", "systema.godsno.edit.form.update.error.null.grensepassering");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "gobiln", "systema.godsno.edit.form.update.error.null.kjennetegn");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "gomott", "systema.godsno.edit.form.update.error.null.varemottaker");
@@ -54,6 +55,19 @@ public class GodsnoRegistreringValidator implements Validator {
 			if(strMgr.isNotNull(record.getGolsdt())){
 				if(!dateValidator.validateDate(String.valueOf(record.getGolsdt()), DateValidator.DATE_MASK_NO)){
 					errors.rejectValue("golsdt", "systema.godsno.edit.form.update.error.rule.date.golsdt.invalid"); 	
+				}
+			}
+			//------
+			//times
+			//------
+			if(record.getGogrkl()!=null && record.getGogrkl()>0){
+				if(!dateValidator.validateTime24Hours((String.valueOf(record.getGogrkl())) )){
+					errors.rejectValue("gogrkl", "systema.godsno.edit.form.update.error.rule.time.gogrkl.invalid"); 	
+				}
+			}
+			if(record.getGolskl()!=null && record.getGolskl()>0){
+				if(!dateValidator.validateTime24Hours((String.valueOf(record.getGolskl())) )){
+					errors.rejectValue("golskl", "systema.godsno.edit.form.update.error.rule.time.golskl.invalid"); 	
 				}
 			}
 			

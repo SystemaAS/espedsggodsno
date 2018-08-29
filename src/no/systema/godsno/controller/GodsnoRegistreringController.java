@@ -119,6 +119,7 @@ public class GodsnoRegistreringController {
 			logger.info(Calendar.getInstance().getTime() + " CONTROLLER start - timestamp");
 			
 			if(GodsnoConstants.ACTION_UPDATE.equals(action)){
+				//validator
 				GodsnoRegistreringValidator validator = new GodsnoRegistreringValidator();
 				validator.validate(recordToValidate, bindingResult);
 			    //check for ERRORS
@@ -131,6 +132,7 @@ public class GodsnoRegistreringController {
 			    }else{
 			    	//adjust some db-fields
 			    	this.adjustFieldsForUpdate(recordToValidate);
+			    	
 			    	//Start DML operations if applicable
 					StringBuffer errMsg = new StringBuffer();
 					int dmlRetval = 0;

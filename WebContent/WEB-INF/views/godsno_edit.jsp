@@ -94,7 +94,7 @@
 						 		<tr >
 						 			<td class="text14"><span title="gognManualCounter">Manuelltnr</span></td>
 						 			<td class="text14">
-						 				<input onKeyPress="return numberKey(event)" style="text-align: right" type="text" class="inputTextMediumBlue" name="gognManualCounter" id="gognManualCounter" size="4" maxlength="2" value="">
+						 				<input onKeyPress="return numberKey(event)" style="text-align: right" type="text" class="inputTextMediumBlue" name="gognManualCounter" id="gognManualCounter" size="3" maxlength="2" value="">
 						 			</td>
 						 		</tr>
 					 		</c:if>
