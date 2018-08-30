@@ -27,7 +27,10 @@
 	jq('#mainList').dataTable( {
 	  "jQueryUI": false,
 	  "dom": '<"top"f>t<"bottom"lip><"clear">', //look at mainListFilter on JSP SCRIPT-tag
-	  "order": [[ 1, "desc" ]],
+	  "scrollY":     "700px",
+  	  "scrollCollapse":  true,
+  	  "tabIndex": -1,
+  	  "order": [[ 1, "desc" ]],
 	  "lengthMenu": [ 75, 100, 200],
 	  "language": {
 		  "url": getLanguage(lang)
