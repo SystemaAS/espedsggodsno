@@ -26,7 +26,7 @@
 	
 	jq('#mainList').dataTable( {
 	  "jQueryUI": false,
-	  "dom": '<"top"f>t<"bottom"lip><"clear">', //look at mainListFilter on JSP SCRIPT-tag
+	  "dom": '<"top"lf>t<"bottom"ip><"clear">', //look at mainListFilter on JSP SCRIPT-tag
 	  "scrollY":     "700px",
   	  "scrollCollapse":  true,
   	  "tabIndex": -1,
