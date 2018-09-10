@@ -149,8 +149,8 @@
 			               <td class="tableCell" >${record.gobiln}</td>
 			               <td width="2%" class="tableCell" >${record.goavg}</td>
 			               <td align="center" width="2%" class="tableCell" >
-			               		<a id="alinkDelete_${counter.count}" style="display:block;" href="godsno_delete.do?gogn=${record.gogn}" onClick="setBlockUI()" >
-			               			<img title="Endre post" style="vertical-align:bottom;" src="resources/images/delete.gif" border="0" alt="edit">
+			               		<a onclick="javascript:return confirm('Er du sikker på at du vil slette denne?')" id="alinkDelete_${counter.count}" style="display:block;" href="godsno_delete.do?gogn=${record.gogn}" >
+			               			<img title="Slett post" style="vertical-align:bottom;" src="resources/images/delete.gif" border="0" alt="edit">
 			               		</a>	
 			               </td>
 			            </tr> 
