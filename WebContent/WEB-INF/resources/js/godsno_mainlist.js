@@ -79,7 +79,7 @@
 				 id: "dialogSaveTU",	
 				 text: "Fortsett",
 				 click: function(){
-					 		jq.blockUI({ css: { fontSize: '22px' }, message: BLOCKUI_OVERLAY_MESSAGE_DEFAULT});
+					 		setBlockUI();
 			 				jq('#createNewOrderForm').submit();
 				 		}
 			 	 },
@@ -105,6 +105,43 @@
   //END Create new order - Dialog
   //-----------------------------
 
+  
+//---------------------------------------
+  //DELETE Order
+  //This is done in order to present a jquery
+  //Alert modal pop-up
+  //----------------------------------------
+  function doDeleteOrder(element){
+	  //start
+	  //var record = element.id.split('@');
+	  //var avd = record[0];
+	  //var record = element.id;
+	  var id = element.id;
+	  id= id.replace("id_","");
+	  	//Start dialog
+	  	jq('<div></div>').dialog({
+	        modal: true,
+	        title: "Slett Godsnr. " + id,
+	        buttons: {
+		        Fortsett: function() {
+	        		jq( this ).dialog( "close" );
+		            //do delete
+	        		setBlockUI();
+		            window.location = "godsno_delete.do?gogn=" + id;
+		            
+		        },
+		        Avbryt: function() {
+		            jq( this ).dialog( "close" );
+		        }
+	        },
+	        open: function() {
+		  		  var markup = "Er du sikker på at du vil slette denne?";
+		          jq(this).html(markup);
+		          //make Cancel the default button
+		          jq(this).siblings('.ui-dialog-buttonpane').find('button:eq(1)').focus();
+		     }
+		});  //end dialog
+  }	 
 	 
 
 

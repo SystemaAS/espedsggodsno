@@ -7,8 +7,10 @@
 	<%-- specific jQuery functions for this JSP (must reside under the resource map since this has been
 		specified in servlet.xml as static <mvc:resources mapping="/resources/**" location="WEB-INF/resources/" order="1"/> --%>	
 	<SCRIPT type="text/javascript" src="resources/js/godsno_mainlist.js?ver=${user.versionEspedsg}"></SCRIPT>
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 	
 	<style type = "text/css">
+		.ui-dialog{font-size:10pt;}
 		.ui-datepicker { font-size:9pt;}
 		
 		/* ON-HOLD...this line will align the datatable search field in the left */
@@ -149,7 +151,7 @@
 			               <td class="tableCell" >${record.gobiln}</td>
 			               <td width="2%" class="tableCell" >${record.goavg}</td>
 			               <td align="center" width="2%" class="tableCell" >
-			               		<a onclick="javascript:return confirm('Er du sikker på at du vil slette denne?')" id="alinkDelete_${counter.count}" style="display:block;" href="godsno_delete.do?gogn=${record.gogn}" >
+			               		<a sytle="cursor:pointer;" id="id_${record.gogn}" onClick="doDeleteOrder(this)" style="display:block;"  >
 			               			<img title="Slett post" style="vertical-align:bottom;" src="resources/images/delete.gif" border="0" alt="edit">
 			               		</a>	
 			               </td>
