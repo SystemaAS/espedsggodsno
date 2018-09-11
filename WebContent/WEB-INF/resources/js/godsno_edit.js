@@ -40,6 +40,36 @@
       jq('#editForm').submit(function() { 
     	  setBlockUI();
   	  });
+      //info list on bev.koder
+      jq("#dialogBevKoderReadOnly").dialog({
+		  autoOpen: false,
+		  maxWidth:350,
+          maxHeight: 600,
+          width: 300,
+          height: 400,
+		  //modal: true,
+		  dialogClass: 'main-dialog-class',
+		  
+	  });
+      
+ 	  //Read only dialog
+	  jq("#bevKoderDialogImgReadOnly").click(function() {
+		  jq('#dialogBevKoderReadOnly').dialog( "option", "title", "Bev.koder" );
+		  //deal with buttons for this modal window
+		  jq('#dialogBevKoderReadOnly').dialog({
+			 buttons: [ 
+	            {
+				 id: "dialogSaveTU",	
+				 text: "Lukk",
+				 click: function(){
+					 		jq( this ).dialog( "close" );
+			 			}
+			 	 } ]
+		  });
+		  //open now
+		  jq('#dialogBevKoderReadOnly').dialog('open');
+	  });
+    	  
 
   });    
   

@@ -8,7 +8,12 @@
 	<%-- specific jQuery functions for this JSP (must reside under the resource map since this has been
 		specified in servlet.xml as static <mvc:resources mapping="/resources/**" location="WEB-INF/resources/" order="1"/> --%>
 	<SCRIPT type="text/javascript" src="resources/js/godsno_edit.js?ver=${user.versionEspedsg}"></SCRIPT>
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 	
+	<style type = "text/css">
+		.ui-dialog{font-size:11pt;}*/
+		.ui-datepicker { font-size:9pt;}
+	</style>
 	
 	
 <table width="100%" cellspacing="0" border="0" cellpadding="0">
@@ -88,7 +93,11 @@
 						 					<input readonly type="text" class="inputTextReadOnly" name="gogn" id="gogn" size="25"  value="${godsnr}">
 						 				</c:otherwise>
 						 				</c:choose>
-						 				<font class="text16RedBold" >*</font>		
+						 				<font class="text16RedBold" >*</font>
+						 						
+						 			</td>
+						 			<td >
+						 				<img title="Bev.koder" id="bevKoderDialogImgReadOnly" style="vertical-align:middle; cursor:pointer;" width="16px" height="16px" src="resources/images/info4.png" border="0" alt="bev.koder">
 						 			</td>
 						 		</tr>							 		
 						 		<tr >
@@ -280,4 +289,29 @@
  </tr>
  </table>
  </td>
+ </tr>
+ 
+ 
+ <tr>
+	<td>
+		<div id="dialogBevKoderReadOnly" title="Bev.koder">
+		<table >
+	 		<thead >
+	 			<tr>
+	 			<th align="center" class="text14" ><b>Avd</b></th>
+	 			<th align="left" class="text14" ><b>Kode</b></th>
+	 			</tr>
+	 		</thead>
+	 		<tbody>
+	 		<c:forEach items="${bevKodeList}" var="record" varStatus="counter">    
+	        	<tr class="tableRow" >  
+	              <td align="center" width="2%" class="tableCellFirst" >${record.gflavd}</td>
+	              <td align="left" class="tableCell" >${record.gflbko}</td>
+            	</tr>
+           	</c:forEach>
+		    </tbody>           
+	
+		</table>
+		</div>
+	</td>	
  </tr>

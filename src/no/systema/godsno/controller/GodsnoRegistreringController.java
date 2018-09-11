@@ -426,6 +426,9 @@ public class GodsnoRegistreringController {
 		GodsnrManager godsnrMgr = new GodsnrManager();
 		//get Godsnr bev.kode since we will be creating a new record...
 		Collection<GodsafDao> list = this.getBeviljningsKodeList(appUser);
+		//save this list for information purposes on GUI
+		model.addAttribute("bevKodeList", list);
+		
 		//-------
 		//STEP 1: Calculate the godsNr bev.kode
 		//-------

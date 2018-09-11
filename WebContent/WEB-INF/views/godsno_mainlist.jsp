@@ -10,12 +10,8 @@
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 	
 	<style type = "text/css">
-		.ui-dialog{font-size:10pt;}
+		.ui-dialog{font-size:11pt;}*/
 		.ui-datepicker { font-size:9pt;}
-		
-		/* ON-HOLD...this line will align the datatable search field in the left */
-		/*.dataTables_wrapper .mainListFilter .dataTables_filter {float:left}*/
-		/*.dataTables_wrapper .mainListFilter .dataTables_length {float:right}*/
 	</style>
 
 <table width="100%"  class="text14" cellspacing="0" border="0" cellpadding="0">
