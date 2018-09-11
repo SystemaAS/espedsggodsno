@@ -110,7 +110,7 @@
 			    			<%-- --------------------------- --%>
 			    			<%--  MENU --%>
 			    			<%-- --------------------------- --%>
-			    			<a tabindex=-1 href="godsno_mainlist.do?action=doFind">
+			    			<a id="alinkGodsno" tabindex=-1 href="godsno_mainlist.do?action=doFind">
 			    				&nbsp;<font 
 			    				<c:choose>           
 		                   			<c:when test="${user.activeMenu=='GODSREGNO'}">
@@ -123,7 +123,15 @@
 			    				
 			    				>&nbsp;<spring:message code="systema.godsno.menu"/>&nbsp;</font>
 			    			</a>
-			    			</td>		      				
+			    			&nbsp;<font color="#FFFFFF" style="font-weight: bold;">|</font>
+			    			<%-- ------------------- --%>
+			    			<%-- Maintenance  MENU    --%>
+			    			<%-- -------------------- --%>
+			    			<a id="alinkMaintGate" tabindex=-1 href="godsnomaintenancegate.do">
+			    				&nbsp;<font class="headerMenuAdmin">
+		                   		&nbsp;&nbsp;<spring:message code="systema.godsno.maintenance.label"/>&nbsp;&nbsp;</font>
+			    			</a>
+		    			</td>		      				
 	      				<td class="text14" width="50%" align="right" valign="middle">
 	      					<c:if test="${ empty user.usrLang || user.usrLang == 'NO'}">
 			               		<img src="resources/images/countryFlags/Flag_NO.gif" height="12" border="0" alt="country">
