@@ -2,6 +2,16 @@
   var jq = jQuery.noConflict();
   var counterIndex = 0;
   
+  jq(function() {
+	  //General Header Menus
+	  jq('#alinkMaintGate').click(function() { 
+		  setBlockUI();
+	  });
+	  jq('#alinkGodsno').click(function() { 
+		  setBlockUI();
+	  });
+	 
+  });
   
   jq(function() {
 	  jq("#gogrdt").datepicker({ 
