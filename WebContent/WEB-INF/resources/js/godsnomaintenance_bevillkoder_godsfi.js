@@ -14,8 +14,32 @@
 	  jq('#alinkGodsno').click(function() { 
 		  setBlockUI();
 	  });
+	  
+	  //Create new record
+	  jq('#newRecordButton').click(function() {
+		  jq('#gflbko').val("");
+		  jq('#gflbko').prop('readonly', false);
+		  jq('#gflbko').removeClass("inputTextReadOnly");
+		  jq('#gflbko').addClass("inputTextMediumBlueMandatoryField");
+		  //adjust	
+		  jq('#gflbs1').val("");
+		  jq('#gflbs1').prop('readonly', false);
+		  jq('#gflbs1').removeClass("inputTextReadOnly");
+		  jq('#gflbs1').addClass("inputTextMediumBlueMandatoryField");
+			
+		  jq('#gflbs2').val("");
+		  jq('#gflbs3').val("");
+		  jq('#gflbs4').val("");
+		  jq('#gfenh').val("");
+		  jq('#gfprt').val("");
+		  jq('#gffax').val("");
+		  //for a future update
+		  jq('#updateId').val("");
+			
+	  });
 	 
   });
+  
   
   //Get specific record
   function getRecord(record){
@@ -25,12 +49,14 @@
 	  	rawId = rawId.replace("recordUpdate_", "");
 	  	var record = rawId.split('_');
 		var id = record[0];
+		var id2 = record[1];
 		
 		jq.ajax({
 	  	  type: 'GET',
 	  	  url: 'getSpecificRecord_godsfi.do',
 	  	  data: { applicationUser : jq('#applicationUser').val(), 
-	  		  	  id : id },
+	  		  	  id : id,
+	  		  	  id2 : id2 },
 	  	  dataType: 'json',
 	  	  cache: false,
 	  	  contentType: 'application/json',
@@ -38,8 +64,16 @@
 		  	var len = data.length;
 	  		for ( var i = 0; i < len; i++) {
 	  			jq('#gflbko').val("");jq('#gflbko').val(data[i].gflbko);
-	  			//rest of the gang
+	  			jq('#gflbko').prop('readonly', true);
+	  			jq('#gflbko').removeClass("inputTextMediumBlueMandatoryField");
+	  			jq('#gflbko').addClass("inputTextReadOnly");
+	  			
+	  			//id2
 	  			jq('#gflbs1').val("");jq('#gflbs1').val(data[i].gflbs1);
+	  			jq('#gflbs1').prop('readonly', true);
+	  			jq('#gflbs1').removeClass("inputTextMediumBlueMandatoryField");
+	  			jq('#gflbs1').addClass("inputTextReadOnly");
+	  			//rest of the gang
 	  			jq('#gflbs2').val("");jq('#gflbs2').val(data[i].gflbs2);
 	  			jq('#gflbs3').val("");jq('#gflbs3').val(data[i].gflbs3);
 	  			jq('#gflbs4').val("");jq('#gflbs4').val(data[i].gflbs4);
@@ -51,7 +85,7 @@
 	  			jq('#updateId').val("");jq('#updateId').val(data[i].gflbko);
 	  			//enable submit
 	  			//jq("#submit").prop("disabled", false);
-	  			
+	  			jq('#gflbs2').focus();
 	  		}
 	  	  }, 
 	  	  error: function() {
@@ -60,6 +94,7 @@
 		});
 			
 	  }
+  
   
 //-------------------
   //Datatables jquery
@@ -100,4 +135,71 @@
     		filtersInit();
     } );
   } );
+  
+  
+  //---------------------------------------
+  //DELETE Order
+  //This is done in order to present a jquery
+  //Alert modal pop-up
+  //----------------------------------------
+  function doDeleteRecord(element){
+	  //start
+	  
+	  	//Start dialog
+	  	jq('<div></div>').dialog({
+	        modal: true,
+	        title: "Slett linje ",
+	        buttons: {
+		        Fortsett: function() {
+	        		jq( this ).dialog( "close" );
+		            //do delete
+	        		deleteRecord(element.id)
+		            
+		        },
+		        Avbryt: function() {
+		            jq( this ).dialog( "close" );
+		        }
+	        },
+	        open: function() {
+		  		  var markup = "Er du sikker på at du vil slette denne?";
+		          jq(this).html(markup);
+		          //make Cancel the default button
+		          jq(this).siblings('.ui-dialog-buttonpane').find('button:eq(1)').focus();
+		     }
+		});  //end dialog
+  }	 
+
+  
+  //Delete specific record
+  function deleteRecord(rawId){
+		var applicationUserParam = jq('#applicationUser').val();
+	  	
+	  	rawId = rawId.replace("recordDelete_", "");
+	  	var record = rawId.split('_');
+		var id = record[0];
+		var id2 = record[1];
+		
+		jq.ajax({
+	  	  type: 'GET',
+	  	  url: 'deleteSpecificRecord_godsfi.do',
+	  	  data: { applicationUser : jq('#applicationUser').val(), 
+	  		  	  id : id,
+	  		  	  id2 : id2 },
+	  	  dataType: 'json',
+	  	  cache: false,
+	  	  contentType: 'application/json',
+	  	  success: function(data) {
+		  	var len = data.length;
+	  		for ( var i = 0; i < len; i++) {
+	  			setBlockUI();
+	  			window.location = "godsnomaintenance_bevillkoder_sygodsfi_edit.do";
+	  		}
+	  	  }, 
+	  	  error: function() {
+	  		  alert('Error loading ...');
+	  	  }
+		});
+			
+	  }
+  
   

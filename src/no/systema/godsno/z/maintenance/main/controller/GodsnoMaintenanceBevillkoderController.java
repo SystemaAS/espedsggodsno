@@ -34,10 +34,12 @@ import no.systema.jservices.common.dao.GodsjfDao;
 //GODSNO
 import no.systema.godsno.service.GodsnoService;
 import no.systema.godsno.filter.SearchFilterGodsnoMainList;
+import no.systema.godsno.mapper.url.request.UrlRequestParameterMapper;
 import no.systema.godsno.url.store.GodsnoUrlDataStore;
 import no.systema.godsno.util.GodsnoConstants;
 import no.systema.godsno.model.JsonContainerDaoGODSFI;
 import no.systema.godsno.util.manager.CodeDropDownMgr;
+import no.systema.godsno.z.maintenance.main.validator.GodsnoMaintenanceGodsfiValidator;
 import no.systema.godsno.z.maintenance.main.model.MaintenanceMainListObject;
 
 /**
@@ -57,6 +59,7 @@ public class GodsnoMaintenanceBevillkoderController {
 	private ModelAndView loginView = new ModelAndView("redirect:logout.do");
 	private LoginValidator loginValidator = new LoginValidator();
 	private StringManager strMgr = new StringManager();
+	private UrlRequestParameterMapper urlRequestParameterMapper = new UrlRequestParameterMapper();
 	
 	@Autowired
 	private UrlCgiProxyService urlCgiProxyService;
@@ -107,9 +110,9 @@ public class GodsnoMaintenanceBevillkoderController {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value="godsnomaintenance_bevillkoder_sygodsfi_edit.do", method={RequestMethod.GET, RequestMethod.POST} )
-	public ModelAndView doEditGodsfi(@ModelAttribute ("record") GodsfiDao recordToValidate, BindingResult bindingResult,HttpSession session, HttpServletRequest request){
-		logger.info("Inside: doEditGodsfi");
+	@RequestMapping(value="godsnomaintenance_bevillkoder_godsfi.do", method={RequestMethod.GET, RequestMethod.POST} )
+	public ModelAndView doGetListGodsfi(@ModelAttribute ("record") GodsfiDao recordToValidate, BindingResult bindingResult,HttpSession session, HttpServletRequest request){
+		logger.info("Inside: doGetListGodsfi");
 		Map model = new HashMap();
 		ModelAndView successView = new ModelAndView("godsnomaintenance_bevillkoder_godsfi");
 		SystemaWebUser appUser = this.loginValidator.getValidUser(session);
@@ -118,7 +121,7 @@ public class GodsnoMaintenanceBevillkoderController {
 			return loginView;
 		
 		}else{
-			List<GodsfiDao> list = (List)this.getListGodsfi(appUser, recordToValidate);
+			List<GodsfiDao> list = (List)this.getListGodsfi(appUser);
 			model.put("list", list);
 			logger.info(Calendar.getInstance().getTime() + " CONTROLLER start - timestamp");
 			
@@ -126,6 +129,65 @@ public class GodsnoMaintenanceBevillkoderController {
 	    		
 			return successView;
 	    }
+	}
+	/**
+	 * 
+	 * @param recordToValidate
+	 * @param bindingResult
+	 * @param session
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value="godsnomaintenance_bevillkoder_godsfi_edit.do", method={RequestMethod.GET, RequestMethod.POST} )
+	public ModelAndView doEditGodsfi(ModelMap modelS, @ModelAttribute ("record") GodsfiDao recordToValidate, BindingResult bindingResult,HttpSession session, HttpServletRequest request){
+		logger.info("Inside: doEditGodsfi");
+		Map model = new HashMap();
+		ModelAndView successView = new ModelAndView("godsnomaintenance_bevillkoder_godsfi");
+		SystemaWebUser appUser = this.loginValidator.getValidUser(session);
+		
+		String action = request.getParameter("action");
+		String updateId = request.getParameter("updateId");
+		model.put("updateId", updateId);
+		model.put("action", action);
+		
+		boolean isValidRecord = true;
+		
+		//check user (should be in session already)
+		if(appUser==null){
+			return loginView;
+		
+		}else{
+			if(GodsnoConstants.ACTION_UPDATE.equals(action)){
+				int dmlRetval = 0;
+				StringBuffer errMsg = new StringBuffer();
+				//validator
+				GodsnoMaintenanceGodsfiValidator validator = new GodsnoMaintenanceGodsfiValidator();
+				validator.validate(recordToValidate, bindingResult);
+			    //check for ERRORS
+				if(bindingResult.hasErrors()){
+		    		logger.info("[ERROR Validation] record does not validate)");
+		    		//put domain objects and do go back to the successView from here
+		    		//drop downs
+		    		isValidRecord = false;
+		    		
+			    }else{
+			    	dmlRetval = this.updateRecordGodsfi(appUser.getUser(), recordToValidate, "U", errMsg);
+			    	if(dmlRetval<0){
+						logger.info("ERROR on update ... ??? check your code");
+						modelS.addAttribute(GodsnoConstants.ASPECT_ERROR_MESSAGE, errMsg.toString());
+						
+					}else{
+						logger.info("doUpdate = OK");
+						modelS.addAttribute("record", new GodsfiDao());
+					}
+			    }
+			}
+			List<GodsfiDao> list = (List)this.getListGodsfi(appUser);
+			model.put("list", list);
+			successView.addObject(GodsnoConstants.DOMAIN_MODEL , model);
+	    }
+		
+		return successView;
 	}
 	
 	
@@ -142,7 +204,7 @@ public class GodsnoMaintenanceBevillkoderController {
 		object.setSubject("Lage bevill.koder");
 		object.setDbTable("GODSFI");
 		object.setStatus("G");
-		object.setPgm("sygodsfi_edit");
+		object.setPgm("godsfi");
 		listObject.add(object);
 		//
 		object = new  MaintenanceMainListObject();
@@ -150,7 +212,7 @@ public class GodsnoMaintenanceBevillkoderController {
 		object.setSubject("Låse avd/bevill.koder");
 		object.setDbTable("GODSAF");
 		object.setStatus("G");
-		object.setPgm("sygodsaf_edit");
+		object.setPgm("godsaf");
 		listObject.add(object);
 		
 		return listObject;
@@ -159,10 +221,9 @@ public class GodsnoMaintenanceBevillkoderController {
 	/**
 	 * 
 	 * @param appUser
-	 * @param recordToValidate
 	 * @return
 	 */
-	private Collection<GodsfiDao> getListGodsfi(SystemaWebUser appUser, GodsfiDao recordToValidate){
+	private Collection<GodsfiDao> getListGodsfi(SystemaWebUser appUser){
 		Collection<GodsfiDao> outputList = new ArrayList<GodsfiDao>();
 		//---------------
     	//Get main list
@@ -171,10 +232,6 @@ public class GodsnoMaintenanceBevillkoderController {
 		//add URL-parameters
 		StringBuffer urlRequestParams = new StringBuffer();
 		urlRequestParams.append("user=" + appUser.getUser());
-		
-		if(strMgr.isNotNull(recordToValidate.getGflbko()) ){
-			urlRequestParams.append("&gflbko=" + recordToValidate.getGflbko());
-		}
 		
 		//session.setAttribute(TransportDispConstants.ACTIVE_URL_RPG_TRANSPORT_DISP, BASE_URL + "==>params: " + urlRequestParams.toString()); 
     	logger.info(Calendar.getInstance().getTime() + " CGI-start timestamp");
@@ -190,6 +247,52 @@ public class GodsnoMaintenanceBevillkoderController {
     	}		
 	    
 		return outputList;
+	}
+	
+	/**
+	 * 
+	 * @param applicationUser
+	 * @param recordToValidate
+	 * @param mode
+	 * @param errMsg
+	 * @return
+	 */
+	private int updateRecordGodsfi(String applicationUser, GodsfiDao recordToValidate, String mode, StringBuffer errMsg){
+		int retval = 0;
+		//---------------
+    	//Get main list
+		//---------------
+		final String BASE_URL = GodsnoUrlDataStore.GODSNO_BASE_GODSFI_DML_UPDATE_URL;
+		//add URL-parameters
+		StringBuffer urlRequestKeys = new StringBuffer();
+		urlRequestKeys.append("user=" + applicationUser);
+		urlRequestKeys.append("&mode=" + mode);
+		String urlRequestParams = urlRequestKeys + this.urlRequestParameterMapper.getUrlParameterValidString((recordToValidate));
+		
+		//session.setAttribute(TransportDispConstants.ACTIVE_URL_RPG_TRANSPORT_DISP, BASE_URL + "==>params: " + urlRequestParams.toString()); 
+    	logger.info(Calendar.getInstance().getTime() + " CGI-start timestamp");
+    	logger.info("URL: " + BASE_URL);
+    	logger.info("URL PARAMS: " + urlRequestParams);
+    	String jsonPayload = this.urlCgiProxyService.getJsonContent(BASE_URL, urlRequestParams);
+    	//Debug --> 
+    	logger.info(jsonPayload);
+    	logger.info(Calendar.getInstance().getTime() +  " CGI-end timestamp");
+    	if(jsonPayload!=null){
+    		JsonContainerDaoGODSFI listContainer = this.godsnoService.getContainerGodsfi(jsonPayload);
+    		if(listContainer!=null){
+    			if(strMgr.isNotNull(listContainer.getErrMsg())){
+    				//Update successfully done!
+		    		logger.info("[ERROR] Record update - Error: " + errMsg.toString());
+		    		retval = -1;
+    			}else{
+    				//Update successfully done!
+		    		logger.info("[INFO] Record successfully updated, OK ");
+    			}
+    		
+    		}
+    	}		
+	    
+		return retval;
 	}
 	
 	

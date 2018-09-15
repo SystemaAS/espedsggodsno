@@ -51,9 +51,23 @@ public class GodsnoGodsfiAjaxRestController {
 	 * @return
 	 */
 	@RequestMapping(path="/getSpecificRecord_godsfi.do",method = RequestMethod.GET)
-	public Collection getRecord(@RequestParam String applicationUser, @RequestParam String id){
+	public Collection getRecord(@RequestParam String applicationUser, @RequestParam String id, @RequestParam String id2){
 		logger.info("Inside: getRecord");
-		return this.getListGodsfi(applicationUser, id);
+		return this.getRecordGodsfi(applicationUser, id, id2);
+		  
+	}
+	/**
+	 * 
+	 * @param applicationUser
+	 * @param id
+	 * @param id2
+	 * @return
+	 */
+	@RequestMapping(path="/deleteSpecificRecord_godsfi.do",method = RequestMethod.GET)
+	public Collection deleteRecord(@RequestParam String applicationUser, @RequestParam String id, @RequestParam String id2 ){
+		logger.info("Inside: deleteRecord");
+		String mode = "D";
+		return this.updateRecordGodsfi(applicationUser, id, id2, mode);
 		  
 	}
 	
@@ -63,7 +77,7 @@ public class GodsnoGodsfiAjaxRestController {
 	 * @param id
 	 * @return
 	 */
-	private Collection<GodsfiDao> getListGodsfi(String applicationUser, String id){
+	private Collection<GodsfiDao> getRecordGodsfi(String applicationUser, String id, String id2){
 		Collection<GodsfiDao> outputList = new ArrayList<GodsfiDao>();
 		//---------------
     	//Get main list
@@ -72,10 +86,8 @@ public class GodsnoGodsfiAjaxRestController {
 		//add URL-parameters
 		StringBuffer urlRequestParams = new StringBuffer();
 		urlRequestParams.append("user=" + applicationUser);
-		
-		if(strMgr.isNotNull(id) ){
-			urlRequestParams.append("&gflbko=" + id);
-		}
+		urlRequestParams.append("&gflbko=" + id);
+		urlRequestParams.append("&gflbs1=" + id2);
 		
 		//session.setAttribute(TransportDispConstants.ACTIVE_URL_RPG_TRANSPORT_DISP, BASE_URL + "==>params: " + urlRequestParams.toString()); 
     	logger.info(Calendar.getInstance().getTime() + " CGI-start timestamp");
@@ -87,7 +99,48 @@ public class GodsnoGodsfiAjaxRestController {
     	logger.info(Calendar.getInstance().getTime() +  " CGI-end timestamp");
     	if(jsonPayload!=null){
     		JsonContainerDaoGODSFI listContainer = this.godsnoService.getContainerGodsfi(jsonPayload);
-    		outputList = listContainer.getList();	
+    		outputList = listContainer.getList();
+    			
+    	}		
+	    
+		return outputList;
+	}
+	/**
+	 * 
+	 * @param applicationUser
+	 * @param id
+	 * @param id2
+	 * @param mode
+	 * @return
+	 */
+	private Collection<GodsfiDao> updateRecordGodsfi(String applicationUser, String id, String id2, String mode){
+		Collection<GodsfiDao> outputList = new ArrayList<GodsfiDao>();
+		//---------------
+    	//Get main list
+		//---------------
+		final String BASE_URL = GodsnoUrlDataStore.GODSNO_BASE_GODSFI_DML_UPDATE_URL;
+		//add URL-parameters
+		StringBuffer urlRequestParams = new StringBuffer();
+		urlRequestParams.append("user=" + applicationUser);
+		urlRequestParams.append("&mode=" + mode);
+		urlRequestParams.append("&gflbko=" + id);
+		urlRequestParams.append("&gflbs1=" + id2);
+		
+		//session.setAttribute(TransportDispConstants.ACTIVE_URL_RPG_TRANSPORT_DISP, BASE_URL + "==>params: " + urlRequestParams.toString()); 
+    	logger.info(Calendar.getInstance().getTime() + " CGI-start timestamp");
+    	logger.info("URL: " + BASE_URL);
+    	logger.info("URL PARAMS: " + urlRequestParams);
+    	String jsonPayload = this.urlCgiProxyService.getJsonContent(BASE_URL, urlRequestParams.toString());
+    	//Debug --> 
+    	logger.info(jsonPayload);
+    	logger.info(Calendar.getInstance().getTime() +  " CGI-end timestamp");
+    	if(jsonPayload!=null){
+    		JsonContainerDaoGODSFI listContainer = this.godsnoService.getContainerGodsfi(jsonPayload);
+    		if(strMgr.isNull(listContainer.getErrMsg())){
+    			GodsfiDao dao = new GodsfiDao();
+    			dao.setGflbko("OK");
+    			outputList.add(dao);
+    		}
     	}		
 	    
 		return outputList;
