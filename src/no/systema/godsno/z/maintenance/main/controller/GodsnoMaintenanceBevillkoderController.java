@@ -9,6 +9,8 @@ import org.apache.log4j.Logger;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -27,14 +29,14 @@ import no.systema.main.util.JsonDebugger;
 import no.systema.main.model.SystemaWebUser;
 import no.systema.main.util.StringManager;
 
+import no.systema.jservices.common.dao.GodsfiDao;
 import no.systema.jservices.common.dao.GodsjfDao;
-
 //GODSNO
 import no.systema.godsno.service.GodsnoService;
 import no.systema.godsno.filter.SearchFilterGodsnoMainList;
 import no.systema.godsno.url.store.GodsnoUrlDataStore;
 import no.systema.godsno.util.GodsnoConstants;
-import no.systema.godsno.model.JsonContainerDaoGODSJF;
+import no.systema.godsno.model.JsonContainerDaoGODSFI;
 import no.systema.godsno.util.manager.CodeDropDownMgr;
 import no.systema.godsno.z.maintenance.main.model.MaintenanceMainListObject;
 
@@ -58,6 +60,9 @@ public class GodsnoMaintenanceBevillkoderController {
 	
 	@Autowired
 	private UrlCgiProxyService urlCgiProxyService;
+	
+	@Autowired
+	private GodsnoService godsnoService;
 	
 		
 	@PostConstruct
@@ -84,7 +89,7 @@ public class GodsnoMaintenanceBevillkoderController {
 			return loginView;
 		
 		}else{
-			List list = this.populateMaintenanceMainList();
+			List list = this.populateMaintenanceBevillkoderMainList();
 			model.addAttribute("list", list);
 			appUser.setActiveMenu(SystemaWebUser.ACTIVE_MENU_GODSREGNO_MAINTENANCE_ONE);
 			logger.info(Calendar.getInstance().getTime() + " CONTROLLER start - timestamp");
@@ -92,38 +97,101 @@ public class GodsnoMaintenanceBevillkoderController {
 			successView.addObject(GodsnoConstants.DOMAIN_MODEL , model);
 	    		
 			return successView;
-		    }
-		}
+	    }
+	}
+	/**
+	 * 
+	 * @param recordToValidate
+	 * @param bindingResult
+	 * @param session
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value="godsnomaintenance_bevillkoder_sygodsfi_edit.do", method={RequestMethod.GET, RequestMethod.POST} )
+	public ModelAndView doEditGodsfi(@ModelAttribute ("record") GodsfiDao recordToValidate, BindingResult bindingResult,HttpSession session, HttpServletRequest request){
+		logger.info("Inside: doEditGodsfi");
+		Map model = new HashMap();
+		ModelAndView successView = new ModelAndView("godsnomaintenance_bevillkoder_godsfi");
+		SystemaWebUser appUser = this.loginValidator.getValidUser(session);
+		//check user (should be in session already)
+		if(appUser==null){
+			return loginView;
+		
+		}else{
+			List<GodsfiDao> list = (List)this.getListGodsfi(appUser, recordToValidate);
+			model.put("list", list);
+			logger.info(Calendar.getInstance().getTime() + " CONTROLLER start - timestamp");
+			
+			successView.addObject(GodsnoConstants.DOMAIN_MODEL , model);
+	    		
+			return successView;
+	    }
+	}
+	
 	
 	/**
 	 * 
 	 * @return
 	 */
-	private List<MaintenanceMainListObject> populateMaintenanceMainList(){
+	private List<MaintenanceMainListObject> populateMaintenanceBevillkoderMainList(){
 		List<MaintenanceMainListObject> listObject = new ArrayList<MaintenanceMainListObject>();
 		
 		MaintenanceMainListObject object = new  MaintenanceMainListObject();
 		        
 		object.setId("1");
 		object.setSubject("Lage bevill.koder");
-		//object.setCode("SADI_AVD");
-		//object.setText("SKFTAAA / STANDI - Ref.til Generelle Avd");
-		//object.setDbTable("STANDI");
+		object.setDbTable("GODSFI");
 		object.setStatus("G");
-		object.setPgm("xxx");
+		object.setPgm("sygodsfi_edit");
 		listObject.add(object);
 		//
 		object = new  MaintenanceMainListObject();
 		object.setId("2");
 		object.setSubject("Låse avd/bevill.koder");
-		//object.setCode("SADI_AVD");
-		//object.setText("SKFTAAA / STANDI - Ref.til Generelle Avd");
-		//object.setDbTable("STANDI");
+		object.setDbTable("GODSAF");
 		object.setStatus("G");
-		object.setPgm("yyy");
+		object.setPgm("sygodsaf_edit");
 		listObject.add(object);
 		
 		return listObject;
 	}
+	
+	/**
+	 * 
+	 * @param appUser
+	 * @param recordToValidate
+	 * @return
+	 */
+	private Collection<GodsfiDao> getListGodsfi(SystemaWebUser appUser, GodsfiDao recordToValidate){
+		Collection<GodsfiDao> outputList = new ArrayList<GodsfiDao>();
+		//---------------
+    	//Get main list
+		//---------------
+		final String BASE_URL = GodsnoUrlDataStore.GODSNO_BASE_GODSFI_LIST_URL;
+		//add URL-parameters
+		StringBuffer urlRequestParams = new StringBuffer();
+		urlRequestParams.append("user=" + appUser.getUser());
+		
+		if(strMgr.isNotNull(recordToValidate.getGflbko()) ){
+			urlRequestParams.append("&gflbko=" + recordToValidate.getGflbko());
+		}
+		
+		//session.setAttribute(TransportDispConstants.ACTIVE_URL_RPG_TRANSPORT_DISP, BASE_URL + "==>params: " + urlRequestParams.toString()); 
+    	logger.info(Calendar.getInstance().getTime() + " CGI-start timestamp");
+    	logger.info("URL: " + BASE_URL);
+    	logger.info("URL PARAMS: " + urlRequestParams);
+    	String jsonPayload = this.urlCgiProxyService.getJsonContent(BASE_URL, urlRequestParams.toString());
+    	//Debug --> 
+    	logger.debug(jsonDebugger.debugJsonPayloadWithLog4J(jsonPayload));
+    	logger.info(Calendar.getInstance().getTime() +  " CGI-end timestamp");
+    	if(jsonPayload!=null){
+    		JsonContainerDaoGODSFI listContainer = this.godsnoService.getContainerGodsfi(jsonPayload);
+    		outputList = listContainer.getList();	
+    	}		
+	    
+		return outputList;
+	}
+	
+	
 }
 

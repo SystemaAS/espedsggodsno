@@ -22,7 +22,7 @@
 		<tr height="2"><td></td></tr>
 		<tr height="25"> 
 			<td width="15%" valign="bottom" class="tab" align="center" nowrap>
-				<img style="vertical-align:middle;" src="resources/images/bulletGreen.png" width="8px" height="8px" border="0" alt="efaktura log">
+				<img style="vertical-align:middle;" src="resources/images/bulletGreen.png" width="10px" height="10px" border="0" alt="list">
 				<font class="tabLink" ><span id="activeTabList" onMouseOver="showPop('list_info');" onMouseOut="hidePop('list_info');"><spring:message code="systema.godsno.mainlist.tab"/></span></font>
 				<div class="text14" style="position: relative;" align="left">
                 <span style="position:absolute;top:2px;left:50px;" id="list_info" class="popupWithInputText text14"  >
@@ -33,7 +33,7 @@
 			</td>
 			<td width="15%" valign="bottom" class="tabDisabled" align="center" nowrap>
 				<a id="createNewOrderTabIdLink" style="display:block;" runat="server" href="#">
-					<img style="vertical-align:middle;" src="resources/images/add.png" width="8px" height="8px" border="0" alt="efaktura log">
+					<img style="vertical-align:middle;" src="resources/images/add.png" width="10px" height="10px" border="0" alt="add">
 					<font class="tabDisabledLink" ><span id="activeTabList" ><spring:message code="systema.godsno.createnew.tab"/></span></font>
 				</a>
 			</td>

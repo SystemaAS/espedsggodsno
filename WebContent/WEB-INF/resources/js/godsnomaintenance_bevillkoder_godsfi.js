@@ -17,6 +17,50 @@
 	 
   });
   
+  //Get specific record
+  function getRecord(record){
+		var rawId = record.id;
+	  	var applicationUserParam = jq('#applicationUser').val();
+	  	
+	  	rawId = rawId.replace("recordUpdate_", "");
+	  	var record = rawId.split('_');
+		var id = record[0];
+		
+		jq.ajax({
+	  	  type: 'GET',
+	  	  url: 'getSpecificRecord_godsfi.do',
+	  	  data: { applicationUser : jq('#applicationUser').val(), 
+	  		  	  id : id },
+	  	  dataType: 'json',
+	  	  cache: false,
+	  	  contentType: 'application/json',
+	  	  success: function(data) {
+		  	var len = data.length;
+	  		for ( var i = 0; i < len; i++) {
+	  			jq('#gflbko').val("");jq('#gflbko').val(data[i].gflbko);
+	  			//rest of the gang
+	  			jq('#gflbs1').val("");jq('#gflbs1').val(data[i].gflbs1);
+	  			jq('#gflbs2').val("");jq('#gflbs2').val(data[i].gflbs2);
+	  			jq('#gflbs3').val("");jq('#gflbs3').val(data[i].gflbs3);
+	  			jq('#gflbs4').val("");jq('#gflbs4').val(data[i].gflbs4);
+	  			jq('#gfenh').val("");jq('#gfenh').val(data[i].gfenh);
+	  			jq('#gfprt').val("");jq('#gfprt').val(data[i].gfprt);
+	  			jq('#gffax').val("");jq('#gffax').val(data[i].gffax);
+	  			
+	  			//for a future update
+	  			jq('#updateId').val("");jq('#updateId').val(data[i].gflbko);
+	  			//enable submit
+	  			//jq("#submit").prop("disabled", false);
+	  			
+	  		}
+	  	  }, 
+	  	  error: function() {
+	  		  alert('Error loading ...');
+	  	  }
+		});
+			
+	  }
+  
 //-------------------
   //Datatables jquery
   //-------------------
@@ -38,7 +82,7 @@
 	  "scrollY":     "500px",
   	  "scrollCollapse":  true,
   	  "tabIndex": -1,
-  	  "order": [[ 0, "asc" ]],
+  	  "order": [[ 1, "asc" ]],
 	  "lengthMenu": [ 50, 100],
 	  "language": {
 		  "url": getLanguage(lang)

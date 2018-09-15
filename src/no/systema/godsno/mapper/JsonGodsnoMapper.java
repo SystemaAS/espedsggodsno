@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 import no.systema.godsno.model.JsonContainerDaoGODSAF;
 import no.systema.godsno.model.JsonContainerDaoGODSJF;
 import no.systema.godsno.model.JsonContainerDaoGODSGF;
+import no.systema.godsno.model.JsonContainerDaoGODSFI;
 
 import no.systema.main.mapper.jsonjackson.general.ObjectMapperAbstractGrandFather;
 
@@ -49,4 +50,11 @@ public class JsonGodsnoMapper extends ObjectMapperAbstractGrandFather {
 		return container;
 	}
 	
+	public JsonContainerDaoGODSFI getContainerGodsfi(String utfPayload) throws Exception{
+		//At this point we now have an UTF-8 payload
+		JsonContainerDaoGODSFI container = super.getObjectMapper().readValue(utfPayload.getBytes(), JsonContainerDaoGODSFI.class); 
+		//logger.info("[JSON-String payload status=OK]  " + container.getUser());
+		//logger.info(container.getList().size());
+		return container;
+	}
 }

@@ -35,6 +35,8 @@ public final class GodsnoUrlDataStore {
 	static public String GODSNO_BASE_GODSAF_LIST_URL = AppConstants.HTTP_ROOT_SERVLET_JSERVICES + "/syjservicesgodsno/syjsSYGODSAF.do";
 	//http://gw.systema.no:8080/syjservicesgodsno/syjsSYGODSGF.do?user=OSCAR&gggn1=2018010622390
 	static public String GODSNO_BASE_GODSGF_LIST_URL = AppConstants.HTTP_ROOT_SERVLET_JSERVICES + "/syjservicesgodsno/syjsSYGODSGF.do";
-
+	//http://gw.systema.no:8080/syjservicesgodsno/syjsSYGODSFI.do?user=OSCAR
+	static public String GODSNO_BASE_GODSFI_LIST_URL = AppConstants.HTTP_ROOT_SERVLET_JSERVICES + "/syjservicesgodsno/syjsSYGODSFI.do";
+		
 	
 }

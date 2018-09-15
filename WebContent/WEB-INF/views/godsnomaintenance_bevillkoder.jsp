@@ -19,14 +19,14 @@
 	<tr>
 		<td>
 		<%-- tab container component --%>
-		<table width="100%" class="text11" cellspacing="0" border="0" cellpadding="0">
+		<table style="width:100%" class="text11" cellspacing="0" border="0" cellpadding="0">
 			<tr height="2"><td></td></tr>
 				<tr height="25"> 
-					<td width="20%" valign="bottom" class="tab" align="center" nowrap>
-						<font class="tabLink">&nbsp;Bevill.koder - Vedlikehold</font>&nbsp;
+					<td style="width:20%" valign="bottom" class="tab" align="center" nowrap>
 						<img style="vertical-align: middle;"  src="resources/images/list.gif" border="0" alt="general list">
+						<font class="tabLink">&nbsp;Bevill.koder - Vedlikehold</font>&nbsp;
 					</td>
-					<td width="80%" class="tabFantomSpace" align="center" nowrap><font class="tabDisabledLink">&nbsp;</font></td>	
+					<td style="width:80%" class="tabFantomSpace" align="center" nowrap><font class="tabDisabledLink">&nbsp;</font></td>	
 				</tr>
 		</table>
 		</td>
@@ -42,18 +42,18 @@
 	 	    
 			<%-- list component --%>
 			<tr>
-				<td width="2%">&nbsp;</td>
+				<td width="3%">&nbsp;</td>
 					
 				<td width="100%">
-				<table id="containerdatatableTable" width="80%" cellspacing="1" border="0" align="left">
+				<table id="containerdatatableTable" style="width:80%"  cellspacing="1" border="0" align="left">
 			    	    <tr>
 						<td class="text14">
 						<table id="mainList" class="display compact cell-border" >
 							<thead>
 							<tr>
-								<th width="2%" class="tableHeaderFieldFirst" align="center" >&nbsp;Id&nbsp;</th>
-								<th width="2%" class="tableHeaderField" align="center" >&nbsp;Endre</th>
-			                    <th width="80%" class="tableHeaderField" align="left" >&nbsp;Beskrivelse&nbsp;</th>
+								<th width="2%" class="tableHeaderFieldFirst" align="center" >Id</th>
+								<th width="2%" class="tableHeaderField" align="center" >Lage</th>
+			                    <th class="tableHeaderField" align="left" >&nbsp;Beskrivelse&nbsp;</th>
 			                    <%--
 			                    <th class="tableHeaderField" align="left" >&nbsp;Kode&nbsp;</th>
 								<th class="tableHeaderField" align="left" >&nbsp;Text&nbsp;</th>
@@ -67,11 +67,11 @@
 				              
 				               <td width="2%" class="tableCellFirst" style="border-style: solid;border-width: 0px 1px 1px 1px;border-color:#FAEBD7;" align="center" ><font class="text14">&nbsp;${record.id}&nbsp;</font></td>
 				               <td width="2%" class="tableCell" style="border-style: solid;border-width: 0px 1px 1px 0px;border-color:#FAEBD7;" align="center">
-				               		<a id="alinkRecordId_${counter.count}" onClick="setBlockUI(this);" href="godsnomaintenance_todo_${record.pgm}.do?id=${record.dbTable}">
+				               		<a id="alinkRecordId_${counter.count}" onClick="setBlockUI(this);" href="godsnomaintenance_bevillkoder_${record.pgm}.do?id=${record.dbTable}">
 	               						<img src="resources/images/update.gif" border="0" alt="edit">
 				               		</a>
 				               </td>
-				               <td class="tableCell" style="border-style: solid;border-width: 0px 1px 1px 0px;border-color:#FAEBD7;" width="80%" >
+				               <td class="tableCell" style="border-style: solid;border-width: 0px 1px 1px 0px;border-color:#FAEBD7;"  >
 				               		<font class="text14">&nbsp;&nbsp;${record.subject}&nbsp;</font>
 					               		
 				               </td>
