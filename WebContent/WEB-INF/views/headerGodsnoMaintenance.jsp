@@ -74,7 +74,7 @@
 			    			<%-- --------------------- --%>
 			    			<%-- TOPIC ONE MENU        --%>
 			    			<%-- --------------------- --%>
-			    			<a id="alinkTopicOne" tabindex=-1 href="todo.do?">
+			    			<a id="alinkTopicOne" tabindex=-1 href="godsnomaintenance_bevillkoder.do">
 			    				&nbsp;<font 
 			    				<c:choose>           
 		                   			<c:when test="${user.activeMenu=='GODSREGNO_MAINTENANCE_ONE'}">
@@ -85,14 +85,14 @@
 		                   			</c:otherwise>
 		               			</c:choose>
 			    				
-			    				>&nbsp;Lagerbevilln.koder&nbsp;</font>
+			    				>&nbsp;Bevill.koder&nbsp;</font>
 			    			</a>
 			    			
 			    			&nbsp;<font color="#FF6600"; style="font-weight: bold;">|</font>
 			    			
 			    			<%-- --------------------- --%>
 			    			<%-- TOPIC TWO  MENU       --%>
-			    			<%-- --------------------- --%>
+			    			<%-- --------------------- 
 			    			<a id="alinkTopicTwo" tabindex=-1 href="todo.do?">
 			    				&nbsp;<font 
 			    				<c:choose>           
@@ -104,10 +104,10 @@
 	                   			</c:otherwise>
 	               			</c:choose>
 			    				
-		    				>&nbsp;Låse avd/bev.kode&nbsp;</font>
+		    				>&nbsp;XXX&nbsp;</font>
 			    			</a>
 			    			&nbsp;<font color="#FF6600"; style="font-weight: bold;">|</font>
-			    			
+			    			--%>
 		    			 	<%-- ------------------- --%>
 			    			<%-- Maintenance  MENU    --%>
 			    			<%-- -------------------- --%>

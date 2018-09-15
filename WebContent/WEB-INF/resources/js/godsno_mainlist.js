@@ -40,7 +40,7 @@
 	  "scrollY":     "700px",
   	  "scrollCollapse":  true,
   	  "tabIndex": -1,
-  	  "order": [[ 1, "desc" ]],
+  	  "order": [[ 1, "asc" ]],
 	  "lengthMenu": [ 75, 100, 200],
 	  "language": {
 		  "url": getLanguage(lang)
