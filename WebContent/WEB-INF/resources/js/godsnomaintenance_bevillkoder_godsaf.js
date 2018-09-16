@@ -17,22 +17,14 @@
 	  
 	  //Create new record
 	  jq('#newRecordButton').click(function() {
-		  jq('#gflbko').val("");
-		  jq('#gflbko').prop('readonly', false);
-		  jq('#gflbko').removeClass("inputTextReadOnly");
-		  jq('#gflbko').addClass("inputTextMediumBlueMandatoryField");
 		  //adjust	
-		  jq('#gflbs1').val("");
-		  jq('#gflbs1').prop('readonly', false);
-		  jq('#gflbs1').removeClass("inputTextReadOnly");
-		  jq('#gflbs1').addClass("inputTextMediumBlueMandatoryField");
-			
-		  jq('#gflbs2').val("");
-		  jq('#gflbs3').val("");
-		  jq('#gflbs4').val("");
+		  jq('#gflavd').val("");
+		  jq('#gflavd').prop('readonly', false);
+		  jq('#gflavd').removeClass("inputTextReadOnly");
+		  jq('#gflavd').addClass("inputTextMediumBlueMandatoryField");
+		  //
+		  jq('#gflbko').val("");
 		  jq('#gfenh').val("");
-		  jq('#gfprt').val("");
-		  jq('#gffax').val("");
 		  //for a future update
 		  jq('#updateId').val("");
 			
@@ -49,43 +41,31 @@
 	  	rawId = rawId.replace("recordUpdate_", "");
 	  	var record = rawId.split('_');
 		var id = record[0];
-		var id2 = record[1];
 		
 		jq.ajax({
 	  	  type: 'GET',
-	  	  url: 'getSpecificRecord_godsfi.do',
+	  	  url: 'getSpecificRecord_godsaf.do',
 	  	  data: { applicationUser : jq('#applicationUser').val(), 
-	  		  	  id : id,
-	  		  	  id2 : id2 },
+	  		  	  id : id },
 	  	  dataType: 'json',
 	  	  cache: false,
 	  	  contentType: 'application/json',
 	  	  success: function(data) {
 		  	var len = data.length;
 	  		for ( var i = 0; i < len; i++) {
-	  			jq('#gflbko').val("");jq('#gflbko').val(data[i].gflbko);
-	  			jq('#gflbko').prop('readonly', true);
-	  			jq('#gflbko').removeClass("inputTextMediumBlueMandatoryField");
-	  			jq('#gflbko').addClass("inputTextReadOnly");
-	  			
-	  			//id2
-	  			jq('#gflbs1').val("");jq('#gflbs1').val(data[i].gflbs1);
-	  			jq('#gflbs1').prop('readonly', true);
-	  			jq('#gflbs1').removeClass("inputTextMediumBlueMandatoryField");
-	  			jq('#gflbs1').addClass("inputTextReadOnly");
+	  			jq('#gflavd').val("");jq('#gflavd').val(data[i].gflavd);
+	  			jq('#gflavd').prop('readonly', true);
+	  			jq('#gflavd').removeClass("inputTextMediumBlueMandatoryField");
+	  			jq('#gflavd').addClass("inputTextReadOnly");
 	  			//rest of the gang
-	  			jq('#gflbs2').val("");jq('#gflbs2').val(data[i].gflbs2);
-	  			jq('#gflbs3').val("");jq('#gflbs3').val(data[i].gflbs3);
-	  			jq('#gflbs4').val("");jq('#gflbs4').val(data[i].gflbs4);
+	  			jq('#gflbko').val("");jq('#gflbko').val(data[i].gflbko);
 	  			jq('#gfenh').val("");jq('#gfenh').val(data[i].gfenh);
-	  			jq('#gfprt').val("");jq('#gfprt').val(data[i].gfprt);
-	  			jq('#gffax').val("");jq('#gffax').val(data[i].gffax);
 	  			
 	  			//for a future update
 	  			jq('#updateId').val("");jq('#updateId').val(data[i].gflbko);
 	  			//enable submit
 	  			//jq("#submit").prop("disabled", false);
-	  			jq('#gflbs2').focus();
+	  			jq('#gflbko').focus();
 	  		}
 	  	  }, 
 	  	  error: function() {
@@ -177,14 +157,12 @@
 	  	rawId = rawId.replace("recordDelete_", "");
 	  	var record = rawId.split('_');
 		var id = record[0];
-		var id2 = record[1];
 		
 		jq.ajax({
 	  	  type: 'GET',
-	  	  url: 'deleteSpecificRecord_godsfi.do',
+	  	  url: 'deleteSpecificRecord_godsaf.do',
 	  	  data: { applicationUser : jq('#applicationUser').val(), 
-	  		  	  id : id,
-	  		  	  id2 : id2 },
+	  		  	  id : id },
 	  	  dataType: 'json',
 	  	  cache: false,
 	  	  contentType: 'application/json',
@@ -192,7 +170,7 @@
 		  	var len = data.length;
 	  		for ( var i = 0; i < len; i++) {
 	  			setBlockUI();
-	  			window.location = "godsnomaintenance_bevillkoder_godsfi_edit.do";
+	  			window.location = "godsnomaintenance_bevillkoder_godsaf_edit.do";
 	  		}
 	  	  }, 
 	  	  error: function() {

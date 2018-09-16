@@ -29,21 +29,22 @@ import no.systema.main.util.JsonDebugger;
 import no.systema.main.model.SystemaWebUser;
 import no.systema.main.util.StringManager;
 
+import no.systema.jservices.common.dao.GodsafDao;
 import no.systema.jservices.common.dao.GodsfiDao;
-import no.systema.jservices.common.dao.GodsjfDao;
 //GODSNO
 import no.systema.godsno.service.GodsnoService;
 import no.systema.godsno.filter.SearchFilterGodsnoMainList;
 import no.systema.godsno.mapper.url.request.UrlRequestParameterMapper;
 import no.systema.godsno.url.store.GodsnoUrlDataStore;
 import no.systema.godsno.util.GodsnoConstants;
+import no.systema.godsno.model.JsonContainerDaoGODSAF;
 import no.systema.godsno.model.JsonContainerDaoGODSFI;
 import no.systema.godsno.util.manager.CodeDropDownMgr;
-import no.systema.godsno.z.maintenance.main.validator.GodsnoMaintenanceGodsfiValidator;
+import no.systema.godsno.z.maintenance.main.validator.GodsnoMaintenanceGodsafValidator;
 import no.systema.godsno.z.maintenance.main.model.MaintenanceMainListObject;
 
 /**
- * Godsregistrering-NO maintenance Bevill.koder Controller 
+ * Godsregistrering-NO maintenance Bevill.koder/avd Controller 
  * 
  * @author oscardelatorre
  * @date  Sep 2018
@@ -53,9 +54,9 @@ import no.systema.godsno.z.maintenance.main.model.MaintenanceMainListObject;
 @Controller
 @SessionAttributes(AppConstants.SYSTEMA_WEB_USER_KEY)
 @Scope("session")
-public class GodsnoMaintenanceBevillkoderController {
+public class GodsnoMaintenanceBevillkoderAvdController {
 	private static final JsonDebugger jsonDebugger = new JsonDebugger(2000);
-	private static Logger logger = Logger.getLogger(GodsnoMaintenanceBevillkoderController.class.getName());
+	private static Logger logger = Logger.getLogger(GodsnoMaintenanceBevillkoderAvdController.class.getName());
 	private ModelAndView loginView = new ModelAndView("redirect:logout.do");
 	private LoginValidator loginValidator = new LoginValidator();
 	private StringManager strMgr = new StringManager();
@@ -75,33 +76,7 @@ public class GodsnoMaintenanceBevillkoderController {
 		}
 	}
 		
-	/**
-	 * 
-	 * @param session
-	 * @param request
-	 * @return
-	 */
-	@RequestMapping(value="godsnomaintenance_bevillkoder.do", method={RequestMethod.GET, RequestMethod.POST} )
-	public ModelAndView doInit(ModelMap model, HttpSession session, HttpServletRequest request){
-		logger.info("Inside: doInit");
-		
-		ModelAndView successView = new ModelAndView("godsnomaintenance_bevillkoder");
-		SystemaWebUser appUser = this.loginValidator.getValidUser(session);
-		//check user (should be in session already)
-		if(appUser==null){
-			return loginView;
-		
-		}else{
-			List list = this.populateMaintenanceBevillkoderMainList();
-			model.addAttribute("list", list);
-			appUser.setActiveMenu(SystemaWebUser.ACTIVE_MENU_GODSREGNO_MAINTENANCE_ONE);
-			logger.info(Calendar.getInstance().getTime() + " CONTROLLER start - timestamp");
-			
-			successView.addObject(GodsnoConstants.DOMAIN_MODEL , model);
-	    		
-			return successView;
-	    }
-	}
+	
 	/**
 	 * 
 	 * @param recordToValidate
@@ -110,18 +85,20 @@ public class GodsnoMaintenanceBevillkoderController {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value="godsnomaintenance_bevillkoder_godsfi.do", method={RequestMethod.GET, RequestMethod.POST} )
-	public ModelAndView doGetListGodsfi(@ModelAttribute ("record") GodsfiDao recordToValidate, BindingResult bindingResult,HttpSession session, HttpServletRequest request){
+	@RequestMapping(value="godsnomaintenance_bevillkoder_godsaf.do", method={RequestMethod.GET, RequestMethod.POST} )
+	public ModelAndView doGetListGodsfi(@ModelAttribute ("record") GodsafDao recordToValidate, BindingResult bindingResult,HttpSession session, HttpServletRequest request){
 		logger.info("Inside: doGetListGodsfi");
 		Map model = new HashMap();
-		ModelAndView successView = new ModelAndView("godsnomaintenance_bevillkoder_godsfi");
+		ModelAndView successView = new ModelAndView("godsnomaintenance_bevillkoder_godsaf");
 		SystemaWebUser appUser = this.loginValidator.getValidUser(session);
 		//check user (should be in session already)
 		if(appUser==null){
 			return loginView;
 		
 		}else{
-			List<GodsfiDao> list = (List)this.getListGodsfi(appUser);
+			List<GodsafDao> list = (List)this.getListGodsaf(appUser);
+			List<GodsafDao> bkoderList = (List)this.getListGodsfi(appUser);
+			model.put("bkoderList", bkoderList);
 			model.put("list", list);
 			logger.info(Calendar.getInstance().getTime() + " CONTROLLER start - timestamp");
 			
@@ -138,11 +115,11 @@ public class GodsnoMaintenanceBevillkoderController {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value="godsnomaintenance_bevillkoder_godsfi_edit.do", method={RequestMethod.GET, RequestMethod.POST} )
-	public ModelAndView doEditGodsfi(ModelMap modelS, @ModelAttribute ("record") GodsfiDao recordToValidate, BindingResult bindingResult,HttpSession session, HttpServletRequest request){
+	@RequestMapping(value="godsnomaintenance_bevillkoder_godsaf_edit.do", method={RequestMethod.GET, RequestMethod.POST} )
+	public ModelAndView doEditGodsfi(ModelMap modelS, @ModelAttribute ("record") GodsafDao recordToValidate, BindingResult bindingResult,HttpSession session, HttpServletRequest request){
 		logger.info("Inside: doEditGodsfi");
 		Map model = new HashMap();
-		ModelAndView successView = new ModelAndView("godsnomaintenance_bevillkoder_godsfi");
+		ModelAndView successView = new ModelAndView("godsnomaintenance_bevillkoder_godsaf");
 		SystemaWebUser appUser = this.loginValidator.getValidUser(session);
 		
 		String action = request.getParameter("action");
@@ -160,7 +137,7 @@ public class GodsnoMaintenanceBevillkoderController {
 				int dmlRetval = 0;
 				StringBuffer errMsg = new StringBuffer();
 				//validator
-				GodsnoMaintenanceGodsfiValidator validator = new GodsnoMaintenanceGodsfiValidator();
+				GodsnoMaintenanceGodsafValidator validator = new GodsnoMaintenanceGodsafValidator();
 				validator.validate(recordToValidate, bindingResult);
 			    //check for ERRORS
 				if(bindingResult.hasErrors()){
@@ -176,19 +153,21 @@ public class GodsnoMaintenanceBevillkoderController {
 			    		mode = "A"; //Create new
 			    	}
 			    	//execute update
-			    	dmlRetval = this.updateRecordGodsfi(appUser.getUser(), recordToValidate, mode, errMsg);
+			    	dmlRetval = this.updateRecordGodsaf(appUser.getUser(), recordToValidate, mode, errMsg);
 			    	if(dmlRetval<0){
 						logger.info("ERROR on update ... ??? check your code");
 						modelS.addAttribute(GodsnoConstants.ASPECT_ERROR_MESSAGE, errMsg.toString());
 						
 					}else{
 						logger.info("doUpdate = OK");
-						modelS.addAttribute("record", new GodsfiDao());
+						modelS.addAttribute("record", new GodsafDao());
 					}
 			    }
 			}
-			List<GodsfiDao> list = (List)this.getListGodsfi(appUser);
+			List<GodsafDao> list = (List)this.getListGodsaf(appUser);
+			List<GodsafDao> bkoderList = (List)this.getListGodsfi(appUser);
 			model.put("list", list);
+			model.put("bkoderList", bkoderList);
 			successView.addObject(GodsnoConstants.DOMAIN_MODEL , model);
 	    }
 		
@@ -198,29 +177,79 @@ public class GodsnoMaintenanceBevillkoderController {
 	
 	/**
 	 * 
+	 * @param appUser
 	 * @return
 	 */
-	private List<MaintenanceMainListObject> populateMaintenanceBevillkoderMainList(){
-		List<MaintenanceMainListObject> listObject = new ArrayList<MaintenanceMainListObject>();
+	private Collection<GodsafDao> getListGodsaf(SystemaWebUser appUser){
+		Collection<GodsafDao> outputList = new ArrayList<GodsafDao>();
+		//---------------
+    	//Get main list
+		//---------------
+		final String BASE_URL = GodsnoUrlDataStore.GODSNO_BASE_GODSAF_LIST_URL;
+		//add URL-parameters
+		StringBuffer urlRequestParams = new StringBuffer();
+		urlRequestParams.append("user=" + appUser.getUser());
 		
-		MaintenanceMainListObject object = new  MaintenanceMainListObject();
-		        
-		object.setId("1");
-		object.setSubject("Bevill.koder");
-		object.setDbTable("GODSFI");
-		object.setStatus("G");
-		object.setPgm("godsfi");
-		listObject.add(object);
-		//
-		object = new  MaintenanceMainListObject();
-		object.setId("2");
-		object.setSubject("Låse avd/bevill.koder");
-		object.setDbTable("GODSAF");
-		object.setStatus("G");
-		object.setPgm("godsaf");
-		listObject.add(object);
+		//session.setAttribute(TransportDispConstants.ACTIVE_URL_RPG_TRANSPORT_DISP, BASE_URL + "==>params: " + urlRequestParams.toString()); 
+    	logger.info(Calendar.getInstance().getTime() + " CGI-start timestamp");
+    	logger.info("URL: " + BASE_URL);
+    	logger.info("URL PARAMS: " + urlRequestParams);
+    	String jsonPayload = this.urlCgiProxyService.getJsonContent(BASE_URL, urlRequestParams.toString());
+    	//Debug --> 
+    	logger.debug(jsonDebugger.debugJsonPayloadWithLog4J(jsonPayload));
+    	logger.info(Calendar.getInstance().getTime() +  " CGI-end timestamp");
+    	if(jsonPayload!=null){
+    		JsonContainerDaoGODSAF listContainer = this.godsnoService.getContainerGodsaf(jsonPayload);
+    		outputList = listContainer.getList();	
+    	}		
+	    
+		return outputList;
+	}
+	
+	/**
+	 * 
+	 * @param applicationUser
+	 * @param recordToValidate
+	 * @param mode
+	 * @param errMsg
+	 * @return
+	 */
+	private int updateRecordGodsaf(String applicationUser, GodsafDao recordToValidate, String mode, StringBuffer errMsg){
+		int retval = 0;
+		//---------------
+    	//Get main list
+		//---------------
+		final String BASE_URL = GodsnoUrlDataStore.GODSNO_BASE_GODSAF_DML_UPDATE_URL;
+		//add URL-parameters
+		StringBuffer urlRequestKeys = new StringBuffer();
+		urlRequestKeys.append("user=" + applicationUser);
+		urlRequestKeys.append("&mode=" + mode);
+		String urlRequestParams = urlRequestKeys + this.urlRequestParameterMapper.getUrlParameterValidString((recordToValidate));
 		
-		return listObject;
+		//session.setAttribute(TransportDispConstants.ACTIVE_URL_RPG_TRANSPORT_DISP, BASE_URL + "==>params: " + urlRequestParams.toString()); 
+    	logger.info(Calendar.getInstance().getTime() + " CGI-start timestamp");
+    	logger.info("URL: " + BASE_URL);
+    	logger.info("URL PARAMS: " + urlRequestParams);
+    	String jsonPayload = this.urlCgiProxyService.getJsonContent(BASE_URL, urlRequestParams);
+    	//Debug --> 
+    	logger.info(jsonPayload);
+    	logger.info(Calendar.getInstance().getTime() +  " CGI-end timestamp");
+    	if(jsonPayload!=null){
+    		JsonContainerDaoGODSAF listContainer = this.godsnoService.getContainerGodsaf(jsonPayload);
+    		if(listContainer!=null){
+    			if(strMgr.isNotNull(listContainer.getErrMsg())){
+    				//Update successfully done!
+		    		logger.info("[ERROR] Record update - Error: " + errMsg.toString());
+		    		retval = -1;
+    			}else{
+    				//Update successfully done!
+		    		logger.info("[INFO] Record successfully updated, OK ");
+    			}
+    		
+    		}
+    	}		
+	    
+		return retval;
 	}
 	
 	/**
@@ -253,53 +282,6 @@ public class GodsnoMaintenanceBevillkoderController {
 	    
 		return outputList;
 	}
-	
-	/**
-	 * 
-	 * @param applicationUser
-	 * @param recordToValidate
-	 * @param mode
-	 * @param errMsg
-	 * @return
-	 */
-	private int updateRecordGodsfi(String applicationUser, GodsfiDao recordToValidate, String mode, StringBuffer errMsg){
-		int retval = 0;
-		//---------------
-    	//Get main list
-		//---------------
-		final String BASE_URL = GodsnoUrlDataStore.GODSNO_BASE_GODSFI_DML_UPDATE_URL;
-		//add URL-parameters
-		StringBuffer urlRequestKeys = new StringBuffer();
-		urlRequestKeys.append("user=" + applicationUser);
-		urlRequestKeys.append("&mode=" + mode);
-		String urlRequestParams = urlRequestKeys + this.urlRequestParameterMapper.getUrlParameterValidString((recordToValidate));
-		
-		//session.setAttribute(TransportDispConstants.ACTIVE_URL_RPG_TRANSPORT_DISP, BASE_URL + "==>params: " + urlRequestParams.toString()); 
-    	logger.info(Calendar.getInstance().getTime() + " CGI-start timestamp");
-    	logger.info("URL: " + BASE_URL);
-    	logger.info("URL PARAMS: " + urlRequestParams);
-    	String jsonPayload = this.urlCgiProxyService.getJsonContent(BASE_URL, urlRequestParams);
-    	//Debug --> 
-    	logger.info(jsonPayload);
-    	logger.info(Calendar.getInstance().getTime() +  " CGI-end timestamp");
-    	if(jsonPayload!=null){
-    		JsonContainerDaoGODSFI listContainer = this.godsnoService.getContainerGodsfi(jsonPayload);
-    		if(listContainer!=null){
-    			if(strMgr.isNotNull(listContainer.getErrMsg())){
-    				//Update successfully done!
-		    		logger.info("[ERROR] Record update - Error: " + errMsg.toString());
-		    		retval = -1;
-    			}else{
-    				//Update successfully done!
-		    		logger.info("[INFO] Record successfully updated, OK ");
-    			}
-    		
-    		}
-    	}		
-	    
-		return retval;
-	}
-	
 	
 }
 

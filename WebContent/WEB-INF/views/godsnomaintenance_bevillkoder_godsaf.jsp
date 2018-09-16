@@ -6,7 +6,7 @@
 <!-- =====================end header ==========================-->
 	<%-- specific jQuery functions for this JSP (must reside under the resource map since this has been
 		specified in servlet.xml as static <mvc:resources mapping="/resources/**" location="WEB-INF/resources/" order="1"/> --%>
-	<SCRIPT type="text/javascript" src="resources/js/godsnomaintenance_bevillkoder_godsfi.js?ver=${user.versionEspedsg}"></SCRIPT>	
+	<SCRIPT type="text/javascript" src="resources/js/godsnomaintenance_bevillkoder_godsaf.js?ver=${user.versionEspedsg}"></SCRIPT>	
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 	
 	<style type = "text/css">
@@ -31,7 +31,7 @@
 					</td>
 					<td width="20%" valign="bottom" class="tab" align="center">
 						<img style="vertical-align: middle;"  src="resources/images/bulletGreen.png" border="0" width="10px" height="10px" alt="db table">
-						<font class="tabLink">Lage bevill.koder</font>						
+						<font class="tabLink">Låse avd/bevill.koder</font>						
 					</td>
 					<td width="80%" class="tabFantomSpace" align="center" nowrap><font class="tabDisabledLink">&nbsp;</font></td>	
 				</tr>
@@ -50,22 +50,17 @@
 				<td width="3%">&nbsp;</td>
 					
 				<td >
-				<table id="containerdatatableTable" cellspacing="1" border="0" align="left">
+				<table id="containerdatatableTable" style="width:60%" cellspacing="1" border="0" align="left">
 			    	    <tr>
 						<td class="text14">
 						<table id="mainList" class="display compact cell-border" >
 							<thead>
 							<tr>
 								<th width="2%" class="tableHeaderField" align="center" ><spring:message code="systema.godsno.maintenance.update"/></th>
-								<th class="tableHeaderField" align="left" >&nbsp;<spring:message code="systema.godsno.maintenance.godsfi.gflbko"/>&nbsp;</th>
-			                    <th class="tableHeaderField" align="left" >&nbsp;<spring:message code="systema.godsno.maintenance.godsfi.gflbs1"/>&nbsp;</th>
-			                    <th class="tableHeaderField" align="left" >&nbsp;<spring:message code="systema.godsno.maintenance.godsfi.gflbs2"/>&nbsp;</th>
-			                    <th class="tableHeaderField" align="left" >&nbsp;<spring:message code="systema.godsno.maintenance.godsfi.gflbs3"/>&nbsp;</th>
-			                    <th class="tableHeaderField" align="left" >&nbsp;<spring:message code="systema.godsno.maintenance.godsfi.gflbs4"/>&nbsp;</th>
-			                    <th class="tableHeaderField" align="left" >&nbsp;<spring:message code="systema.godsno.maintenance.godsfi.gfenh"/>&nbsp;</th>
-			                    <th class="tableHeaderField" align="left" >&nbsp;<spring:message code="systema.godsno.maintenance.godsfi.gfprt"/>&nbsp;</th>
-			                    <th class="tableHeaderField" align="left" >&nbsp;<spring:message code="systema.godsno.maintenance.godsfi.gffax"/>&nbsp;</th>
-			                    <th class="tableHeaderField" align="left" >&nbsp;<spring:message code="systema.godsno.maintenance.delete"/>&nbsp;</th>
+								<th class="tableHeaderField" align="left" >&nbsp;<spring:message code="systema.godsno.maintenance.godsaf.gflavd"/>&nbsp;</th>
+			                    <th class="tableHeaderField" align="left" >&nbsp;<spring:message code="systema.godsno.maintenance.godsaf.gflbko"/>&nbsp;</th>
+			                    <th width="2%" class="tableHeaderField" align="left" >&nbsp;<spring:message code="systema.godsno.maintenance.godsaf.gfenh"/>&nbsp;</th>
+			                    <th width="2%" class="tableHeaderField" align="center" >&nbsp;<spring:message code="systema.godsno.maintenance.delete"/>&nbsp;</th>
 			                </tr>  
 			                </thead>
 			                 
@@ -73,18 +68,13 @@
 				            <c:forEach var="record" items="${model.list}" varStatus="counter">   
 				               <tr class="tableRow" height="20" >
 				              
-				               <td width="2%" id="recordUpdate_${record.gflbko}_${record.gflbs1}" class="tableCellFirst" onClick="getRecord(this);" style="border-style: solid;border-width: 0px 1px 1px 0px;border-color:#FAEBD7;" align="center">
+				               <td width="2%" id="recordUpdate_${record.gflavd}_${record.gflbko}" class="tableCellFirst" onClick="getRecord(this);" style="border-style: solid;border-width: 0px 1px 1px 0px;border-color:#FAEBD7;" align="center">
 				               		<img src="resources/images/update.gif" border="0" alt="edit">
 				               </td>
+				               <td class="tableCell" style="border-style: solid;border-width: 0px 1px 1px 1px;border-color:#FAEBD7;" align="left" ><font class="text14">&nbsp;${record.gflavd}&nbsp;</font></td>
 				               <td class="tableCell" style="border-style: solid;border-width: 0px 1px 1px 1px;border-color:#FAEBD7;" align="left" ><font class="text14">&nbsp;${record.gflbko}&nbsp;</font></td>
-				               <td class="tableCell" style="border-style: solid;border-width: 0px 1px 1px 1px;border-color:#FAEBD7;" align="left" ><font class="text14">&nbsp;${record.gflbs1}&nbsp;</font></td>
-				               <td class="tableCell" style="border-style: solid;border-width: 0px 1px 1px 1px;border-color:#FAEBD7;" align="left" ><font class="text14">&nbsp;${record.gflbs2}&nbsp;</font></td>
-				               <td class="tableCell" style="border-style: solid;border-width: 0px 1px 1px 1px;border-color:#FAEBD7;" align="left" ><font class="text14">&nbsp;${record.gflbs3}&nbsp;</font></td>
-				               <td class="tableCell" style="border-style: solid;border-width: 0px 1px 1px 1px;border-color:#FAEBD7;" align="left" ><font class="text14">&nbsp;${record.gflbs4}&nbsp;</font></td>
-				               <td class="tableCell" style="border-style: solid;border-width: 0px 1px 1px 1px;border-color:#FAEBD7;" align="left" ><font class="text14">&nbsp;${record.gfenh}&nbsp;</font></td>
-				               <td class="tableCell" style="border-style: solid;border-width: 0px 1px 1px 1px;border-color:#FAEBD7;" align="left" ><font class="text14">&nbsp;${record.gfprt}&nbsp;</font></td>
-				               <td class="tableCell" style="border-style: solid;border-width: 0px 1px 1px 1px;border-color:#FAEBD7;" align="left" ><font class="text14">&nbsp;${record.gffax}&nbsp;</font></td>
-				               <td width="2%" id="recordDelete_${record.gflbko}_${record.gflbs1}" class="tableCell" onClick="doDeleteRecord(this);" style="border-style: solid;border-width: 0px 1px 1px 0px;border-color:#FAEBD7;" align="center">
+				               <td width="2%" class="tableCell" style="border-style: solid;border-width: 0px 1px 1px 1px;border-color:#FAEBD7;" align="left" ><font class="text14">&nbsp;${record.gfenh}&nbsp;</font></td>
+				               <td width="2%" id="recordDelete_${record.gflavd}_${record.gflbko}" class="tableCell" onClick="doDeleteRecord(this);" style="border-style: solid;border-width: 0px 1px 1px 0px;border-color:#FAEBD7;" align="center">
 				               		<img src="resources/images/delete.gif" width="15px" height="15px" border="0" alt="edit">
 				               </td>
 				            </tr> 
@@ -146,7 +136,7 @@
 	 	    <tr >
 	 	    	<td width="3%">&nbsp;</td>
 				<td >
-				<form action="godsnomaintenance_bevillkoder_godsfi_edit.do" name="formRecord" id="formRecord" method="POST" >
+				<form action="godsnomaintenance_bevillkoder_godsaf_edit.do" name="formRecord" id="formRecord" method="POST" >
 					<input type="hidden" name="applicationUser" id="applicationUser" value="${user.user}">
 					<input type="hidden" name="language" id="language" value='${user.usrLang}'>
 	 	    		<input type="hidden" name="updateId" id=updateId value="${model.updateId}"> 
@@ -154,30 +144,21 @@
 					
 					<table cellspacing="1" border="0" align="left">
 			    	    <tr>
-							<td class="text14" title="gflbko">&nbsp;<font class="text14RedBold" >*</font><spring:message code="systema.godsno.maintenance.godsfi.gflbko"/></td>
-							<td class="text14" title="gflbs1">&nbsp;<font class="text14RedBold" >*</font><spring:message code="systema.godsno.maintenance.godsfi.gflbs1"/></td>
-							<td class="text14" title="gflbs2">&nbsp;<spring:message code="systema.godsno.maintenance.godsfi.gflbs2"/></td>
-							<td class="text14" title="gflbs3">&nbsp;<spring:message code="systema.godsno.maintenance.godsfi.gflbs3"/></td>
-							<td class="text14" title="gflbs4">&nbsp;<spring:message code="systema.godsno.maintenance.godsfi.gflbs4"/></td>
+							<td class="text14" title="gflavd">&nbsp;<font class="text14RedBold" >*</font><spring:message code="systema.godsno.maintenance.godsaf.gflavd"/></td>
+							<td class="text14" title="gflbko">&nbsp;<font class="text14RedBold" >*</font><spring:message code="systema.godsno.maintenance.godsaf.gflbko"/></td>
+							<td class="text14" title="gfenh">&nbsp;<spring:message code="systema.godsno.maintenance.godsaf.gfenh"/></td>							
 						</tr>
 						<tr>
-							<td ><input type="text" class="inputTextMediumBlueMandatoryField" name="gflbko" id="gflbko" size="6" maxlength="5" value='${record.gflbko}'></td>
-							<td ><input type="text" class="inputTextMediumBlueMandatoryField" name="gflbs1" id="gflbs1" size="31" maxlength="30" value='${record.gflbs1}'></td>
-							<td ><input type="text" class="inputTextMediumBlue" name="gflbs2" id="gflbs2" size="31" maxlength="30" value='${record.gflbs2}'></td>
-							<td ><input type="text" class="inputTextMediumBlue" name="gflbs3" id="gflbs3" size="31" maxlength="30" value='${record.gflbs3}'></td>
-							<td ><input type="text" class="inputTextMediumBlue" name="gflbs4" id="gflbs4" size="31" maxlength="30" value='${record.gflbs4}'></td>
-						</tr>
-						<tr height="5"><td>&nbsp;</td>
-						<tr>	
-							<td class="text14" title="gfenh">&nbsp;<spring:message code="systema.godsno.maintenance.godsfi.gfenh"/></td>
-							<td class="text14" title="gfprt">&nbsp;<spring:message code="systema.godsno.maintenance.godsfi.gfprt"/></td>
-							<td class="text14" title="gffax">&nbsp;<spring:message code="systema.godsno.maintenance.godsfi.gffax"/></td>
-						</tr>
-						<tr>	
+							<td ><input type="text" class="inputTextMediumBlueMandatoryField" name="gflavd" id="gflavd" size="5" maxlength="4" value='${record.gflavd}'></td>
+							<td >
+								<select class="inputTextMediumBlueMandatoryField" name="gflbko" id="gflbko" >
+			 						<option value="">-velg-</option>
+			 						<c:forEach var="item" items="${model.bkoderList}" >
+				 				  		<option value="${item.gflbko}" <c:if test="${item.gflbko == record.gflbko}"> selected </c:if> >${item.gflbko}</option>
+									</c:forEach>  
+								</select>
+							</td>
 							<td ><input onKeyPress="return numberKey(event)" type="text" class="inputTextMediumBlue" name="gfenh" id="gfenh" size="2" maxlength="1" value='${record.gfenh}'></td>
-							<td ><input type="text" class="inputTextMediumBlue" name="gfprt" id="gfprt" size="11" maxlength="10" value='${record.gfprt}'></td>
-							<td ><input type="text" class="inputTextMediumBlue" name="gffax" id="gffax" size="16" maxlength="15" value='${record.gffax}'></td>
-							
 							<td>
 								<input onClick="setBlockUI(this);" class="inputFormSubmit" type="submit" name="submit" id="submit" value='<spring:message code="systema.godsno.maintenance.save"/>'/>
 							</td>
