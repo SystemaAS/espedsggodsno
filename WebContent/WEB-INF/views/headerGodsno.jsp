@@ -127,7 +127,7 @@
 			    			<%-- ------------------- --%>
 			    			<%-- Maintenance  MENU    --%>
 			    			<%-- -------------------- --%>
-			    			<a id="alinkMaintGate" tabindex=-1 href="godsnomaintenancegate.do">
+			    			<a id="alinkMaintGate" tabindex=-1 href="godsnomaintenance_bevillkoder.do">
 			    				&nbsp;<font class="headerMenuAdmin">
 		                   		&nbsp;&nbsp;<spring:message code="systema.godsno.maintenance.label"/>&nbsp;&nbsp;</font>
 			    			</a>
