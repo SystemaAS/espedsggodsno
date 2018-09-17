@@ -1,6 +1,8 @@
 package no.systema.godsno.z.maintenance.main.controller;
 
 import java.util.*;
+import java.util.regex.Pattern;
+
 import javax.annotation.PostConstruct;
 
 
@@ -96,8 +98,8 @@ public class GodsnoMaintenanceBevillkoderAvdController {
 			return loginView;
 		
 		}else{
-			List<GodsafDao> list = (List)this.getListGodsaf(appUser);
-			List<GodsafDao> bkoderList = (List)this.getListGodsfi(appUser);
+			List<GodsafDao> list = (List<GodsafDao>)this.getListGodsaf(appUser, null);
+			List<GodsfiDao> bkoderList = (List<GodsfiDao>)this.getListGodsfi(appUser);
 			model.put("bkoderList", bkoderList);
 			model.put("list", list);
 			logger.info(Calendar.getInstance().getTime() + " CONTROLLER start - timestamp");
@@ -150,22 +152,31 @@ public class GodsnoMaintenanceBevillkoderAvdController {
 			    }else{
 			    	String mode = "U"; //Update
 			    	if(strMgr.isNull(updateId)){
-			    		mode = "A"; //Create new
+			    		//VALIDATE if avd exists already (ONLY when CREATE NEW
+						if(!this.isValidOnRules(appUser, recordToValidate, model)){
+							model.put("updateId", updateId);
+				    		isValidRecord = false;
+						}else{	
+							mode = "A"; //Create new
+						}
 			    	}
+			    	
 			    	//execute update
-			    	dmlRetval = this.updateRecordGodsaf(appUser.getUser(), recordToValidate, mode, errMsg);
-			    	if(dmlRetval<0){
-						logger.info("ERROR on update ... ??? check your code");
-						modelS.addAttribute(GodsnoConstants.ASPECT_ERROR_MESSAGE, errMsg.toString());
-						
-					}else{
-						logger.info("doUpdate = OK");
-						modelS.addAttribute("record", new GodsafDao());
-					}
+			    	if(isValidRecord){
+				    	dmlRetval = this.updateRecordGodsaf(appUser.getUser(), recordToValidate, mode, errMsg);
+				    	if(dmlRetval<0){
+							logger.info("ERROR on update ... ??? check your code");
+							modelS.addAttribute(GodsnoConstants.ASPECT_ERROR_MESSAGE, errMsg.toString());
+							
+						}else{
+							logger.info("doUpdate = OK");
+							modelS.addAttribute("record", new GodsafDao());
+						}
+			    	}
 			    }
 			}
-			List<GodsafDao> list = (List)this.getListGodsaf(appUser);
-			List<GodsafDao> bkoderList = (List)this.getListGodsfi(appUser);
+			List<GodsafDao> list = (List<GodsafDao>)this.getListGodsaf(appUser, null);
+			List<GodsfiDao> bkoderList = (List<GodsfiDao>)this.getListGodsfi(appUser);
 			model.put("list", list);
 			model.put("bkoderList", bkoderList);
 			successView.addObject(GodsnoConstants.DOMAIN_MODEL , model);
@@ -173,14 +184,49 @@ public class GodsnoMaintenanceBevillkoderAvdController {
 		
 		return successView;
 	}
+	/**
+	 * 
+	 * @param appUser
+	 * @param recordToValidate
+	 * @param model
+	 * @return
+	 */
+	private boolean isValidOnRules(SystemaWebUser appUser, GodsafDao recordToValidate, Map model){
+		boolean retval = true;
+		
+		//RULE 1
+		List<GodsafDao> list = (List<GodsafDao>)this.getListGodsaf(appUser, recordToValidate);
+		if(list!=null && list.size()>0){
+			model.put(GodsnoConstants.ASPECT_ERROR_MESSAGE, "Avd. finnes fra før" );
+			retval = false;
+		}	
+		//RULE 2
+		if(retval){
+			if(recordToValidate!=null && strMgr.isNotNull(recordToValidate.getGflavd())){
+				if(recordToValidate.getGflavd().length()<4){
+					model.put(GodsnoConstants.ASPECT_ERROR_MESSAGE, "Avd.lengde må være 4-tecken" );
+					retval = false;
+				}
+				//RULE 3
+				if(retval){
+					String regexPattern = "(X{1,3}\\d{1,3})|(\\d{1,3}X{1,3})|(\\d{4})";
+					if(!Pattern.matches(regexPattern, recordToValidate.getGflavd()) ){
+						model.put(GodsnoConstants.ASPECT_ERROR_MESSAGE, "Avd må være 4-tecken med tall[1-9] eller maks 3-stk X" );
+						retval = false;
+					}
+				}	
+			}
+		}
 	
+		return retval;
+	}
 	
 	/**
 	 * 
 	 * @param appUser
 	 * @return
 	 */
-	private Collection<GodsafDao> getListGodsaf(SystemaWebUser appUser){
+	private Collection<GodsafDao> getListGodsaf(SystemaWebUser appUser, GodsafDao recordToValidate){
 		Collection<GodsafDao> outputList = new ArrayList<GodsafDao>();
 		//---------------
     	//Get main list
@@ -189,7 +235,9 @@ public class GodsnoMaintenanceBevillkoderAvdController {
 		//add URL-parameters
 		StringBuffer urlRequestParams = new StringBuffer();
 		urlRequestParams.append("user=" + appUser.getUser());
-		
+		if(recordToValidate != null && strMgr.isNotNull(recordToValidate.getGflavd())){
+			urlRequestParams.append("&gflavd=" + recordToValidate.getGflavd());
+		}
 		//session.setAttribute(TransportDispConstants.ACTIVE_URL_RPG_TRANSPORT_DISP, BASE_URL + "==>params: " + urlRequestParams.toString()); 
     	logger.info(Calendar.getInstance().getTime() + " CGI-start timestamp");
     	logger.info("URL: " + BASE_URL);

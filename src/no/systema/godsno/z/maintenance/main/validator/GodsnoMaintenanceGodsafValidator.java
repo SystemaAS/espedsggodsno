@@ -20,6 +20,7 @@ public class GodsnoMaintenanceGodsafValidator implements Validator {
 	private static final Logger logger = Logger.getLogger(GodsnoMaintenanceGodsafValidator.class.getName());
 	private DateValidator dateValidator = new DateValidator();
 	
+	
 	//private EmailValidator emailValidator = new EmailValidator();
 	private StringManager strMgr = new StringManager();
 	/**

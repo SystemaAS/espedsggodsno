@@ -24,7 +24,7 @@
 			<tr height="2"><td></td></tr>
 				<tr height="25"> 
 					<td width="20%" valign="bottom" class="tabDisabled" align="center" nowrap>
-						<a id="alinkRecordId" onClick="setBlockUI(this);" href="godsnomaintenance_bevillkoder.do">
+						<a style="display:block;" id="alinkRecordId" onClick="setBlockUI(this);" href="godsnomaintenance_bevillkoder.do">
 							<img style="vertical-align: middle;"  src="resources/images/list.gif" border="0" alt="general list">
 							<font class="tabDisabledLink">&nbsp;Bevill.koder - Vedlikehold</font>&nbsp;
 						</a>
@@ -73,8 +73,8 @@
 				            <c:forEach var="record" items="${model.list}" varStatus="counter">   
 				               <tr class="tableRow" height="20" >
 				              
-				               <td width="2%" id="recordUpdate_${record.gflbko}_${record.gflbs1}" class="tableCellFirst" onClick="getRecord(this);" style="border-style: solid;border-width: 0px 1px 1px 0px;border-color:#FAEBD7;" align="center">
-				               		<img src="resources/images/update.gif" border="0" alt="edit">
+				               <td align="center" width="2%" id="recordUpdate_${record.gflbko}_${record.gflbs1}" class="tableCellFirst" onClick="getRecord(this);" style="cursor:pointer; border-style: solid;border-width: 0px 1px 1px 0px;border-color:#FAEBD7;" >
+				               		<img style="display:block;cursor:pointer;" src="resources/images/update.gif" border="0" alt="edit">
 				               </td>
 				               <td class="tableCell" style="border-style: solid;border-width: 0px 1px 1px 1px;border-color:#FAEBD7;" align="left" ><font class="text14">&nbsp;${record.gflbko}&nbsp;</font></td>
 				               <td class="tableCell" style="border-style: solid;border-width: 0px 1px 1px 1px;border-color:#FAEBD7;" align="left" ><font class="text14">&nbsp;${record.gflbs1}&nbsp;</font></td>
@@ -84,8 +84,8 @@
 				               <td class="tableCell" style="border-style: solid;border-width: 0px 1px 1px 1px;border-color:#FAEBD7;" align="left" ><font class="text14">&nbsp;${record.gfenh}&nbsp;</font></td>
 				               <td class="tableCell" style="border-style: solid;border-width: 0px 1px 1px 1px;border-color:#FAEBD7;" align="left" ><font class="text14">&nbsp;${record.gfprt}&nbsp;</font></td>
 				               <td class="tableCell" style="border-style: solid;border-width: 0px 1px 1px 1px;border-color:#FAEBD7;" align="left" ><font class="text14">&nbsp;${record.gffax}&nbsp;</font></td>
-				               <td width="2%" id="recordDelete_${record.gflbko}_${record.gflbs1}" class="tableCell" onClick="doDeleteRecord(this);" style="border-style: solid;border-width: 0px 1px 1px 0px;border-color:#FAEBD7;" align="center">
-				               		<img src="resources/images/delete.gif" width="15px" height="15px" border="0" alt="edit">
+				               <td width="2%" id="recordDelete_${record.gflbko}_${record.gflbs1}" class="tableCell" onClick="doDeleteRecord(this);" style="cursor:pointer; border-style: solid;border-width: 0px 1px 1px 0px;border-color:#FAEBD7;" align="center">
+				               		<img style="display:block;cursor:pointer;" src="resources/images/delete.gif" width="15px" height="15px" border="0" alt="edit">
 				               </td>
 				            </tr> 
 				            </c:forEach>

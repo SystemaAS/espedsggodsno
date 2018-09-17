@@ -67,7 +67,7 @@
 				              
 				               <td width="2%" class="tableCellFirst" style="border-style: solid;border-width: 0px 1px 1px 1px;border-color:#FAEBD7;" align="center" ><font class="text14">&nbsp;${record.id}&nbsp;</font></td>
 				               <td width="2%" class="tableCell" style="border-style: solid;border-width: 0px 1px 1px 0px;border-color:#FAEBD7;" align="center">
-				               		<a id="alinkRecordId_${counter.count}" onClick="setBlockUI(this);" href="godsnomaintenance_bevillkoder_${record.pgm}.do?id=${record.dbTable}">
+				               		<a style="display:block;" id="alinkRecordId_${counter.count}" onClick="setBlockUI(this);" href="godsnomaintenance_bevillkoder_${record.pgm}.do?id=${record.dbTable}">
 	               						<img src="resources/images/update.gif" border="0" alt="edit">
 				               		</a>
 				               </td>
