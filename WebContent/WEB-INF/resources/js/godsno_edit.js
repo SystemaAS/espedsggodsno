@@ -42,6 +42,12 @@
 	    		refreshCustomValidity(jq('#gogn')[0]);
 	  		}
 	  	});
+	  //Special cases on gogn
+	  jq('#owngogn_2').focus(function() {
+	    	if(jq('#owngogn_2').val()!=''){
+	    		refreshCustomValidity(jq('#owngogn_2')[0]);
+	  		}
+	  	});
   });
   
   

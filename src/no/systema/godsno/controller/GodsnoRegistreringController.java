@@ -35,6 +35,7 @@ import no.systema.main.model.SystemaWebUser;
 import no.systema.main.util.StringManager;
 import no.systema.main.util.DateTimeManager;
 import no.systema.jservices.common.dao.GodsafDao;
+import no.systema.jservices.common.dao.GodsfiDao;
 import no.systema.jservices.common.dao.GodsjfDao;
 import no.systema.jservices.common.dao.GodsgfDao;
 
@@ -45,6 +46,7 @@ import no.systema.godsno.url.store.GodsnoUrlDataStore;
 import no.systema.godsno.util.GodsnoConstants;
 import no.systema.godsno.util.manager.GodsnrManager;
 import no.systema.godsno.model.JsonContainerDaoGODSAF;
+import no.systema.godsno.model.JsonContainerDaoGODSFI;
 import no.systema.godsno.model.JsonContainerDaoGODSJF;
 import no.systema.godsno.model.JsonContainerDaoGODSGF;
 import no.systema.godsno.filter.SearchFilterGodsnoMainList;
@@ -229,6 +231,9 @@ public class GodsnoRegistreringController {
 				action = "doUpdate";	
 			}else if (action.equals(GodsnoConstants.ACTION_CREATE)){
 				this.calculateGodsNr_withoutCounter(avd, appUser, model, recordToValidate);
+				model.addAttribute("dayOfYear", dateMgr.getDayNrOfYear());
+				//TODO--> move to childwindow search ... List<GodsfiDao> list = (List)this.getListGodsfi(appUser);
+				//model.addAttribute("bevillkodeListMainTbl", list);
 				action = "doUpdate";
 			}
 			
@@ -422,7 +427,7 @@ public class GodsnoRegistreringController {
 	 * @param model
 	 */
 	private void calculateGodsNr_withoutCounter(String avd, SystemaWebUser appUser, ModelMap model, GodsjfDao recordToValidate){
-		String ERROR_CODE_BEVKODE = "XXXXX";
+		String ALERT_CODE_BEVKODE_MISSING = "XXXXX";
 		GodsnrManager godsnrMgr = new GodsnrManager();
 		//get Godsnr bev.kode since we will be creating a new record...
 		Collection<GodsafDao> list = this.getBeviljningsKodeList(appUser);
@@ -438,11 +443,11 @@ public class GodsnoRegistreringController {
 			godsnrMgr.getGodsnrBevKode_PatternB(avd, list);
 			logger.info("bev.kode (PATTERN B):" + godsnrMgr.getGodsNrBevKode());
 			if(godsnrMgr.getGodsNrBevKode()==null){
-				godsnrMgr.setGodsNrBevKode(ERROR_CODE_BEVKODE);
+				godsnrMgr.setGodsNrBevKode(ALERT_CODE_BEVKODE_MISSING);
 			}
 		}
-		if(ERROR_CODE_BEVKODE.equals(godsnrMgr.getGodsNrBevKode())){
-			godsnrMgr.setGodsNr("FEIL: avd mangler bev.kode");
+		if(ALERT_CODE_BEVKODE_MISSING.equals(godsnrMgr.getGodsNrBevKode())){
+			godsnrMgr.setGodsNr(dateMgr.getYear());
 		}else{
 			//-------
 			//STEP 2: Calculate the godsNr with: Year + bev.kode + daynr: yyyy12345ddd
@@ -665,6 +670,38 @@ public class GodsnoRegistreringController {
 	    
 		return outputList;
 	}
+	
+	/**
+	 * 
+	 * @param appUser
+	 * @return
+	 */
+	private Collection<GodsfiDao> getListGodsfi(SystemaWebUser appUser){
+		Collection<GodsfiDao> outputList = new ArrayList<GodsfiDao>();
+		//---------------
+    	//Get main list
+		//---------------
+		final String BASE_URL = GodsnoUrlDataStore.GODSNO_BASE_GODSFI_LIST_URL;
+		//add URL-parameters
+		StringBuffer urlRequestParams = new StringBuffer();
+		urlRequestParams.append("user=" + appUser.getUser());
+		
+		//session.setAttribute(TransportDispConstants.ACTIVE_URL_RPG_TRANSPORT_DISP, BASE_URL + "==>params: " + urlRequestParams.toString()); 
+    	logger.info(Calendar.getInstance().getTime() + " CGI-start timestamp");
+    	logger.info("URL: " + BASE_URL);
+    	logger.info("URL PARAMS: " + urlRequestParams);
+    	String jsonPayload = this.urlCgiProxyService.getJsonContent(BASE_URL, urlRequestParams.toString());
+    	//Debug --> 
+    	logger.debug(jsonDebugger.debugJsonPayloadWithLog4J(jsonPayload));
+    	logger.info(Calendar.getInstance().getTime() +  " CGI-end timestamp");
+    	if(jsonPayload!=null){
+    		JsonContainerDaoGODSFI listContainer = this.godsnoService.getContainerGodsfi(jsonPayload);
+    		outputList = listContainer.getList();	
+    	}		
+	    
+		return outputList;
+	}
+	
 	
 	//SERVICES
 	@Qualifier ("urlCgiProxyService")

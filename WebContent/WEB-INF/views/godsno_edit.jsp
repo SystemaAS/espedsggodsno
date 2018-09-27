@@ -86,11 +86,21 @@
 						 			<td class="text14"><span title="gogn">Godsnr:&nbsp;</span></td>
 						 			<td class="text14">
 						 				<c:choose>
-						 				<c:when test="${fn:contains(godsnr,'ERROR') || fn:contains(godsnr,'FEIL')}" >
-						 					<input readonly type="text" class="inputTextReadOnly" style="color:red;" name="gogn" id="gogn" size="35"  value="${godsnr}">
+						 				
+						 				<%--<c:when test="${fn:contains(godsnr,'ERROR') || fn:contains(godsnr,'FEIL')}" > --%>
+						 				
+						 				<c:when test="${fn:length(godsnr) == 4}" ><%-- Meaning there is no match. The user MUST fill up accord. to requir. mask --%>
+						 					<input readonly type="text" class="inputTextReadOnly" name="owngogn_1" id="owngogn_1" size="4"  value="${godsnr}">
+						 					<select  required oninvalid="this.setCustomValidity('Obligatorisk')" oninput="setCustomValidity('')" class="inputTextMediumBlueMandatoryField" name="owngogn_2" id="owngogn_2" >
+						 						<option value="">-Velg Bev.kode-</option>
+						 						<c:forEach var="record" items="${bevKodeList}" >
+							 				  		<option value="${record.gflbko}_${record.gfenh}" >${record.gflbko}&nbsp;&nbsp;${record.gfenh}</option>
+												</c:forEach>  
+											</select>
+											<input readonly type="text" class="inputTextReadOnly" name="owngogn_3" id="owngogn_3" size="3"  value="${dayOfYear}">
 						 				</c:when>
 						 				<c:otherwise>
-						 					<input readonly type="text" class="inputTextReadOnly" name="gogn" id="gogn" size="25"  value="${godsnr}">
+						 					<input readonly type="text" class="inputTextReadOnly" name="gogn" id="gogn" size="15"  value="${godsnr}">
 						 				</c:otherwise>
 						 				</c:choose>
 						 				<font class="text16RedBold" >*</font>
