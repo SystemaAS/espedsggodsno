@@ -286,8 +286,9 @@ public class GodsnoMaintenanceBevillkoderController {
     		JsonContainerDaoGODSFI listContainer = this.godsnoService.getContainerGodsfi(jsonPayload);
     		if(listContainer!=null){
     			if(strMgr.isNotNull(listContainer.getErrMsg())){
-    				//Update successfully done!
-		    		logger.info("[ERROR] Record update - Error: " + errMsg.toString());
+    				//Error on Update
+		    		errMsg.append(listContainer.getErrMsg());
+    				logger.info(errMsg.toString());
 		    		retval = -1;
     			}else{
     				//Update successfully done!

@@ -57,7 +57,7 @@
 		
 		<%-- Left cell --%>
 		<tr>
-			<td width="60%"class="text14" valign="top">
+			<td class="text14" valign="top">
 				<form action="godsno_edit.do" name="editForm" id="editForm" method="post">
 				<input type="hidden" name="applicationUser" id="applicationUser" value='${user.user}'>
 				<input type="hidden" name="action" id="action" value='${action}'>
@@ -66,10 +66,10 @@
 					<input type="hidden" name="gogn" id="gogn" value="${record.gogn}">
 					<input type="hidden" name="updateFlag" id="updateFlag" value="${updateFlag}">
 				</c:if>
-				<table width="80%" align="left" border="0" cellspacing="0" cellpadding="0">
+				<table style="width:50%" align="left" border="0" cellspacing="0" cellpadding="0">
 				 	<tr >
 					 	<td >
-						<table width="100%" class="dashboardFrameHeader" border="0" cellspacing="1" cellpadding="0">
+						<table style="width:100%"  class="dashboardFrameHeader" border="0" cellspacing="1" cellpadding="0">
 					 		<tr height="15">
 					 			<td class="text14White">&nbsp;Godsnr:&nbsp;<font style="color: yellow;">${record.gogn}</font></td>
 					 			
@@ -79,7 +79,7 @@
 		            </tr>
 		            <tr >
 					 	<td>
-						<table width="100%" class="tableBorderWithRoundCorners3D_RoundOnlyOnBottom" border="0" cellspacing="2" cellpadding="1">
+						<table style="width:100%"  class="tableBorderWithRoundCorners3D_RoundOnlyOnBottom" border="0" cellspacing="2" cellpadding="1">
 					 		<tr height="5px"><tb></tb></tr>
 					 		<c:if test="${empty updateFlag}">
 						 		<tr >
@@ -236,6 +236,7 @@
 	            </table>
 	            </form>
             </td>
+            <%--
             <td width="40%"class="text14" valign="top">
             	<table width="80%" align="left" border="0" cellspacing="0" cellpadding="0">
 				 	<tr >
@@ -281,6 +282,7 @@
 		            </tr>
 	            </table>
             </td>
+             --%>
 		</tr>
 		<tr height="20"><td colspan="2">&nbsp;</td></tr>
 
@@ -306,7 +308,7 @@
 	 		<c:forEach items="${bevKodeList}" var="record" varStatus="counter">    
 	        	<tr class="tableRow" >  
 	              <td align="center" width="2%" class="tableCellFirst" >${record.gflavd}</td>
-	              <td align="left" class="tableCell" >${record.gflbko}</td>
+	              <td align="left" class="tableCell" >${record.gflbko}&nbsp;&nbsp;${record.gfenh}</td>
             	</tr>
            	</c:forEach>
 		    </tbody>           

@@ -24,7 +24,6 @@
 		  jq('#gflavd').addClass("inputTextMediumBlueMandatoryField");
 		  //
 		  jq('#gflbko').val("");
-		  jq('#gfenh').val("");
 		  //for a future update
 		  jq('#updateId').val("");
 			
@@ -58,8 +57,7 @@
 	  			jq('#gflavd').removeClass("inputTextMediumBlueMandatoryField");
 	  			jq('#gflavd').addClass("inputTextReadOnly");
 	  			//rest of the gang
-	  			jq('#gflbko').val("");jq('#gflbko').val(data[i].gflbko);
-	  			jq('#gfenh').val("");jq('#gfenh').val(data[i].gfenh);
+	  			jq('#gflbko').val("");jq('#gflbko').val(data[i].gflbko + "_" + data[i].gfenh);
 	  			
 	  			//for a future update
 	  			jq('#updateId').val("");jq('#updateId').val(data[i].gflbko);
@@ -75,6 +73,23 @@
 			
 	  }
   
+  jq(function() {
+	  //Custom Validity
+	  jq('#gflavd').focus(function() {
+	    	if(jq('#gflavd').val()!=''){
+	    		refreshCustomValidity(jq('#gflavd')[0]);
+	  		}
+	  });
+	  jq('#gflbko').focus(function() {
+	    	if(jq('#gflbko').val()!=''){
+	    		refreshCustomValidity(jq('#gflbko')[0]);
+	  		}
+	  });
+	  //Submit (MUST be submit and not click since we have Custom Validity functionality. Otherwise the blockUI will trigger even if the form IS NOT SUBMITTED!)
+	  jq('#formRecord').submit(function(event) { 
+		  setBlockUI();
+	  });
+  });
   
 //-------------------
   //Datatables jquery

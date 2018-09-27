@@ -59,7 +59,7 @@
 								<th width="2%" class="tableHeaderField" align="center" ><spring:message code="systema.godsno.maintenance.update"/></th>
 								<th class="tableHeaderField" align="left" >&nbsp;<spring:message code="systema.godsno.maintenance.godsaf.gflavd"/>&nbsp;</th>
 			                    <th class="tableHeaderField" align="left" >&nbsp;<spring:message code="systema.godsno.maintenance.godsaf.gflbko"/>&nbsp;</th>
-			                    <th width="2%" class="tableHeaderField" align="left" >&nbsp;<spring:message code="systema.godsno.maintenance.godsaf.gfenh"/>&nbsp;</th>
+			                    <th width="2%" class="tableHeaderField" align="center"  >&nbsp;<spring:message code="systema.godsno.maintenance.godsaf.gfenh"/>&nbsp;</th>
 			                    <th width="2%" class="tableHeaderField" align="center" >&nbsp;<spring:message code="systema.godsno.maintenance.delete"/>&nbsp;</th>
 			                </tr>  
 			                </thead>
@@ -73,7 +73,7 @@
 				               </td>
 				               <td class="tableCell" style="border-style: solid;border-width: 0px 1px 1px 1px;border-color:#FAEBD7;" align="left" ><font class="text14">&nbsp;${record.gflavd}&nbsp;</font></td>
 				               <td class="tableCell" style="border-style: solid;border-width: 0px 1px 1px 1px;border-color:#FAEBD7;" align="left" ><font class="text14">&nbsp;${record.gflbko}&nbsp;</font></td>
-				               <td width="2%" class="tableCell" style="border-style: solid;border-width: 0px 1px 1px 1px;border-color:#FAEBD7;" align="left" ><font class="text14">&nbsp;${record.gfenh}&nbsp;</font></td>
+				               <td width="2%" class="tableCell" style="border-style: solid;border-width: 0px 1px 1px 1px;border-color:#FAEBD7;" align="center" ><font class="text14">&nbsp;${record.gfenh}&nbsp;</font></td>
 				               <td width="2%" id="recordDelete_${record.gflavd}_${record.gflbko}" class="tableCell" onClick="doDeleteRecord(this);" style="cursor:pointer; border-style: solid;border-width: 0px 1px 1px 0px;border-color:#FAEBD7;" align="center">
 				               		<img style="display:block;cursor:pointer;" src="resources/images/delete.gif" width="15px" height="15px" border="0" alt="edit">
 				               </td>
@@ -110,7 +110,7 @@
 			</spring:hasBindErrors>
 			
 			<%-- Other errors (none validation errors) --%>
-			<c:if test="${not empty model.errorMessage}">
+			<c:if test="${not empty errorMessage}">
 			<tr>
 				<td width="3">&nbsp;</td>
 				<td >
@@ -118,7 +118,7 @@
 				 		<tr>
 				 			<td >
 				 				<ul class="isa_error text14" >
-                                    <li>Server return code: ${model.errorMessage}</li>                                    
+                                    <li>${errorMessage}</li>                                    
                                 </ul>
 				 			</td>
 						</tr>
@@ -146,21 +146,22 @@
 			    	    <tr>
 							<td class="text14" title="gflavd">&nbsp;<font class="text14RedBold" >*</font><spring:message code="systema.godsno.maintenance.godsaf.gflavd"/></td>
 							<td class="text14" title="gflbko">&nbsp;<font class="text14RedBold" >*</font><spring:message code="systema.godsno.maintenance.godsaf.gflbko"/></td>
-							<td class="text14" title="gfenh">&nbsp;<spring:message code="systema.godsno.maintenance.godsaf.gfenh"/></td>							
 						</tr>
 						<tr>
-							<td ><input type="text" class="inputTextMediumBlueMandatoryField" name="gflavd" id="gflavd" size="5" maxlength="4" value='${record.gflavd}'></td>
+							<td ><input  required oninvalid="this.setCustomValidity('Obligatorisk')" oninput="setCustomValidity('')" type="text" class="inputTextMediumBlueMandatoryField" name="gflavd" id="gflavd" size="5" maxlength="4" value='${record.gflavd}'></td>
 							<td >
-								<select class="inputTextMediumBlueMandatoryField" name="gflbko" id="gflbko" >
+								<select  required oninvalid="this.setCustomValidity('Obligatorisk')" oninput="setCustomValidity('')" class="inputTextMediumBlueMandatoryField" style="width:100px" name="gflbko" id="gflbko" >
 			 						<option value="">-velg-</option>
 			 						<c:forEach var="item" items="${model.bkoderList}" >
-				 				  		<option value="${item.gflbko}" <c:if test="${item.gflbko == record.gflbko}"> selected </c:if> >${item.gflbko}</option>
+				 				  		<option value="${item.gflbko}_${item.gfenh}" <c:if test="${item.gflbko == record.gflbko}"> selected </c:if> >${item.gflbko}&nbsp;&nbsp;${item.gfenh}</option>
 									</c:forEach>  
 								</select>
 							</td>
+							<%--
 							<td ><input onKeyPress="return numberKey(event)" type="text" class="inputTextMediumBlue" name="gfenh" id="gfenh" size="2" maxlength="1" value='${record.gfenh}'></td>
+							 --%>
 							<td>
-								<input onClick="setBlockUI(this);" class="inputFormSubmit" type="submit" name="submit" id="submit" value='<spring:message code="systema.godsno.maintenance.save"/>'/>
+								<input class="inputFormSubmit" type="submit" name="submit" id="submit" value='<spring:message code="systema.godsno.maintenance.save"/>'/>
 							</td>
 						</tr>
 						<tr height="3"><td></td>

@@ -130,6 +130,7 @@ public class GodsnoMaintenanceBevillkoderAvdController {
 		
 		boolean isValidRecord = true;
 		
+		
 		//check user (should be in session already)
 		if(appUser==null){
 			return loginView;
@@ -138,6 +139,9 @@ public class GodsnoMaintenanceBevillkoderAvdController {
 			if(GodsnoConstants.ACTION_UPDATE.equals(action)){
 				int dmlRetval = 0;
 				StringBuffer errMsg = new StringBuffer();
+				//adjust bevill.kode
+				this.adjustBevillKodeForUpdate(recordToValidate);
+				
 				//validator
 				GodsnoMaintenanceGodsafValidator validator = new GodsnoMaintenanceGodsafValidator();
 				validator.validate(recordToValidate, bindingResult);
@@ -183,6 +187,22 @@ public class GodsnoMaintenanceBevillkoderAvdController {
 	    }
 		
 		return successView;
+	}
+	/**
+	 * The bevill.kode from GUI is concatenated with gfenh. We MUST split the values since no input field for gfenh exists. 
+	 * @param recordToValidate
+	 */
+	private void adjustBevillKodeForUpdate(GodsafDao recordToValidate){
+		if(recordToValidate!=null){
+			if(strMgr.isNotNull(recordToValidate.getGflbko())){
+				String[] items = recordToValidate.getGflbko().split("_");
+				recordToValidate.setGflbko(items[0]);
+				if(items.length>1){
+					recordToValidate.setGfenh(items[1]);
+				}
+			}
+		}
+		
 	}
 	/**
 	 * 
@@ -286,8 +306,9 @@ public class GodsnoMaintenanceBevillkoderAvdController {
     		JsonContainerDaoGODSAF listContainer = this.godsnoService.getContainerGodsaf(jsonPayload);
     		if(listContainer!=null){
     			if(strMgr.isNotNull(listContainer.getErrMsg())){
-    				//Update successfully done!
-		    		logger.info("[ERROR] Record update - Error: " + errMsg.toString());
+    				//Error on Update
+    				errMsg.append(listContainer.getErrMsg());
+		    		logger.info(errMsg.toString());
 		    		retval = -1;
     			}else{
     				//Update successfully done!

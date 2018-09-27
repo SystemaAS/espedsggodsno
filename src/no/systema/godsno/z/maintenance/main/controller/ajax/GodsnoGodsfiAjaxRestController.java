@@ -87,7 +87,7 @@ public class GodsnoGodsfiAjaxRestController {
 		StringBuffer urlRequestParams = new StringBuffer();
 		urlRequestParams.append("user=" + applicationUser);
 		urlRequestParams.append("&gflbko=" + id);
-		urlRequestParams.append("&gflbs1=" + id2);
+		urlRequestParams.append("&gfenh=" + id2);
 		
 		//session.setAttribute(TransportDispConstants.ACTIVE_URL_RPG_TRANSPORT_DISP, BASE_URL + "==>params: " + urlRequestParams.toString()); 
     	logger.info(Calendar.getInstance().getTime() + " CGI-start timestamp");
@@ -124,7 +124,7 @@ public class GodsnoGodsfiAjaxRestController {
 		urlRequestParams.append("user=" + applicationUser);
 		urlRequestParams.append("&mode=" + mode);
 		urlRequestParams.append("&gflbko=" + id);
-		urlRequestParams.append("&gflbs1=" + id2);
+		urlRequestParams.append("&gfenh=" + id2);
 		
 		//session.setAttribute(TransportDispConstants.ACTIVE_URL_RPG_TRANSPORT_DISP, BASE_URL + "==>params: " + urlRequestParams.toString()); 
     	logger.info(Calendar.getInstance().getTime() + " CGI-start timestamp");

@@ -21,16 +21,16 @@
 		  jq('#gflbko').prop('readonly', false);
 		  jq('#gflbko').removeClass("inputTextReadOnly");
 		  jq('#gflbko').addClass("inputTextMediumBlueMandatoryField");
-		  //adjust	
+		  //adjust	id2
+		  jq('#gfenh').val("");
+		  jq('#gfenh').prop('readonly', false);
+		  jq('#gfenh').removeClass("inputTextReadOnly");
+		  jq('#gfenh').addClass("inputTextMediumBlue");
+		  //rest of the gang
 		  jq('#gflbs1').val("");
-		  jq('#gflbs1').prop('readonly', false);
-		  jq('#gflbs1').removeClass("inputTextReadOnly");
-		  jq('#gflbs1').addClass("inputTextMediumBlueMandatoryField");
-			
 		  jq('#gflbs2').val("");
 		  jq('#gflbs3').val("");
 		  jq('#gflbs4').val("");
-		  jq('#gfenh').val("");
 		  jq('#gfprt').val("");
 		  jq('#gffax').val("");
 		  //for a future update
@@ -67,17 +67,16 @@
 	  			jq('#gflbko').prop('readonly', true);
 	  			jq('#gflbko').removeClass("inputTextMediumBlueMandatoryField");
 	  			jq('#gflbko').addClass("inputTextReadOnly");
-	  			
 	  			//id2
-	  			jq('#gflbs1').val("");jq('#gflbs1').val(data[i].gflbs1);
-	  			jq('#gflbs1').prop('readonly', true);
-	  			jq('#gflbs1').removeClass("inputTextMediumBlueMandatoryField");
-	  			jq('#gflbs1').addClass("inputTextReadOnly");
+	  			jq('#gfenh').val("");jq('#gfenh').val(data[i].gfenh);
+	  			jq('#gfenh').prop('readonly', true);
+	  			jq('#gfenh').removeClass("inputTextMediumBlue");
+	  			jq('#gfenh').addClass("inputTextReadOnly");
 	  			//rest of the gang
+	  			jq('#gflbs1').val("");jq('#gflbs1').val(data[i].gflbs1);
 	  			jq('#gflbs2').val("");jq('#gflbs2').val(data[i].gflbs2);
 	  			jq('#gflbs3').val("");jq('#gflbs3').val(data[i].gflbs3);
 	  			jq('#gflbs4').val("");jq('#gflbs4').val(data[i].gflbs4);
-	  			jq('#gfenh').val("");jq('#gfenh').val(data[i].gfenh);
 	  			jq('#gfprt').val("");jq('#gfprt').val(data[i].gfprt);
 	  			jq('#gffax').val("");jq('#gffax').val(data[i].gffax);
 	  			
@@ -85,7 +84,7 @@
 	  			jq('#updateId').val("");jq('#updateId').val(data[i].gflbko);
 	  			//enable submit
 	  			//jq("#submit").prop("disabled", false);
-	  			jq('#gflbs2').focus();
+	  			jq('#gflbs1').focus();
 	  		}
 	  	  }, 
 	  	  error: function() {
@@ -95,6 +94,23 @@
 			
 	  }
   
+  jq(function() {
+	  //Custom Validity
+	  jq('#gflbko').focus(function() {
+	    	if(jq('#gflbko').val()!=''){
+	    		refreshCustomValidity(jq('#gflbko')[0]);
+	  		}
+	  });
+	  jq('#gflbs1').focus(function() {
+	    	if(jq('#gflbs1').val()!=''){
+	    		refreshCustomValidity(jq('#gflbs1')[0]);
+	  		}
+	  });
+	  //Submit (MUST be submit and not click since we have Custom Validity functionality. Otherwise the blockUI will trigger even if the form IS NOT SUBMITTED!)
+	  jq('#formRecord').submit(function(event) { 
+		  setBlockUI();
+	  });
+  });
   
 //-------------------
   //Datatables jquery
@@ -117,7 +133,7 @@
 	  "scrollY":     "500px",
   	  "scrollCollapse":  true,
   	  "tabIndex": -1,
-  	  "order": [[ 1, "asc" ]],
+  	  "order": [[ 1, "asc" ], [ 2, "asc" ] ],
 	  "lengthMenu": [ 50, 100],
 	  "language": {
 		  "url": getLanguage(lang)

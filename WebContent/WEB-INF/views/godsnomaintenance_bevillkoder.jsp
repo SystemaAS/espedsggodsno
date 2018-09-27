@@ -72,8 +72,7 @@
 				               		</a>
 				               </td>
 				               <td class="tableCell" style="border-style: solid;border-width: 0px 1px 1px 0px;border-color:#FAEBD7;"  >
-				               		<font class="text14">&nbsp;&nbsp;${record.subject}&nbsp;</font>
-					               		
+				               		<font class="text14">&nbsp;&nbsp;${record.subject}&nbsp;</font>				               		
 				               </td>
 				               
 				            </tr> 
