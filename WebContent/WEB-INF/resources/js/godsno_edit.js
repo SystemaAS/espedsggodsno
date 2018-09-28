@@ -67,7 +67,7 @@
 		  maxWidth:350,
           maxHeight: 600,
           width: 300,
-          height: 400,
+          height: 350,
 		  //modal: true,
 		  dialogClass: 'main-dialog-class',
 		  
@@ -75,7 +75,7 @@
       
  	  //Read only dialog
 	  jq("#bevKoderDialogImgReadOnly").click(function() {
-		  jq('#dialogBevKoderReadOnly').dialog( "option", "title", "Bev.koder" );
+		  jq('#dialogBevKoderReadOnly').dialog( "option", "title", "Avd/Bev.koder" );
 		  //deal with buttons for this modal window
 		  jq('#dialogBevKoderReadOnly').dialog({
 			 buttons: [ 
@@ -110,6 +110,7 @@
 	  var id2 = record[1].replace("id2_","");
 	  //choose drop-down value
 	  jq('#owngogn_2').val(id + "_" + id2);
+	  jq('#owngogn_2').focus();
   }
   
 	 

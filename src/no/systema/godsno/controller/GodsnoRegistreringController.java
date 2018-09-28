@@ -248,13 +248,14 @@ public class GodsnoRegistreringController {
 			if(action==null || "".equals(action)){ 
 				action = "doUpdate";	
 			}else if (action.equals(GodsnoConstants.ACTION_CREATE)){
-				this.calculateGodsNrAutomatically_withoutCounter(avd, appUser, model, recordToValidate);
-				//check if the godsnr was calculated automatically when the user chose a specific avd. 
-				if(this.godsNrMustBeManuallyInput(recordToValidate.getGogn())){
-					model.addAttribute("dayOfYear", dateMgr.getDayNrOfYear());
-					List<GodsfiDao> list = (List)this.getListGodsfi(appUser);
-					model.addAttribute("bevKodeListMainTbl", list);
-				}
+				//some default values
+				recordToValidate.setGomott("Diverse mottakere");
+				String calcGodsNr = this.calculateGodsNrAutomatically_withoutCounter(avd, appUser, model, recordToValidate);
+				//START This is used only for user input but we send it also as information when the godsnr was automatically calculated
+				model.addAttribute("dayOfYear", dateMgr.getDayNrOfYear());
+				List<GodsfiDao> list = (List)this.getListGodsfi(appUser);
+				model.addAttribute("bevKodeListMainTbl", list);
+				//END 
 				action = "doUpdate";
 			}
 			
@@ -593,7 +594,8 @@ public class GodsnoRegistreringController {
 	 * @param appUser
 	 * @param model
 	 */
-	private void calculateGodsNrAutomatically_withoutCounter(String avd, SystemaWebUser appUser, ModelMap model, GodsjfDao recordToValidate){
+	private String calculateGodsNrAutomatically_withoutCounter(String avd, SystemaWebUser appUser, ModelMap model, GodsjfDao recordToValidate){
+		String retval = "";
 		String ALERT_CODE_BEVKODE_MISSING = "XXXXX";
 		GodsnrManager godsnrMgr = new GodsnrManager();
 		//get Godsnr bev.kode since we will be creating a new record...
@@ -615,6 +617,7 @@ public class GodsnoRegistreringController {
 		}
 		if(ALERT_CODE_BEVKODE_MISSING.equals(godsnrMgr.getGodsNrBevKode())){
 			godsnrMgr.setGodsNr(dateMgr.getYear());
+			retval = godsnrMgr.getGodsNr();
 		}else{
 			//-------
 			//STEP 2: Calculate the godsNr with: Year + bev.kode + daynr: yyyy12345ddd
@@ -630,6 +633,8 @@ public class GodsnoRegistreringController {
 		}
 		//Now send the proposed GodsNr
 		model.addAttribute("godsnr", godsnrMgr.getGodsNr());
+		//
+		return retval;
 	}
 	
 	/**

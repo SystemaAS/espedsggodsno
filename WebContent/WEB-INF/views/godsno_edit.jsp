@@ -74,8 +74,11 @@
 					 	<td >
 						<table style="width:100%"  class="dashboardFrameHeader" border="0" cellspacing="1" cellpadding="0">
 					 		<tr height="15">
-					 			<td class="text14White">&nbsp;Godsnr:&nbsp;<font style="color: yellow;">${record.gogn}</font></td>
-					 			
+					 			<td class="text14White">&nbsp;Godsnr:&nbsp;<font style="color: lemonchiffon;">${record.gogn}</font></td>
+					 			<td align="right">
+					 				<img title="Bev.koder" id="bevKoderDialogImgReadOnly" style="vertical-align:middle; cursor:pointer;" width="14px" height="14px" src="resources/images/info4.png" border="0" alt="bev.koder">
+					 				&nbsp;
+					 			</td>
 			 				</tr>
 			            </table>
 			            </td>
@@ -93,16 +96,29 @@
 						 				<%--<c:when test="${fn:contains(godsnr,'ERROR') || fn:contains(godsnr,'FEIL')}" > --%>
 						 				
 						 				<c:when test="${fn:length(godsnr) == 4}" ><%-- Meaning there is no match. The user MUST fill up accord. to requir. mask --%>
-						 					<input readonly type="text" class="inputTextReadOnly" name="owngogn_1" id="owngogn_1" size="4"  value="${godsnr}">
+						 					<input tabindex=-1 readonly type="text" class="inputTextReadOnly" name="owngogn_1" id="owngogn_1" size="4"  value="${godsnr}">
 						 					<select  name="owngogn_2" id="owngogn_2" required oninvalid="this.setCustomValidity('Obligatorisk')" oninput="setCustomValidity('')" class="inputTextMediumBlueMandatoryField" >
 						 						<option value="">Velg Bev.kode</option>
 						 						<c:forEach var="record" items="${bevKodeList}" >
 							 				  		<option value="${record.gflbko}_${record.gfenh}" >${record.gflbko}&nbsp;&nbsp;${record.gfenh}</option>
 												</c:forEach>  
-											</select><img title="search" id="divBevKodeListDialogImgReadOnly" style="vertical-align:middle; cursor:pointer;" width="10px" height="10px" src="resources/images/sort_down.png" border="0" alt="bev.koder">
-											<div id="divBevKodeList" style="display:none;position: relative;height:10em;" class="ownScrollableSubWindowDynamicWidthHeight" align="left" >
+											</select>
+											<img title="search" id="divBevKodeListDialogImgReadOnly" style="vertical-align:middle; cursor:pointer;" width="10px" height="10px" src="resources/images/sort_down.png" border="0" alt="bev.koder">
+											
+											<input tabindex=-1 readonly type="text" class="inputTextReadOnly" name="owngogn_3" id="owngogn_3" size="3"  value="${dayOfYear}">
+											<font class="text16RedBold" >*</font>
+						 				</c:when>
+						 				<c:otherwise>
+						 					<input tabindex=-1 readonly type="text" class="inputTextReadOnly" name="gogn" id="gogn" size="15"  value="${godsnr}">
+						 					<font class="text16RedBold" >*</font>
+						 					<img title="search" id="divBevKodeListDialogImgReadOnly" style="vertical-align:middle; cursor:pointer;" width="10px" height="10px" src="resources/images/sort_down.png" border="0" alt="bev.koder">
+						 				</c:otherwise>
+						 				</c:choose>
+						 				<div id="divBevKodeList" style="display:none;position: relative;height:10em;" class="ownScrollableSubWindowDynamicWidthHeight" align="left" >
 					 						<table id="tblBevKodeList" class="inputTextMediumBlueMandatoryField">
-												<c:forEach items="${bevKodeListMainTbl}" var="record" varStatus="counter">  
+					 							<tr><td colspan="2" class="text12"><b>Bev.koder</b></td></tr>
+					 						
+					 							<c:forEach items="${bevKodeListMainTbl}" var="record" varStatus="counter">  
 												<tr>
 													<td id="id_${record.gflbko}@id2_${record.gfenh}" OnClick="doPickBevKode(this)" class="tableHeaderFieldFirst" style="cursor:pointer;" ><font class="text14SkyBlue">${record.gflbko}&nbsp;${record.gfenh}</font></td>
 													<td class="tableHeaderField12">${record.gflbs1}&nbsp;${record.gflbs2}&nbsp;${record.gflbs3}&nbsp;${record.gflbs4}</td>
@@ -110,18 +126,9 @@
 												</c:forEach>
 											</table>	
 										</div>	
-											<input readonly type="text" class="inputTextReadOnly" name="owngogn_3" id="owngogn_3" size="3"  value="${dayOfYear}">
-						 				</c:when>
-						 				<c:otherwise>
-						 					<input readonly type="text" class="inputTextReadOnly" name="gogn" id="gogn" size="15"  value="${godsnr}">
-						 				</c:otherwise>
-						 				</c:choose>
-						 				<font class="text16RedBold" >*</font>
 						 						
 						 			</td>
-						 			<td >
-						 				<img title="Bev.koder" id="bevKoderDialogImgReadOnly" style="vertical-align:middle; cursor:pointer;" width="16px" height="16px" src="resources/images/info4.png" border="0" alt="bev.koder">
-						 			</td>
+						 			
 						 		</tr>							 		
 						 		<tr >
 						 			<td class="text14"><span title="gognManualCounter">Manuelltnr</span></td>
