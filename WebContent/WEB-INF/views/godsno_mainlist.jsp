@@ -136,7 +136,7 @@
 			            <c:forEach items="${model.list}" var="record" varStatus="counter">    
 			             <tr class="tableRow" height="20">  
 			               <td align="center" width="2%" class="tableCellFirst" >
-			               		<a id="alinkEdit_${counter.count}" style="display:block;" href="godsno_edit.do?updateFlag=1&gogn=${record.gogn}" onClick="setBlockUI()" >
+			               		<a id="alinkEdit_${counter.count}" style="display:block;" href="godsno_edit.do?updateFlag=1&gogn=${record.gogn}&gotrnr=${record.gotrnr}" onClick="setBlockUI()" >
 			               			<img title="Endre post" style="vertical-align:bottom;" src="resources/images/update.gif" border="0" alt="edit">
 			               		</a>	
 			               </td>
@@ -147,7 +147,7 @@
 			               <td class="tableCell" >${record.gobiln}</td>
 			               <td width="2%" class="tableCell" >${record.goavg}</td>
 			               <td align="center" width="2%" class="tableCell" >
-			               		<a sytle="cursor:pointer;" id="id_${record.gogn}" onClick="doDeleteOrder(this)" style="display:block;"  >
+			               		<a sytle="cursor:pointer;" id="id_${record.gogn}@id2_${record.gotrnr}" onClick="doDeleteOrder(this)" style="display:block;"  >
 			               			<img title="Slett post" style="vertical-align:bottom;" src="resources/images/delete.gif" border="0" alt="edit">
 			               		</a>	
 			               </td>

@@ -104,6 +104,7 @@ public class GodsnoRegistreringController {
 		String sign = request.getParameter("sign");
 		String updateFlag = request.getParameter("updateFlag");
 		String gognManualCounter = strMgr.leadingStringWithNumericFiller(request.getParameter("gognManualCounter"), 2, "0");
+		String gotrnrOrig = (request.getParameter("gotrnrOrig"));
 		logger.info("action:" + action);
 		logger.info("gognManualCounter:" + gognManualCounter);
 		
@@ -143,10 +144,28 @@ public class GodsnoRegistreringController {
 						//Add or Update
 						if(strMgr.isNotNull(updateFlag)){
 							logger.info("doUpdate");
-							dmlRetval = this.updateRecord(appUser.getUser(), recordToValidate, GodsnoConstants.MODE_UPDATE, errMsg);
+							if(gotrnrOrig!=null && gotrnrOrig.equals(recordToValidate.getGotrnr())){
+								dmlRetval = this.updateRecord(appUser.getUser(), recordToValidate, GodsnoConstants.MODE_UPDATE, errMsg);
+							}else{
+								//duplicate check
+								if(this.recordExistsGodsjf(appUser, recordToValidate, errMsg)){
+									logger.info("duplicate exists ... ??????? :-(" );
+									recordToValidate.setGotrnr(gotrnrOrig);//rescue the original value in this special case
+									//duplicate found
+									dmlRetval = -1;
+								}else{
+									//meaning the end-user changed the gotrnr (key) to a non-existent transittnr (valid key)
+									dmlRetval = this.updateRecordSpecialTransittnrCase(appUser.getUser(), gotrnrOrig, recordToValidate, GodsnoConstants.MODE_UPDATE_TRANSITT_KEY, errMsg);
+								}
+							}
 							
 						}else{
 							logger.info("doCreate branch starting...");
+							//check and adjust godsNr if it was done by user input
+							if(this.godsNrInputManually(request)){
+								recordToValidate.setGogn(this.constructGodsNrManually(request));
+							}
+							//at this point we do have a godsnr well-formed (either manually or automatically)
 							String godsNrOriginalValue = recordToValidate.getGogn();
 							//duplicate check
 							if(this.recordExistsGodsjf(appUser, recordToValidate, errMsg)){
@@ -154,7 +173,6 @@ public class GodsnoRegistreringController {
 								//duplicate found
 								dmlRetval = -1;
 							}else{
-								logger.info("no duplicate exists ...");
 								
 								//CREATE NEW with manual counter (Only main table is updated)
 								if(strMgr.isNotNull(gognManualCounter)){
@@ -230,10 +248,13 @@ public class GodsnoRegistreringController {
 			if(action==null || "".equals(action)){ 
 				action = "doUpdate";	
 			}else if (action.equals(GodsnoConstants.ACTION_CREATE)){
-				this.calculateGodsNr_withoutCounter(avd, appUser, model, recordToValidate);
-				model.addAttribute("dayOfYear", dateMgr.getDayNrOfYear());
-				//TODO--> move to childwindow search ... List<GodsfiDao> list = (List)this.getListGodsfi(appUser);
-				//model.addAttribute("bevillkodeListMainTbl", list);
+				this.calculateGodsNrAutomatically_withoutCounter(avd, appUser, model, recordToValidate);
+				//check if the godsnr was calculated automatically when the user chose a specific avd. 
+				if(this.godsNrMustBeManuallyInput(recordToValidate.getGogn())){
+					model.addAttribute("dayOfYear", dateMgr.getDayNrOfYear());
+					List<GodsfiDao> list = (List)this.getListGodsfi(appUser);
+					model.addAttribute("bevKodeListMainTbl", list);
+				}
 				action = "doUpdate";
 			}
 			
@@ -247,6 +268,157 @@ public class GodsnoRegistreringController {
 			//successView.addObject(GodsnoConstants.DOMAIN_MODEL , model);
 			return successView;
 		}
+	}
+	
+	
+	/**
+	 * 
+	 * @param model
+	 * @param recordToValidate
+	 * @param bindingResult
+	 * @param session
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value="godsno_delete.do", method={RequestMethod.GET, RequestMethod.POST} )
+	public ModelAndView doGodsnoDelete(ModelMap model, @ModelAttribute ("record") GodsjfDao recordToValidate, BindingResult bindingResult, HttpSession session, HttpServletRequest request){
+		ModelAndView successView = new ModelAndView("redirect:godsno_mainlist.do?action=doFind&rd=1");
+		logger.info("Inside: doGodsnoDelete");
+		
+		SystemaWebUser appUser = this.loginValidator.getValidUser(session);
+		
+		//check user (should be in session already)
+		if(appUser==null){
+			return loginView;
+		
+		}else{
+			//----------------------------
+			//Fetch record and update it 
+			//----------------------------
+			if(strMgr.isNotNull(recordToValidate.getGogn()) ){
+				int dmlRetval = 0;
+				StringBuffer errMsg = new StringBuffer();
+				//fetch record
+				GodsjfDao recordToDelete = this.getRecordGodsjf(appUser, recordToValidate);
+				if(recordToDelete!=null && strMgr.isNotNull( recordToDelete.getGogn()) ){
+					//adjust some db-fields
+					logger.info("doDelete");
+					//Update with delete flag
+					dmlRetval = this.deleteRecord(appUser.getUser(), recordToDelete, GodsnoConstants.MODE_DELETE, errMsg);
+					if(dmlRetval<0){
+						logger.info("ERROR on delete ... ??? check your code");
+						model.addAttribute(GodsnoConstants.ASPECT_ERROR_MESSAGE, errMsg.toString());
+						
+					}else{
+						logger.info("doDelete = OK");
+					}
+					
+				}
+				
+			}
+
+			return successView;
+		}
+	}
+	/**
+	 * 
+	 * @param applicationUser
+	 * @param recordToValidate
+	 * @param mode
+	 * @param errMsg
+	 * @return
+	 */
+	private int deleteRecord(String applicationUser, GodsjfDao recordToValidate, String mode, StringBuffer errMsg ){
+		int retval = 0;
+		//---------------
+    	//Get main list
+		//---------------
+		final String BASE_URL = GodsnoUrlDataStore.GODSNO_BASE_GODSJF_DML_UPDATE_URL;
+		//add URL-parameters
+		String urlRequestParamsKeys = "user=" + applicationUser + "&mode=" + mode;
+		String urlRequestParams = this.urlRequestParameterMapper.getUrlParameterValidString((recordToValidate));
+		//add params
+		urlRequestParams = urlRequestParamsKeys + urlRequestParams;
+		
+		//session.setAttribute(TransportDispConstants.ACTIVE_URL_RPG_TRANSPORT_DISP, BASE_URL + "==>params: " + urlRequestParams.toString()); 
+    	logger.info(Calendar.getInstance().getTime() + " CGI-start timestamp");
+    	logger.info("URL: " + BASE_URL);
+    	logger.info("URL PARAMS: " + urlRequestParams);
+    	
+    	String jsonPayload = this.urlCgiProxyService.getJsonContent(BASE_URL, urlRequestParams.toString());
+    	//Debug --> 
+    	logger.debug(jsonDebugger.debugJsonPayloadWithLog4J(jsonPayload));
+    	logger.info(Calendar.getInstance().getTime() +  " CGI-end timestamp");
+    	if(jsonPayload!=null){
+    		//TODO
+    		JsonContainerDaoGODSJF container = this.godsnoService.getContainerGodsjf(jsonPayload);
+    		if(container!=null){
+    			if(strMgr.isNotNull(container.getErrMsg())){
+    				errMsg.append(container.getErrMsg());
+    				//Update successfully done!
+		    		logger.info("[ERROR] Record update - Error: " + errMsg.toString());
+		    		retval = -1;
+    			}else{
+    				//Update successfully done!
+		    		logger.info("[INFO] Record successfully updated, OK ");
+    			}
+    		}
+    	}		
+
+		return retval;
+	}
+	
+	/**
+	 * Construct the godsNr from user input
+	 * @param request
+	 * @return
+	 */
+	private String constructGodsNrManually(HttpServletRequest request){
+		
+		String godsnrYear = request.getParameter("owngogn_1");
+		String godsnrBevKodeRaw = request.getParameter("owngogn_2");
+		String godsnrDayOfYear = request.getParameter("owngogn_3");
+		//process the raw godsnr in order to separate enhetskode
+		String[] tmpRecord = godsnrBevKodeRaw.split("_"); 
+		String godsnrBevKode = tmpRecord[0];
+		String godsnrEnhetsKod = "0";
+		if(tmpRecord.length>1){
+			godsnrEnhetsKod = tmpRecord[1];
+		}
+		StringBuffer godsNr = new StringBuffer();
+		godsNr.append(godsnrYear);
+		godsNr.append(godsnrBevKode);
+		godsNr.append(godsnrDayOfYear);
+		godsNr.append(godsnrEnhetsKod);
+		
+		return godsNr.toString();
+		
+	}
+	/**
+	 * Check it the godsnr was input by the end-user
+	 * @param request
+	 * @return
+	 */
+	private boolean godsNrInputManually(HttpServletRequest request){
+		boolean retval = false;
+		if(strMgr.isNotNull(request.getParameter("owngogn_1")) ){
+			retval = true;
+		}
+		return retval;
+	}
+	/**
+	 * To elucidate if we have gotten the complete godsnr or not.
+	 * If not: there will be a user input in GUI.	
+	 * @param value
+	 * @return
+	 */
+		
+	private boolean godsNrMustBeManuallyInput(String value){
+		boolean retval = false;
+		if(strMgr.isNotNull(value) && value.length() == 4){ //since there is only the year indicating a not found complete godsnr automatically
+			retval = true;
+		}
+		return retval;
 	}
 	/**
 	 * 
@@ -270,57 +442,52 @@ public class GodsnoRegistreringController {
 	
 	/**
 	 * 
-	 * @param model
+	 * @param applicationUser
+	 * @param gotrnrOrig
 	 * @param recordToValidate
-	 * @param bindingResult
-	 * @param session
-	 * @param request
+	 * @param mode
+	 * @param errMsg
 	 * @return
 	 */
-	@RequestMapping(value="godsno_delete.do", method={RequestMethod.GET, RequestMethod.POST} )
-	public ModelAndView doGodsnoDelete(ModelMap model, @ModelAttribute ("record") GodsjfDao recordToValidate, BindingResult bindingResult, HttpSession session, HttpServletRequest request){
-		ModelAndView successView = new ModelAndView("redirect:godsno_mainlist.do?action=doFind&rd=1");
-		logger.info("Inside: doGodsnoDelete");
-		final String DELETE_TEXT_ON_DB = "*SLETTET";
+	private int updateRecordSpecialTransittnrCase(String applicationUser, String gotrnrOrig, GodsjfDao recordToValidate, String mode, StringBuffer errMsg ){
+		int retval = 0;
+		//---------------
+    	//Get main list
+		//---------------
+		final String BASE_URL = GodsnoUrlDataStore.GODSNO_BASE_GODSJF_DML_UPDATE_URL;
+		//add URL-parameters
+		String urlRequestParamsKeys = "user=" + applicationUser + "&mode=" + mode + "&gotrnrOrig=" + gotrnrOrig;
+		String urlRequestParams = this.urlRequestParameterMapper.getUrlParameterValidString((recordToValidate));
+		//add params
+		urlRequestParams = urlRequestParamsKeys + urlRequestParams;
 		
-		SystemaWebUser appUser = this.loginValidator.getValidUser(session);
-		
-		//check user (should be in session already)
-		if(appUser==null){
-			return loginView;
-		
-		}else{
-			//----------------------------
-			//Fetch record and update it 
-			//----------------------------
-			if(strMgr.isNotNull(recordToValidate.getGogn()) ){
-				int dmlRetval = 0;
-				StringBuffer errMsg = new StringBuffer();
-				//fetch record
-				GodsjfDao recordToDelete = this.getRecordGodsjf(appUser, recordToValidate);
-				if(recordToDelete!=null && strMgr.isNotNull( recordToDelete.getGogn()) ){
-					//adjust some db-fields
-					recordToDelete.setGotrnr(DELETE_TEXT_ON_DB);
-					this.adjustFieldsForUpdate(recordToDelete);
-					logger.info("doDelete");
-					//Update with delete flag
-					dmlRetval = this.updateRecord(appUser.getUser(), recordToDelete, GodsnoConstants.MODE_UPDATE, errMsg);
-					if(dmlRetval<0){
-						logger.info("ERROR on delete ... ??? check your code");
-						model.addAttribute(GodsnoConstants.ASPECT_ERROR_MESSAGE, errMsg.toString());
-						
-					}else{
-						logger.info("doDelete = OK");
-					}
-					
-				}
-				
-			}
+		//session.setAttribute(TransportDispConstants.ACTIVE_URL_RPG_TRANSPORT_DISP, BASE_URL + "==>params: " + urlRequestParams.toString()); 
+    	logger.info(Calendar.getInstance().getTime() + " CGI-start timestamp");
+    	logger.info("URL: " + BASE_URL);
+    	logger.info("URL PARAMS: " + urlRequestParams);
+    	
+    	String jsonPayload = this.urlCgiProxyService.getJsonContent(BASE_URL, urlRequestParams.toString());
+    	//Debug --> 
+    	logger.debug(jsonDebugger.debugJsonPayloadWithLog4J(jsonPayload));
+    	logger.info(Calendar.getInstance().getTime() +  " CGI-end timestamp");
+    	if(jsonPayload!=null){
+    		//TODO
+    		JsonContainerDaoGODSJF container = this.godsnoService.getContainerGodsjf(jsonPayload);
+    		if(container!=null){
+    			if(strMgr.isNotNull(container.getErrMsg())){
+    				errMsg.append(container.getErrMsg());
+    				//Update successfully done!
+		    		logger.info("[ERROR] Record update - Error: " + errMsg.toString());
+		    		retval = -1;
+    			}else{
+    				//Update successfully done!
+		    		logger.info("[INFO] Record successfully updated, OK ");
+    			}
+    		}
+    	}		
 
-			return successView;
-		}
+		return retval;
 	}
-	
 	/**
 	 * 
 	 * @param applicationUser
@@ -426,7 +593,7 @@ public class GodsnoRegistreringController {
 	 * @param appUser
 	 * @param model
 	 */
-	private void calculateGodsNr_withoutCounter(String avd, SystemaWebUser appUser, ModelMap model, GodsjfDao recordToValidate){
+	private void calculateGodsNrAutomatically_withoutCounter(String avd, SystemaWebUser appUser, ModelMap model, GodsjfDao recordToValidate){
 		String ALERT_CODE_BEVKODE_MISSING = "XXXXX";
 		GodsnrManager godsnrMgr = new GodsnrManager();
 		//get Godsnr bev.kode since we will be creating a new record...
@@ -478,8 +645,8 @@ public class GodsnoRegistreringController {
 		GodsjfDao newRecord = this.getRecordGodsjf(appUser, recordToValidate);
 		
 		if(newRecord!=null && (newRecord.getGogn()!=null && newRecord.getGogn().equals(recordToValidate.getGogn())) ){
-			errMsg.append("Record:" + newRecord.getGogn());
-			errMsg.append(" already exists... ? ");
+			errMsg.append("Godsnr:" + newRecord.getGogn() + " Transittnr:" + newRecord.getGotrnr());
+			errMsg.append(" finnes allerede... ? ");
 			logger.info(errMsg.toString());
 			retval = true;
 		}
@@ -583,6 +750,9 @@ public class GodsnoRegistreringController {
 		
 		if(strMgr.isNotNull(recordToValidate.getGogn()) ){
 			urlRequestParams.append("&gogn=" + recordToValidate.getGogn());
+			if(strMgr.isNotNull(recordToValidate.getGotrnr())){
+				urlRequestParams.append("&gotrnr=" + recordToValidate.getGotrnr());
+			}
 		}
 		
 		//session.setAttribute(TransportDispConstants.ACTIVE_URL_RPG_TRANSPORT_DISP, BASE_URL + "==>params: " + urlRequestParams.toString()); 

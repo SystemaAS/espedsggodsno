@@ -37,6 +37,11 @@
 	    		refreshCustomValidity(jq('#gomott')[0]);
 	  		}
 	  	});
+	  jq('#gotrnr').focus(function() {
+	    	if(jq('#gotrnr').val()!=''){
+	    		refreshCustomValidity(jq('#gotrnr')[0]);
+	  		}
+	  	});
 	  jq('#gogn').focus(function() {
 	    	if(jq('#gogn').val()!=''){
 	    		refreshCustomValidity(jq('#gogn')[0]);
@@ -85,10 +90,27 @@
 		  //open now
 		  jq('#dialogBevKoderReadOnly').dialog('open');
 	  });
+	  //div for bev.koder main table (as in maintenance table)
+	  jq('#divBevKodeListDialogImgReadOnly').click(function() {
+		  if(jq('#divBevKodeList').css('display') == 'none'){
+			  jq('#divBevKodeList').css('display','block');
+		  }else{
+			  jq('#divBevKodeList').css('display','none');
+		  }
+	  });
     	  
 
   });    
   
+  function doPickBevKode(element){
+	  jq('#divBevKodeList').css('display','none');
+	  var rawId = element.id;
+	  var record = rawId.split("@");
+	  var id = record[0].replace("id_","");
+	  var id2 = record[1].replace("id2_","");
+	  //choose drop-down value
+	  jq('#owngogn_2').val(id + "_" + id2);
+  }
   
 	 
 

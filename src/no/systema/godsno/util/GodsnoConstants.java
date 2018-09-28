@@ -32,6 +32,7 @@ public final class GodsnoConstants {
 	
 	//update modes
 	public static final String MODE_UPDATE = "U";
+	public static final String MODE_UPDATE_TRANSITT_KEY = "UTR";
 	public static final String MODE_ADD = "A";
 	public static final String MODE_DELETE = "D";
 	public static final String MODE_SEND = "S";

@@ -123,21 +123,23 @@
   //----------------------------------------
   function doDeleteOrder(element){
 	  //start
-	  //var record = element.id.split('@');
-	  //var avd = record[0];
-	  //var record = element.id;
-	  var id = element.id;
-	  id= id.replace("id_","");
+	  var record = element.id.split('@');
+	  var id = record[0];
+	  var id2 = record[1];
+	  id = id.replace("id_","");
+	  id2 = id2.replace("id2_","");
+	  
 	  	//Start dialog
 	  	jq('<div></div>').dialog({
 	        modal: true,
-	        title: "Slett Godsnr. " + id,
+	        title: "Slett Godsnr. " + id + " - Transittnr " + id2,
+	        width: 500,
 	        buttons: {
 		        Fortsett: function() {
 	        		jq( this ).dialog( "close" );
 		            //do delete
 	        		setBlockUI();
-		            window.location = "godsno_delete.do?gogn=" + id;
+		            window.location = "godsno_delete.do?gogn=" + id + "&gotrnr=" + id2;
 		            
 		        },
 		        Avbryt: function() {

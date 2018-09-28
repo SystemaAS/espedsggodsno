@@ -11,8 +11,8 @@
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 	
 	<style type = "text/css">
-		.ui-dialog{font-size:11pt;}*/
-		.ui-datepicker { font-size:9pt;}
+		.ui-dialog{font-size:11pt;}
+		.ui-datepicker { font-size:10pt;}
 	</style>
 	
 	
@@ -62,8 +62,11 @@
 				<input type="hidden" name="applicationUser" id="applicationUser" value='${user.user}'>
 				<input type="hidden" name="action" id="action" value='${action}'>
 				<input type="hidden" name="avd" id="avd" value='${avd}'>
+				
 				<c:if test="${not empty updateFlag}">
 					<input type="hidden" name="gogn" id="gogn" value="${record.gogn}">
+					<%-- this is for an update of the key gortrnr --%>
+					<input type="hidden" name="gotrnrOrig" id="gotrnrOrig" value='${record.gotrnr}'>
 					<input type="hidden" name="updateFlag" id="updateFlag" value="${updateFlag}">
 				</c:if>
 				<table style="width:50%" align="left" border="0" cellspacing="0" cellpadding="0">
@@ -91,12 +94,22 @@
 						 				
 						 				<c:when test="${fn:length(godsnr) == 4}" ><%-- Meaning there is no match. The user MUST fill up accord. to requir. mask --%>
 						 					<input readonly type="text" class="inputTextReadOnly" name="owngogn_1" id="owngogn_1" size="4"  value="${godsnr}">
-						 					<select  required oninvalid="this.setCustomValidity('Obligatorisk')" oninput="setCustomValidity('')" class="inputTextMediumBlueMandatoryField" name="owngogn_2" id="owngogn_2" >
-						 						<option value="">-Velg Bev.kode-</option>
+						 					<select  name="owngogn_2" id="owngogn_2" required oninvalid="this.setCustomValidity('Obligatorisk')" oninput="setCustomValidity('')" class="inputTextMediumBlueMandatoryField" >
+						 						<option value="">Velg Bev.kode</option>
 						 						<c:forEach var="record" items="${bevKodeList}" >
 							 				  		<option value="${record.gflbko}_${record.gfenh}" >${record.gflbko}&nbsp;&nbsp;${record.gfenh}</option>
 												</c:forEach>  
-											</select>
+											</select><img title="search" id="divBevKodeListDialogImgReadOnly" style="vertical-align:middle; cursor:pointer;" width="10px" height="10px" src="resources/images/sort_down.png" border="0" alt="bev.koder">
+											<div id="divBevKodeList" style="display:none;position: relative;height:10em;" class="ownScrollableSubWindowDynamicWidthHeight" align="left" >
+					 						<table id="tblBevKodeList" class="inputTextMediumBlueMandatoryField">
+												<c:forEach items="${bevKodeListMainTbl}" var="record" varStatus="counter">  
+												<tr>
+													<td id="id_${record.gflbko}@id2_${record.gfenh}" OnClick="doPickBevKode(this)" class="tableHeaderFieldFirst" style="cursor:pointer;" ><font class="text14SkyBlue">${record.gflbko}&nbsp;${record.gfenh}</font></td>
+													<td class="tableHeaderField12">${record.gflbs1}&nbsp;${record.gflbs2}&nbsp;${record.gflbs3}&nbsp;${record.gflbs4}</td>
+												</tr>
+												</c:forEach>
+											</table>	
+										</div>	
 											<input readonly type="text" class="inputTextReadOnly" name="owngogn_3" id="owngogn_3" size="3"  value="${dayOfYear}">
 						 				</c:when>
 						 				<c:otherwise>
@@ -178,6 +191,13 @@
 					 			<td class="text14"><span title="gomott">Varemottaker</span></td>
 					 			<td class="text14">
 					 				<input type="text" required oninvalid="this.setCustomValidity('Obligatorisk')" oninput="setCustomValidity('')" class="inputTextMediumBlueMandatoryField" name="gomott" id="gomott" size="21" maxlength="15" value="${record.gomott}">
+					 				<font class="text16RedBold" >*</font>
+					 			</td>
+					 		</tr>
+					 		<tr >
+					 			<td class="text14"><span title="gotrnr">Transittnr.</span></td>
+					 			<td class="text14">
+					 				<input type="text" required oninvalid="this.setCustomValidity('Obligatorisk')" oninput="setCustomValidity('')" class="inputTextMediumBlueMandatoryField" name="gotrnr" id="gotrnr" size="21" maxlength="20" value="${record.gotrnr}">
 					 				<font class="text16RedBold" >*</font>
 					 			</td>
 					 		</tr>
