@@ -10,7 +10,7 @@ import no.systema.godsno.model.JsonContainerDaoGODSJF;
 import no.systema.godsno.model.JsonContainerDaoGODSAF;
 import no.systema.godsno.model.JsonContainerDaoGODSGF;
 import no.systema.godsno.model.JsonContainerDaoGODSFI;
-
+import no.systema.godsno.model.JsonContainerDaoGODSHF;
 
 /**
  * 
@@ -67,6 +67,17 @@ public class GodsnoService {
 		try{
 			JsonGodsnoMapper mapper = new JsonGodsnoMapper();
 			container = mapper.getContainerGodsfi(utfPayload);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return container;
+	}
+	
+	public JsonContainerDaoGODSHF getContainerGodshf(String utfPayload) {
+		JsonContainerDaoGODSHF container = null;
+		try{
+			JsonGodsnoMapper mapper = new JsonGodsnoMapper();
+			container = mapper.getContainerGodshf(utfPayload);
 		}catch(Exception e){
 			e.printStackTrace();
 		}

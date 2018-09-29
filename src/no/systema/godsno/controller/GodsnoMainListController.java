@@ -34,6 +34,7 @@ import no.systema.main.model.SystemaWebUser;
 import no.systema.main.util.StringManager;
 
 import no.systema.jservices.common.dao.GodsjfDao;
+import no.systema.jservices.common.dao.GodshfDao;
 
 //GODSNO
 import no.systema.godsno.service.GodsnoService;
@@ -41,6 +42,7 @@ import no.systema.godsno.filter.SearchFilterGodsnoMainList;
 import no.systema.godsno.url.store.GodsnoUrlDataStore;
 import no.systema.godsno.util.GodsnoConstants;
 import no.systema.godsno.model.JsonContainerDaoGODSJF;
+import no.systema.godsno.model.JsonContainerDaoGODSHF;
 import no.systema.godsno.util.manager.CodeDropDownMgr;
 
 /**
@@ -52,16 +54,11 @@ import no.systema.godsno.util.manager.CodeDropDownMgr;
  */
 
 @Controller
-@SessionAttributes(AppConstants.SYSTEMA_WEB_USER_KEY)
-@Scope("session")
 public class GodsnoMainListController {
 	private static final JsonDebugger jsonDebugger = new JsonDebugger(3000);
 	private static Logger logger = Logger.getLogger(GodsnoMainListController.class.getName());
 	private ModelAndView loginView = new ModelAndView("redirect:logout.do");
-	private ApplicationContext context;
 	private LoginValidator loginValidator = new LoginValidator();
-	//private RpgReturnResponseHandler rpgReturnResponseHandler = new RpgReturnResponseHandler();
-	private PayloadContentFlusher payloadContentFlusher = new PayloadContentFlusher();
 	private StringManager strMgr = new StringManager();
 	
 	@Autowired
@@ -92,7 +89,6 @@ public class GodsnoMainListController {
 	 */
 	@RequestMapping(value="godsno_mainlist.do", params="action=doFind",  method={RequestMethod.GET, RequestMethod.POST} )
 	public ModelAndView doFind(@ModelAttribute ("record") SearchFilterGodsnoMainList recordToValidate, BindingResult bindingResult, HttpSession session, HttpServletRequest request){
-		this.context = TdsAppContext.getApplicationContext();
 		Collection mainList = new ArrayList();
 		logger.info("Inside: doFind");
 		Map model = new HashMap();
@@ -136,6 +132,7 @@ public class GodsnoMainListController {
 	    		}
     			//get list
     			mainList = this.getList(appUser, recordToValidate, maxWarningMap);
+    			
     			//--------------------------------------
 	    		//Final successView with domain objects
 	    		//--------------------------------------

@@ -61,8 +61,6 @@ import no.systema.godsno.mapper.url.request.UrlRequestParameterMapper;
  */
 
 @Controller
-@SessionAttributes(AppConstants.SYSTEMA_WEB_USER_KEY)
-@Scope("session")
 public class GodsnoRegistreringController {
 	private static final JsonDebugger jsonDebugger = new JsonDebugger(3000);
 	private static Logger logger = Logger.getLogger(GodsnoRegistreringController.class.getName());

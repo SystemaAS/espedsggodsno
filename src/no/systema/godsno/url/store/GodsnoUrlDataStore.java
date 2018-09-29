@@ -18,6 +18,9 @@ public final class GodsnoUrlDataStore {
 	//----------------------
 	//http://gw.systema.no:8080/syjservicesgodsno/syjsSYGODSJF.do?user=OSCAR&dftdg=10
 	static public String GODSNO_BASE_MAIN_LIST_URL = AppConstants.HTTP_ROOT_SERVLET_JSERVICES + "/syjservicesgodsno/syjsSYGODSJF.do";
+	//FETCH LOG FILE
+	//http://gw.systema.no:8080/syjservicesgodsno/syjsSYGODSHF.do?user=OSCAR&dftdg=10
+	static public String GODSNO_BASE_LOG_LIST_URL = AppConstants.HTTP_ROOT_SERVLET_JSERVICES + "/syjservicesgodsno/syjsSYGODSHF.do";
 
 	//-------------------------
 	//[2] UPDATE record (U/A/D
