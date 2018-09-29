@@ -53,9 +53,8 @@
 		<%-- --------------- --%>
 		<tr>
 		<td >
-		<table align="center" width="98%" border="0" cellspacing="1" cellpadding="0">
-		
-		<%-- Left cell --%>
+		<table align="center" style="width:95%" border="0" cellspacing="1" cellpadding="0">
+
 		<tr>
 			<td class="text14" valign="top">
 				<form action="godsno_edit.do" name="editForm" id="editForm" method="post">
@@ -75,10 +74,12 @@
 						<table style="width:100%"  class="dashboardFrameHeader" border="0" cellspacing="1" cellpadding="0">
 					 		<tr height="15">
 					 			<td class="text14White">&nbsp;Godsnr:&nbsp;<font style="color: lemonchiffon;">${record.gogn}</font></td>
-					 			<td align="right">
-					 				<img title="Bev.koder" id="bevKoderDialogImgReadOnly" style="vertical-align:middle; cursor:pointer;" width="14px" height="14px" src="resources/images/info4.png" border="0" alt="bev.koder">
-					 				&nbsp;
-					 			</td>
+					 			<c:if test="${ empty updateFlag}">
+						 			<td align="right">
+						 				<img title="Bev.koder" id="bevKoderDialogImgReadOnly" style="vertical-align:middle; cursor:pointer;" width="14px" height="14px" src="resources/images/info4.png" border="0" alt="bev.koder">
+						 				&nbsp;
+						 			</td>
+					 			</c:if>
 			 				</tr>
 			            </table>
 			            </td>
@@ -146,8 +147,7 @@
 					 			<td class="text14">
 					 				<img style="vertical-align:middle;" src="resources/images/calendar.gif" width="12px" height="12px" border="0" alt="dato">
 					 				<span title="gogrdt">Dato</span>
-					 			</td>
-					 			<td class="text14">
+					 			
 					 				<c:choose>
 						 				<c:when test="${record.gogrdt != '0'}">
 						 					<input onKeyPress="return numberKey(event)" type="text" class="inputTextMediumBlue" name="gogrdt" id="gogrdt" size="7" maxlength="6" value="${record.gogrdt}">
@@ -156,12 +156,8 @@
 						 					<input onKeyPress="return numberKey(event)" type="text" class="inputTextMediumBlue" name="gogrdt" id="gogrdt" size="7" maxlength="6" value="">
 						 				</c:otherwise>
 					 				</c:choose>
-					 			</td>
-					 			<td class="text14">
 					 				<img style="vertical-align:middle;" src="resources/images/clock2.png" width="12px" height="12px" border="0" alt="kl">
 					 				<span title="gogrkl">Kl.</span>
-					 			</td>
-					 			<td class="text14">
 					 			
 					 				<c:choose>
 						 				<c:when test="${record.gogrkl > 0}">
@@ -207,7 +203,34 @@
 					 				<input type="text" required oninvalid="this.setCustomValidity('Obligatorisk')" oninput="setCustomValidity('')" class="inputTextMediumBlueMandatoryField" name="gotrnr" id="gotrnr" size="21" maxlength="20" value="${record.gotrnr}">
 					 				<font class="text16RedBold" >*</font>
 					 			</td>
+					 			<td class="text14">
+					 				<img style="vertical-align:middle;" src="resources/images/calendar.gif" width="12px" height="12px" border="0" alt="dato">
+					 				<span title="gotrdt">Transittdato</span>
+					 			
+					 				<c:choose>
+						 				<c:when test="${record.gotrdt != '0'}">
+						 					<input onKeyPress="return numberKey(event)" type="text" class="inputTextMediumBlue" name="gotrdt" id="gotrdt" size="7" maxlength="6" value="${record.gotrdt}">
+						 				</c:when>
+						 				<c:otherwise>
+						 					<input onKeyPress="return numberKey(event)" type="text" class="inputTextMediumBlue" name="gotrdt" id="gotrdt" size="7" maxlength="6" value="">
+						 				</c:otherwise>
+					 				</c:choose>
+					 			</td>
 					 		</tr>
+					 		<tr >
+					 			<td class="text14"><span title="owngoavg_ptype">T-papirtype</span></td>
+					 			<td class="text14">
+					 				<input type="text" class="inputTextMediumBlue" name="owngoavg_ptype" id="owngoavg_ptype" size="5" maxlength="3" value="?">
+					 				<font class="text12" style="font-style: italic;">Blank=T1</font>
+					 			</td>
+					 		</tr>
+					 		<tr >
+					 			<td class="text14"><span title="owngoavg_toll">Avg.tollsted</span></td>
+					 			<td class="text14">
+					 				<input type="text" class="inputTextMediumBlue" name="owngoavg_toll" id="owngoavg_toll" size="15" maxlength="12" value="?">
+					 			</td>
+					 		</tr>
+					 		
 					 		<tr height="10"><td></td></tr>
 			 				<tr><td colspan="10"><hr size="1" width="100%" 	/></td></tr>
 			 				<tr height="10"><td></td></tr>
@@ -219,8 +242,7 @@
 					 			<td class="text14">
 					 				<img style="vertical-align:middle;" src="resources/images/calendar.gif" width="12px" height="12px" border="0" alt="dato">
 					 				<span title="golsdt">Dato</span>
-					 			</td>
-					 			<td class="text14">
+					 			
 					 				<c:choose>
 						 				<c:when test="${record.golsdt != '0'}">
 						 					<input onKeyPress="return numberKey(event)" type="text" class="inputTextMediumBlue" name="golsdt" id="golsdt" size="7" maxlength="6" value="${record.golsdt}">
@@ -229,12 +251,10 @@
 						 					<input onKeyPress="return numberKey(event)" type="text" class="inputTextMediumBlue" name="golsdt" id="golsdt" size="7" maxlength="6" value="">
 						 				</c:otherwise>
 					 				</c:choose>
-					 			</td>
-					 			<td class="text14">
+					 			
 					 				<img style="vertical-align:middle;" src="resources/images/clock2.png" width="12px" height="12px" border="0" alt="kl">
 					 				<span title="golskl">Kl.</span>
-					 			</td>
-					 			<td class="text14">
+					 			
 					 				<c:choose>
 						 				<c:when test="${record.golskl > 0}">
 						 					<input onKeyPress="return numberKey(event)" type="text" class="inputTextMediumBlue" name="golskl" id="golskl" size="5" maxlength="4" value="${record.golskl}">
@@ -245,19 +265,36 @@
 									</c:choose>
 					 			</td>
 					 		</tr>
-					 		
-								 				
+					 		<tr height="5"><td></td></tr>
+					 		<tr >
+					 			<td class="text14"><span title="golsen">Reiserute 1-2</span></td>
+					 			<td class="text14">
+					 				<input type="text" class="inputTextMediumBlue" name="gorei1" id="gorei1" size="22" maxlength="20" value="${record.gorei1}">
+				 				</td>
+				 				<td colspan="2" class="text14">
+					 				<input type="text" class="inputTextMediumBlue" name="gorei2" id="gorei2" size="22" maxlength="20" value="${record.gorei2}">
+				 				</td>
+							</tr> 	
+							<tr >
+					 			<td class="text14"><span title="golsen">Reiserute 3-4</span></td>
+					 			<td class="text14">
+					 				<input type="text" class="inputTextMediumBlue" name="gorei3" id="gorei3" size="22" maxlength="20" value="${record.gorei3}">
+				 				</td>
+				 				<td colspan="2" class="text14">
+					 				<input type="text" class="inputTextMediumBlue" name="gorei4" id="gorei4" size="22" maxlength="20" value="${record.gorei4}">
+				 				</td>
+							</tr> 				
 			 				
-			 				<tr height="20"><td></td></tr>
+			 				<tr height="15"><td></td></tr>
 			 				
 			 				<%-- SUBMIT button --%>
 			 				<c:if test="${record.gotrnr != '*SLETTET' && (!fn:contains(godsnr,'ERROR') && !fn:contains(godsnr,'FEIL')) }">
 				 				<tr>
 				 					<td colspan="10">
-				 					<table width="100%" border="0" cellspacing="1" cellpadding="1">
+				 					<table style="width:95%" border="0" cellspacing="0" cellpadding="0">
 					 					<tr>
 					 					<td align="right" class="text14" valign="top">
-					 						<input class="inputFormSubmit" type="submit" name="submit" id="submit" value='Lagre'>&nbsp;
+					 						<input class="inputFormSubmit" type="submit" name="submit" id="submit" value='Lagre'>
 					 					</td>
 					 					</tr>
 				 					</table>

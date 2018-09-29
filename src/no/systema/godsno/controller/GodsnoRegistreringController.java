@@ -680,9 +680,10 @@ public class GodsnoRegistreringController {
 	private void adjustFieldsForUpdate(GodsjfDao recordToValidate){
 		recordToValidate.setGogrdt(this.convertToDate_ISO(recordToValidate.getGogrdt()));
 		recordToValidate.setGolsdt(this.convertToDate_ISO(recordToValidate.getGolsdt()));
+		recordToValidate.setGotrdt(this.convertToDate_ISO(recordToValidate.getGotrdt()));
 		
-		//Numbers... since the fucking Spring converter is not working ...
-		if(recordToValidate.getGotrdt()==null){ recordToValidate.setGotrdt(0); }
+		//date
+		if(recordToValidate.getGotrdt()==null){ recordToValidate.setGotrdt("0"); }
 		//date and time
 		if(recordToValidate.getGogrdt()==null){ recordToValidate.setGogrdt("0"); }
 		if(recordToValidate.getGogrkl()==null){ recordToValidate.setGogrkl(0); }
@@ -699,6 +700,7 @@ public class GodsnoRegistreringController {
 		
 		recordToValidate.setGogrdt(this.convertToDate_NO(recordToValidate.getGogrdt()));
 		recordToValidate.setGolsdt(this.convertToDate_NO(recordToValidate.getGolsdt()));
+		recordToValidate.setGotrdt(this.convertToDate_NO(recordToValidate.getGotrdt()));
 	}
 	/**
 	 * 
