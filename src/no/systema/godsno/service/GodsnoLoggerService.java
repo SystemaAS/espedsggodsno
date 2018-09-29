@@ -14,12 +14,14 @@ import org.springframework.stereotype.Service;
 
 import no.systema.godsno.controller.GodsnoMainListController;
 import no.systema.godsno.mapper.JsonGodsnoMapper;
+import no.systema.godsno.mapper.url.request.UrlRequestParameterMapper;
 import no.systema.godsno.model.JsonContainerDaoGODSJF;
 import no.systema.godsno.url.store.GodsnoUrlDataStore;
 import no.systema.godsno.util.manager.CodeDropDownMgr;
 import no.systema.jservices.common.dao.GodshfDao;
 import no.systema.main.model.SystemaWebUser;
 import no.systema.main.service.UrlCgiProxyService;
+import no.systema.main.util.DateTimeManager;
 import no.systema.main.util.JsonDebugger;
 import no.systema.main.util.StringManager;
 import no.systema.godsno.model.JsonContainerDaoGODSAF;
@@ -39,6 +41,8 @@ public class GodsnoLoggerService {
 	private static final JsonDebugger jsonDebugger = new JsonDebugger(3000);
 	private static Logger logger = Logger.getLogger(GodsnoLoggerService.class.getName());
 	private StringManager strMgr = new StringManager();
+	DateTimeManager dateMgr = new DateTimeManager();
+	private GodshfDao dao = null;
 	
 	@Autowired
 	private UrlCgiProxyService urlCgiProxyService;
@@ -52,7 +56,7 @@ public class GodsnoLoggerService {
 	 * @param gogn
 	 * @return
 	 */
-	private Collection<GodshfDao> getLogHfList(SystemaWebUser appUser, String gogn){
+	public Collection<GodshfDao> getLogHfList(SystemaWebUser appUser, GodshfDao dao){
 		Collection<GodshfDao> outputList = new ArrayList<GodshfDao>();
 		String defaultDaysBack = "10";
 		//---------------
@@ -63,8 +67,8 @@ public class GodsnoLoggerService {
 		StringBuffer urlRequestParams = new StringBuffer();
 		urlRequestParams.append("user=" + appUser.getUser());
 		
-		if(strMgr.isNotNull(gogn) ){
-			urlRequestParams.append("&gogn=" + gogn);
+		if(strMgr.isNotNull(dao.getGogn()) ){
+			urlRequestParams.append("&gogn=" + dao.getGogn());
 		}else{
 			if(strMgr.isNotNull(appUser.getDftdg()) ){
 				urlRequestParams.append("&dftdg=" + appUser.getDftdg());
@@ -76,8 +80,7 @@ public class GodsnoLoggerService {
 				urlRequestParams.append("&gomott=" + recordToValidate.getGomott());
 			}
 			*/
-		}
-		//session.setAttribute(TransportDispConstants.ACTIVE_URL_RPG_TRANSPORT_DISP, BASE_URL + "==>params: " + urlRequestParams.toString()); 
+		} 
     	logger.info(Calendar.getInstance().getTime() + " CGI-start timestamp");
     	logger.info("URL: " + BASE_URL);
     	logger.info("URL PARAMS: " + urlRequestParams);
@@ -94,6 +97,88 @@ public class GodsnoLoggerService {
 	    
 		return outputList;
 	}
-	
+	/**
+	 * 
+	 * @param appUser
+	 * @param dao
+	 * @return
+	 */
+	private int add(String applicationUser, StringBuffer errMsg){
+		UrlRequestParameterMapper urlRequestParameterMapper = new UrlRequestParameterMapper();
+		
+		int retval = 0;
+		//---------------
+    	//DML
+		//---------------
+		if(this.dao!=null){
+			String BASE_URL = GodsnoUrlDataStore.GODSNO_BASE_GODSHF_DML_UPDATE_URL;
+			//add URL-parameters
+			String urlRequestParamsKeys = "user=" + applicationUser + "&mode=A";
+			String urlRequestParams = urlRequestParameterMapper.getUrlParameterValidString((this.dao));
+			//add params
+			urlRequestParams = urlRequestParamsKeys + urlRequestParams;
+			
+			logger.info(Calendar.getInstance().getTime() + " CGI-start timestamp");
+	    	logger.info("URL: " + BASE_URL);
+	    	logger.info("URL PARAMS: " + urlRequestParams);
+	    	
+	    	String jsonPayload = this.urlCgiProxyService.getJsonContent(BASE_URL, urlRequestParams.toString());
+	    	//Debug --> 
+	    	logger.debug(jsonDebugger.debugJsonPayloadWithLog4J(jsonPayload));
+	    	logger.info(Calendar.getInstance().getTime() +  " CGI-end timestamp");
+	    	if(jsonPayload!=null){
+	    		//TODO
+	    		JsonContainerDaoGODSJF container = this.godsnoService.getContainerGodsjf(jsonPayload);
+	    		if(container!=null){
+	    			if(strMgr.isNotNull(container.getErrMsg())){
+	    				errMsg.append(container.getErrMsg());
+	    				//Update successfully done!
+			    		logger.info("[ERROR] Record update - Error: " + errMsg.toString());
+			    		retval = -1;
+	    			}else{
+	    				//Update successfully done!
+			    		logger.info("[INFO] Record successfully updated, OK ");
+			    		
+	    			}
+	    		}
+	    	}		
+		}else{
+			errMsg.append("[ERROR] Dao is NULL. Missed setLogRecord on GodsnoLoggerService?");
+		}
+		//clean-up since it is an instance variable in an injected service
+		this.dao = null; 
+		
+		return retval;
+	}
+	/**
+	 * 
+	 * @param dao
+	 */
+	private void setLogRecord(String applicationUser, String gogn, String gotrnr, String code){
+		this.dao = new GodshfDao();
+		this.dao.setGohkod(code);
+		this.dao.setGogn(gogn);
+		this.dao.setGotrnr(gotrnr);
+		this.dao.setGohpgm("WEB");
+		this.dao.setGohusr(applicationUser);
+		
+		Integer dateISO = Integer.valueOf(dateMgr.getCurrentDate_ISO());
+		this.dao.setGohdat(dateISO);
+		Integer timeISO = Integer.valueOf(dateMgr.getCurrentDate_ISO("HHmmss"));
+		this.dao.setGohtim(timeISO);
+		
+	}
+	/**
+	 * 
+	 * @param applicationUser
+	 * @param gogn
+	 * @param gotrnr
+	 * @param code
+	 * @param errMsg
+	 */
+	public void logIt(String applicationUser, String gogn, String gotrnr, String code, StringBuffer errMsg){
+		this.setLogRecord(applicationUser, gogn, gotrnr, code);
+		this.add(applicationUser, errMsg);
+	}
 
 }

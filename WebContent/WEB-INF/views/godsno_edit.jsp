@@ -228,6 +228,7 @@
 					 			<td class="text14"><span title="owngoavg_toll">Avg.tollsted</span></td>
 					 			<td class="text14">
 					 				<input type="text" class="inputTextMediumBlue" name="owngoavg_toll" id="owngoavg_toll" size="15" maxlength="12" value="?">
+					 				<input type="hidden" name="goavg" id="goavg" value=''>
 					 			</td>
 					 		</tr>
 					 		

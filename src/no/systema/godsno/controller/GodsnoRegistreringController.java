@@ -1,6 +1,7 @@
 package no.systema.godsno.controller;
 
 import java.util.*;
+import java.util.function.ToDoubleBiFunction;
 import java.util.regex.*;
 
 import javax.annotation.PostConstruct;
@@ -41,6 +42,7 @@ import no.systema.jservices.common.dao.GodsgfDao;
 
 //GODSNO
 import no.systema.godsno.service.GodsnoService;
+import no.systema.godsno.service.GodsnoLoggerService;
 import no.systema.godsno.validator.GodsnoRegistreringValidator;
 import no.systema.godsno.url.store.GodsnoUrlDataStore;
 import no.systema.godsno.util.GodsnoConstants;
@@ -69,9 +71,14 @@ public class GodsnoRegistreringController {
 	private StringManager strMgr = new StringManager();
 	DateTimeManager dateMgr = new DateTimeManager();
 	private UrlRequestParameterMapper urlRequestParameterMapper = new UrlRequestParameterMapper();
+	private final String LOGGER_CODE_EDIT = "E";
+	private final String LOGGER_CODE_NEW = "N";
 	
 	@Autowired
 	private GodsnoService godsnoService;
+
+	@Autowired
+	private GodsnoLoggerService godsnoLoggerService;
 	
 	@PostConstruct
 	public void initIt() throws Exception {
@@ -137,13 +144,25 @@ public class GodsnoRegistreringController {
 			    	//Start DML operations if applicable
 					StringBuffer errMsg = new StringBuffer();
 					int dmlRetval = 0;
-					
+					//----------------------------------------------------
+					//check and adjust godsNr if it was done by user input
+					//----------------------------------------------------
+					if(this.godsNrInputManually(request)){
+						recordToValidate.setGogn(this.constructGodsNrManually(request));
+					}
+					//--------------------------------------------------------------------------------
+					//at this point we do have a godsnr well-formed (either manually or automatically)
+					//--------------------------------------------------------------------------------
 					if(strMgr.isNotNull( recordToValidate.getGogn()) ){
 						//Add or Update
 						if(strMgr.isNotNull(updateFlag)){
 							logger.info("doUpdate");
 							if(gotrnrOrig!=null && gotrnrOrig.equals(recordToValidate.getGotrnr())){
 								dmlRetval = this.updateRecord(appUser.getUser(), recordToValidate, GodsnoConstants.MODE_UPDATE, errMsg);
+								if(dmlRetval>=0){
+									//Gods-logger (footprint after each DML-success operation)
+									this.godsnoLoggerService.logIt(appUser.getUser(), recordToValidate.getGogn(), recordToValidate.getGotrnr(), this.LOGGER_CODE_EDIT, errMsg);
+								}
 							}else{
 								//duplicate check
 								if(this.recordExistsGodsjf(appUser, recordToValidate, errMsg)){
@@ -154,16 +173,15 @@ public class GodsnoRegistreringController {
 								}else{
 									//meaning the end-user changed the gotrnr (key) to a non-existent transittnr (valid key)
 									dmlRetval = this.updateRecordSpecialTransittnrCase(appUser.getUser(), gotrnrOrig, recordToValidate, GodsnoConstants.MODE_UPDATE_TRANSITT_KEY, errMsg);
+									if(dmlRetval>=0){
+										//Gods-logger (footprint after each DML-success operation)
+										this.godsnoLoggerService.logIt(appUser.getUser(), recordToValidate.getGogn(), recordToValidate.getGotrnr(), this.LOGGER_CODE_EDIT, errMsg);
+									}
 								}
 							}
 							
 						}else{
 							logger.info("doCreate branch starting...");
-							//check and adjust godsNr if it was done by user input
-							if(this.godsNrInputManually(request)){
-								recordToValidate.setGogn(this.constructGodsNrManually(request));
-							}
-							//at this point we do have a godsnr well-formed (either manually or automatically)
 							String godsNrOriginalValue = recordToValidate.getGogn();
 							//duplicate check
 							if(this.recordExistsGodsjf(appUser, recordToValidate, errMsg)){
@@ -177,6 +195,10 @@ public class GodsnoRegistreringController {
 									logger.info("Create new with manual counter ...");
 									recordToValidate.setGogn(recordToValidate.getGogn() + gognManualCounter);
 									dmlRetval = this.updateRecord(appUser.getUser(), recordToValidate, GodsnoConstants.MODE_ADD, errMsg);
+									//Gods-logger (footprint after each DML-success operation)
+									if(dmlRetval>=0){
+										this.godsnoLoggerService.logIt(appUser.getUser(), recordToValidate.getGogn(), recordToValidate.getGotrnr(), this.LOGGER_CODE_NEW, errMsg);
+									}
 								
 								//CREATE NEW with automatic counter (Both: main table and secondary table (GODSGF=teller table) are updated.	
 								}else{
@@ -193,10 +215,14 @@ public class GodsnoRegistreringController {
 										logger.info("doCreate");
 										dmlRetval = this.updateRecord(appUser.getUser(), recordToValidate, GodsnoConstants.MODE_ADD, errMsg);
 										if(dmlRetval>=0){
+											//Gods-logger (footprint after each DML-success operation)
+											this.godsnoLoggerService.logIt(appUser.getUser(), recordToValidate.getGogn(), recordToValidate.getGotrnr(), this.LOGGER_CODE_NEW, errMsg);
+											
 											//(2) Update counter record
 											logger.info("doUpdate - teller (Godsgf)");
 											GodsgfDao godsgfDao  = this.increaseCounter(godsNrOriginalValue, tmpRecord.getGggn2());
 											int dmlSec = this.updateRecordGodsnrCounter(appUser.getUser(), godsgfDao, GodsnoConstants.MODE_UPDATE, errMsg);
+											
 										}
 									}else{
 										logger.info("Record in teller table DOES NOT exist...");
@@ -206,6 +232,9 @@ public class GodsnoRegistreringController {
 										logger.info("doCreate");
 										dmlRetval = this.updateRecord(appUser.getUser(), recordToValidate, GodsnoConstants.MODE_ADD, errMsg);
 										if(dmlRetval>=0){
+											//Gods-logger (footprint after each DML-success operation)
+											this.godsnoLoggerService.logIt(appUser.getUser(), recordToValidate.getGogn(), recordToValidate.getGotrnr(), this.LOGGER_CODE_NEW, errMsg);
+											
 											//(2) Update counter record
 											logger.info("doCreate - teller (Godsgf)");
 											GodsgfDao godsgfDao  = this.increaseCounter(godsNrOriginalValue, firstCounter);
@@ -220,6 +249,12 @@ public class GodsnoRegistreringController {
 					if(dmlRetval<0){
 						isValidRecord = false;
 						model.addAttribute(GodsnoConstants.ASPECT_ERROR_MESSAGE, errMsg.toString());
+						if(strMgr.isNotNull(updateFlag)){
+							//Nothing
+						}else{
+							//Error on create new
+							action = "ERROR_ON_CREATE";
+						}
 					}else{
 						//Create OK. Prepare for upcoming Update
 						model.addAttribute("updateFlag", "1");
@@ -245,9 +280,9 @@ public class GodsnoRegistreringController {
 			
 			if(action==null || "".equals(action)){ 
 				action = "doUpdate";	
-			}else if (action.equals(GodsnoConstants.ACTION_CREATE)){
+			}else if (action.equals(GodsnoConstants.ACTION_CREATE) || action.equals("ERROR_ON_CREATE")){
 				//some default values
-				recordToValidate.setGomott("Diverse mottakere");
+				recordToValidate.setGomott("Diverse mottak.");
 				String calcGodsNr = this.calculateGodsNrAutomatically_withoutCounter(avd, appUser, model, recordToValidate);
 				//START This is used only for user input but we send it also as information when the godsnr was automatically calculated
 				model.addAttribute("dayOfYear", dateMgr.getDayNrOfYear());
@@ -255,11 +290,16 @@ public class GodsnoRegistreringController {
 				model.addAttribute("bevKodeListMainTbl", list);
 				//END 
 				action = "doUpdate";
+				if(action.equals("ERROR_ON_CREATE")){
+					action = "doCreate";
+				}
 			}
 			
 			model.addAttribute("action", action);
 			model.addAttribute("avd", avd);
 			logger.info("AVD:" + avd);
+			logger.info("action:" + action);
+			logger.info("updateFlag:" + updateFlag);
 			
 			//set some other model values
 			this.populateUI_ModelMap(model);
@@ -310,6 +350,9 @@ public class GodsnoRegistreringController {
 						
 					}else{
 						logger.info("doDelete = OK");
+						//Gods-logger (footprint after each DML-success operation)
+						this.godsnoLoggerService.logIt(appUser.getUser(), recordToValidate.getGogn(), recordToValidate.getGotrnr(), this.LOGGER_CODE_EDIT, errMsg);
+						
 					}
 					
 				}
@@ -330,7 +373,7 @@ public class GodsnoRegistreringController {
 	private int deleteRecord(String applicationUser, GodsjfDao recordToValidate, String mode, StringBuffer errMsg ){
 		int retval = 0;
 		//---------------
-    	//Get main list
+    	//DML
 		//---------------
 		final String BASE_URL = GodsnoUrlDataStore.GODSNO_BASE_GODSJF_DML_UPDATE_URL;
 		//add URL-parameters
@@ -681,12 +724,12 @@ public class GodsnoRegistreringController {
 		recordToValidate.setGotrdt(this.convertToDate_ISO(recordToValidate.getGotrdt()));
 		
 		//date
-		if(recordToValidate.getGotrdt()==null){ recordToValidate.setGotrdt("0"); }
+		if(strMgr.isNull(recordToValidate.getGotrdt())){ recordToValidate.setGotrdt("0"); }
 		//date and time
-		if(recordToValidate.getGogrdt()==null){ recordToValidate.setGogrdt("0"); }
+		if(strMgr.isNull(recordToValidate.getGogrdt())){ recordToValidate.setGogrdt("0"); }
 		if(recordToValidate.getGogrkl()==null){ recordToValidate.setGogrkl(0); }
 		//date and time
-		if(recordToValidate.getGolsdt()==null){ recordToValidate.setGolsdt("0"); }
+		if(strMgr.isNull(recordToValidate.getGolsdt())){ recordToValidate.setGolsdt("0"); }
 		if(recordToValidate.getGolskl()==null){ recordToValidate.setGolskl(0); }
 		
 	}
