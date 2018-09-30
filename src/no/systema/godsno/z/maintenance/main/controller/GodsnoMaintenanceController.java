@@ -31,8 +31,12 @@ import no.systema.main.util.StringManager;
 
 import no.systema.jservices.common.dao.GodsfiDao;
 import no.systema.jservices.common.dao.GodsjfDao;
+import no.systema.jservices.common.dao.GodshfDao;
+
 //GODSNO
 import no.systema.godsno.service.GodsnoService;
+import no.systema.godsno.service.GodsnoLoggerService;
+
 import no.systema.godsno.filter.SearchFilterGodsnoMainList;
 import no.systema.godsno.mapper.url.request.UrlRequestParameterMapper;
 import no.systema.godsno.url.store.GodsnoUrlDataStore;
@@ -53,9 +57,9 @@ import no.systema.godsno.z.maintenance.main.model.MaintenanceMainListObject;
 @Controller
 @SessionAttributes(AppConstants.SYSTEMA_WEB_USER_KEY)
 @Scope("session")
-public class GodsnoMaintenanceBevillkoderController {
+public class GodsnoMaintenanceController {
 	private static final JsonDebugger jsonDebugger = new JsonDebugger(2000);
-	private static Logger logger = Logger.getLogger(GodsnoMaintenanceBevillkoderController.class.getName());
+	private static Logger logger = Logger.getLogger(GodsnoMaintenanceController.class.getName());
 	private ModelAndView loginView = new ModelAndView("redirect:logout.do");
 	private LoginValidator loginValidator = new LoginValidator();
 	private StringManager strMgr = new StringManager();
@@ -66,6 +70,10 @@ public class GodsnoMaintenanceBevillkoderController {
 	
 	@Autowired
 	private GodsnoService godsnoService;
+	
+	@Autowired
+	private GodsnoLoggerService godsnoLoggerService;
+	
 	
 		
 	@PostConstruct
@@ -81,18 +89,18 @@ public class GodsnoMaintenanceBevillkoderController {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value="godsnomaintenance_bevillkoder.do", method={RequestMethod.GET, RequestMethod.POST} )
+	@RequestMapping(value="godsnomaintenance.do", method={RequestMethod.GET, RequestMethod.POST} )
 	public ModelAndView doInit(ModelMap model, HttpSession session, HttpServletRequest request){
 		logger.info("Inside: doInit");
 		
-		ModelAndView successView = new ModelAndView("godsnomaintenance_bevillkoder");
+		ModelAndView successView = new ModelAndView("godsnomaintenance");
 		SystemaWebUser appUser = this.loginValidator.getValidUser(session);
 		//check user (should be in session already)
 		if(appUser==null){
 			return loginView;
 		
 		}else{
-			List list = this.populateMaintenanceBevillkoderMainList();
+			List list = this.populateMaintenanceMainList();
 			model.addAttribute("list", list);
 			appUser.setActiveMenu(SystemaWebUser.ACTIVE_MENU_GODSREGNO_MAINTENANCE_ONE);
 			logger.info(Calendar.getInstance().getTime() + " CONTROLLER start - timestamp");
@@ -195,32 +203,33 @@ public class GodsnoMaintenanceBevillkoderController {
 		return successView;
 	}
 	
-	
 	/**
 	 * 
+	 * @param model
+	 * @param session
+	 * @param request
 	 * @return
 	 */
-	private List<MaintenanceMainListObject> populateMaintenanceBevillkoderMainList(){
-		List<MaintenanceMainListObject> listObject = new ArrayList<MaintenanceMainListObject>();
+	@RequestMapping(value="godsnomaintenance_godshf.do", method={RequestMethod.GET, RequestMethod.POST} )
+	public ModelAndView doHendLog(ModelMap model, HttpSession session, HttpServletRequest request){
+		logger.info("Inside: doHendLog");
 		
-		MaintenanceMainListObject object = new  MaintenanceMainListObject();
-		        
-		object.setId("1");
-		object.setSubject("Bevill.koder");
-		object.setDbTable("GODSFI");
-		object.setStatus("G");
-		object.setPgm("godsfi");
-		listObject.add(object);
-		//
-		object = new  MaintenanceMainListObject();
-		object.setId("2");
-		object.setSubject("Låse avd/bevill.koder");
-		object.setDbTable("GODSAF");
-		object.setStatus("G");
-		object.setPgm("godsaf");
-		listObject.add(object);
+		ModelAndView successView = new ModelAndView("godsnomaintenance_godshf");
+		SystemaWebUser appUser = this.loginValidator.getValidUser(session);
+		//check user (should be in session already)
+		if(appUser==null){
+			return loginView;
 		
-		return listObject;
+		}else{
+			List<GodshfDao> list = (List)this.godsnoLoggerService.getLogHfList(appUser, new GodshfDao());
+			model.addAttribute("list", list);
+			appUser.setActiveMenu(SystemaWebUser.ACTIVE_MENU_GODSREGNO_MAINTENANCE_ONE);
+			logger.info(Calendar.getInstance().getTime() + " CONTROLLER start - timestamp");
+			
+			successView.addObject(GodsnoConstants.DOMAIN_MODEL , model);
+	    		
+			return successView;
+	    }
 	}
 	
 	/**
@@ -301,6 +310,39 @@ public class GodsnoMaintenanceBevillkoderController {
 		return retval;
 	}
 	
-	
+	/**
+	 * 
+	 * @return
+	 */
+	private List<MaintenanceMainListObject> populateMaintenanceMainList(){
+		List<MaintenanceMainListObject> listObject = new ArrayList<MaintenanceMainListObject>();
+		
+		MaintenanceMainListObject object = new  MaintenanceMainListObject();
+		        
+		object.setId("1");
+		object.setSubject("Bevill.koder");
+		object.setDbTable("GODSFI");
+		object.setStatus("G");
+		object.setPgm("bevillkoder_godsfi");
+		listObject.add(object);
+		//
+		object = new  MaintenanceMainListObject();
+		object.setId("2");
+		object.setSubject("Låse avd/bevill.koder");
+		object.setDbTable("GODSAF");
+		object.setStatus("G");
+		object.setPgm("bevillkoder_godsaf");
+		listObject.add(object);
+		//
+		object = new  MaintenanceMainListObject();
+		object.setId("3");
+		object.setSubject("Hendelseslogg");
+		object.setDbTable("GODSHF");
+		object.setStatus("G");
+		object.setPgm("godshf");
+		listObject.add(object);
+		
+		return listObject;
+	}
 }
 

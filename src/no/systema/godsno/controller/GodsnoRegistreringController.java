@@ -109,9 +109,13 @@ public class GodsnoRegistreringController {
 		String sign = request.getParameter("sign");
 		String updateFlag = request.getParameter("updateFlag");
 		String gognManualCounter = strMgr.leadingStringWithNumericFiller(request.getParameter("gognManualCounter"), 2, "0");
-		String gotrnrOrig = (request.getParameter("gotrnrOrig"));
+		String gotrnrOrig = request.getParameter("gotrnrOrig");
+		//Special case for goavg
+		recordToValidate.setGoavg(this.constructGoavg(request, model));
+		
 		logger.info("action:" + action);
 		logger.info("gognManualCounter:" + gognManualCounter);
+		logger.info("goavg:" + recordToValidate.getGoavg());
 		
 		if(strMgr.isNotNull(updateFlag)){
 			model.addAttribute("updateFlag", "1");
@@ -300,7 +304,8 @@ public class GodsnoRegistreringController {
 			logger.info("AVD:" + avd);
 			logger.info("action:" + action);
 			logger.info("updateFlag:" + updateFlag);
-			
+			//arrange Goavd for presentation
+		    
 			//set some other model values
 			this.populateUI_ModelMap(model);
 			
@@ -308,7 +313,36 @@ public class GodsnoRegistreringController {
 			return successView;
 		}
 	}
+	/**
+	 * Goavg is 15(VARCHAR) long. The last 3-positions are reserved for the T-papirtype. The first 12-chars are the Avg.sted
+	 * @param request
+	 * @return
+	 */
+	private String constructGoavg(HttpServletRequest request, ModelMap model){
+		String DEFAULT_TPAPIR_TYPE = "T1";
+		int FILLER_LIMIT = 12;
+		String FILLER_CHAR = " ";
+		String retval = "";
+		
+		String owngoavg_ptype = request.getParameter("owngoavg_ptype");
+		String owngoavg_toll = request.getParameter("owngoavg_toll");
+		if(strMgr.isNull(owngoavg_ptype)){
+			owngoavg_ptype = DEFAULT_TPAPIR_TYPE;
+		}
+		if(strMgr.isNull(owngoavg_toll)){
+			owngoavg_toll = ""; //important for trailing function below
+		}
 	
+		owngoavg_toll = strMgr.trailingStringWithFiller(owngoavg_toll, FILLER_LIMIT, FILLER_CHAR);
+		//set value
+		retval = owngoavg_toll + owngoavg_ptype;
+		//
+		model.addAttribute("owngoavg_ptype", owngoavg_ptype);
+		model.addAttribute("owngoavg_toll", owngoavg_toll.trim());
+		
+				
+		return retval;
+	}
 	
 	/**
 	 * 

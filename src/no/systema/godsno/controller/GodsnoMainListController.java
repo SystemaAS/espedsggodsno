@@ -28,6 +28,7 @@ import no.systema.main.context.TdsAppContext;
 import no.systema.main.service.UrlCgiProxyService;
 import no.systema.main.validator.LoginValidator;
 import no.systema.main.util.AppConstants;
+import no.systema.main.util.DateTimeManager;
 import no.systema.main.util.JsonDebugger;
 import no.systema.main.util.io.PayloadContentFlusher;
 import no.systema.main.model.SystemaWebUser;
@@ -221,10 +222,27 @@ public class GodsnoMainListController {
     	logger.info(Calendar.getInstance().getTime() +  " CGI-end timestamp");
     	if(jsonPayload!=null){
     		JsonContainerDaoGODSJF listContainer = this.godsnoService.getContainerGodsjf(jsonPayload);
-    		outputList = listContainer.getList();	
+    		outputList = listContainer.getList();
+    		outputList.forEach(record -> this.adjustFieldsForFetch(record));
     	}		
 	    
 		return outputList;
+	}
+	
+	private void adjustFieldsForFetch(GodsjfDao recordToValidate){
+		recordToValidate.setGogrdt(this.convertToDate_NO(recordToValidate.getGogrdt()));
+		recordToValidate.setGolsdt(this.convertToDate_NO(recordToValidate.getGolsdt()));
+		recordToValidate.setGotrdt(this.convertToDate_NO(recordToValidate.getGotrdt()));
+	}
+	/**
+	 * 
+	 * @param value
+	 * @return
+	 */
+	private String convertToDate_NO (String value){
+		
+		DateTimeManager dateMgr = new DateTimeManager();
+		return dateMgr.getDateFormatted_NO(value, DateTimeManager.ISO_FORMAT);
 	}
 	
 	

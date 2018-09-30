@@ -24,9 +24,9 @@
 			<tr height="2"><td></td></tr>
 				<tr height="25"> 
 					<td width="20%" valign="bottom" class="tabDisabled" align="center" nowrap>
-						<a style="display:block;" id="alinkRecordId" onClick="setBlockUI(this);" href="godsnomaintenance_bevillkoder.do">
+						<a style="display:block;" id="alinkRecordId" onClick="setBlockUI(this);" href="godsnomaintenance.do">
 							<img style="vertical-align: middle;"  src="resources/images/list.gif" border="0" alt="general list">
-							<font class="tabDisabledLink">&nbsp;Bevill.koder - Vedlikehold</font>&nbsp;
+							<font class="tabDisabledLink">&nbsp;Vedlikehold</font>&nbsp;
 						</a>
 					</td>
 					<td width="20%" valign="bottom" class="tab" align="center">

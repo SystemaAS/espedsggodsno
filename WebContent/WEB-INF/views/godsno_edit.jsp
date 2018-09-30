@@ -220,15 +220,16 @@
 					 		<tr >
 					 			<td class="text14"><span title="owngoavg_ptype">T-papirtype</span></td>
 					 			<td class="text14">
-					 				<input type="text" class="inputTextMediumBlue" name="owngoavg_ptype" id="owngoavg_ptype" size="5" maxlength="3" value="?">
+					 				<input type="text" class="inputTextMediumBlue" name="owngoavg_ptype" id="owngoavg_ptype" size="5" maxlength="3" value="${owngoavg_ptype}">
+					 				
 					 				<font class="text12" style="font-style: italic;">Blank=T1</font>
 					 			</td>
 					 		</tr>
 					 		<tr >
 					 			<td class="text14"><span title="owngoavg_toll">Avg.tollsted</span></td>
 					 			<td class="text14">
-					 				<input type="text" class="inputTextMediumBlue" name="owngoavg_toll" id="owngoavg_toll" size="15" maxlength="12" value="?">
-					 				<input type="hidden" name="goavg" id="goavg" value=''>
+					 				<input type="text" class="inputTextMediumBlue" name="owngoavg_toll" id="owngoavg_toll" size="15" maxlength="12" value="${owngoavg_toll}">
+					 				<input type="text" tabindex=-1 readonly class="inputTextReadOnly" name="xreadyOnly" id="xreadyOnly" size="4" value="${owngoavg_ptype}">
 					 			</td>
 					 		</tr>
 					 		

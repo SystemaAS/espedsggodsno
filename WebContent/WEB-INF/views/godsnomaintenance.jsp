@@ -6,7 +6,7 @@
 <!-- =====================end header ==========================-->
 	<%-- specific jQuery functions for this JSP (must reside under the resource map since this has been
 		specified in servlet.xml as static <mvc:resources mapping="/resources/**" location="WEB-INF/resources/" order="1"/> --%>
-	<SCRIPT type="text/javascript" src="resources/js/godsnomaintenance_bevillkoder.js?ver=${user.versionEspedsg}"></SCRIPT>	
+	<SCRIPT type="text/javascript" src="resources/js/godsnomaintenance.js?ver=${user.versionEspedsg}"></SCRIPT>	
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 	
 	<style type = "text/css">
@@ -24,7 +24,7 @@
 				<tr height="25"> 
 					<td style="width:20%" valign="bottom" class="tab" align="center" nowrap>
 						<img style="vertical-align: middle;"  src="resources/images/list.gif" border="0" alt="general list">
-						<font class="tabLink">&nbsp;Bevill.koder - Vedlikehold</font>&nbsp;
+						<font class="tabLink">&nbsp;Vedlikehold</font>&nbsp;
 					</td>
 					<td style="width:80%" class="tabFantomSpace" align="center" nowrap><font class="tabDisabledLink">&nbsp;</font></td>	
 				</tr>
@@ -67,8 +67,16 @@
 				              
 				               <td width="2%" class="tableCellFirst" style="border-style: solid;border-width: 0px 1px 1px 1px;border-color:#FAEBD7;" align="center" ><font class="text14">&nbsp;${record.id}&nbsp;</font></td>
 				               <td width="2%" class="tableCell" style="border-style: solid;border-width: 0px 1px 1px 0px;border-color:#FAEBD7;" align="center">
-				               		<a style="display:block;" id="alinkRecordId_${counter.count}" onClick="setBlockUI(this);" href="godsnomaintenance_bevillkoder_${record.pgm}.do?id=${record.dbTable}">
-	               						<img src="resources/images/update.gif" border="0" alt="edit">
+				               		<a style="display:block;" id="alinkRecordId_${counter.count}" onClick="setBlockUI(this);" href="godsnomaintenance_${record.pgm}.do?id=${record.dbTable}">
+	               						<c:choose>
+		               						<c:when test="${record.pgm == 'godshf'}">
+		               							<img title="Read" style="vertical-align:bottom;" src="resources/images/eye.png" height="18px" width="18px" border="0" alt="read">
+		               						</c:when>
+		               						<c:otherwise>
+		               							<img src="resources/images/update.gif" border="0" alt="edit">
+		               						</c:otherwise>
+	               						</c:choose>
+	               						
 				               		</a>
 				               </td>
 				               <td class="tableCell" style="border-style: solid;border-width: 0px 1px 1px 0px;border-color:#FAEBD7;"  >

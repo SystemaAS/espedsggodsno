@@ -91,8 +91,11 @@ public class GodsnoLoggerService {
     	if(jsonPayload!=null){
     		JsonContainerDaoGODSHF listContainer = this.godsnoService.getContainerGodshf(jsonPayload);
     		outputList = (List)listContainer.getList();
-    		//logger.info(outputList.size());
-    		//outputList.forEach(record -> logger.info(record.getGogn()));
+    		logger.info(outputList.size());
+    		outputList.forEach(record -> {
+    			//logger.info(record.getGogn() + " " + record.getGohpgm() + " " + record.getGohdat());
+    			
+    		});
     	}		
 	    
 		return outputList;

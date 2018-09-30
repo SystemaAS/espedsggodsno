@@ -127,7 +127,9 @@
 							<th align="left" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.transittnr"/></th>
 		                    <th align="left" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.turnr"/></th>
 		                    <th align="left" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.bilnr"/></th>
-		                    <th width="2%" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.avgtollsted.dato"/></th>
+		                    <th width="2%" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.avgtollsted"/></th>
+		                    <th width="2%" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.transittdato"/></th>
+		                    
 		                    <th width="2%" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.delete"/></th>
 		                </tr> 
 		                </thead>
@@ -146,6 +148,7 @@
 			               <td class="tableCell" >${record.goturn}</td>
 			               <td class="tableCell" >${record.gobiln}</td>
 			               <td width="2%" class="tableCell" >${record.goavg}</td>
+			               <td width="2%" class="tableCell" >${record.gotrdt}</td>
 			               <td align="center" width="2%" class="tableCell" >
 			               		<a sytle="cursor:pointer;" id="id_${record.gogn}@id2_${record.gotrnr}" onClick="doDeleteOrder(this)" style="display:block;"  >
 			               			<img title="Slett post" style="vertical-align:bottom;" src="resources/images/delete.gif" border="0" alt="edit">

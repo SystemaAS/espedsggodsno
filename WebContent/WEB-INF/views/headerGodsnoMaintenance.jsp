@@ -74,7 +74,7 @@
 			    			<%-- --------------------- --%>
 			    			<%-- TOPIC ONE MENU        --%>
 			    			<%-- --------------------- --%>
-			    			<a id="alinkTopicOne" tabindex=-1 href="godsnomaintenance_bevillkoder.do">
+			    			<a id="alinkTopicOne" tabindex=-1 href="godsnomaintenance.do">
 			    				&nbsp;<font 
 			    				<c:choose>           
 		                   			<c:when test="${user.activeMenu=='GODSREGNO_MAINTENANCE_ONE'}">
@@ -85,7 +85,7 @@
 		                   			</c:otherwise>
 		               			</c:choose>
 			    				
-			    				>&nbsp;Bevill.koder&nbsp;</font>
+			    				>&nbsp;Vedlikehold&nbsp;</font>
 			    			</a>
 			    			
 			    			&nbsp;<font color="#FF6600"; style="font-weight: bold;">|</font>
