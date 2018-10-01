@@ -39,6 +39,8 @@ import no.systema.jservices.common.dao.GodsafDao;
 import no.systema.jservices.common.dao.GodsfiDao;
 import no.systema.jservices.common.dao.GodsjfDao;
 import no.systema.jservices.common.dao.GodsgfDao;
+import no.systema.jservices.common.dao.MerknfDao;
+
 
 //GODSNO
 import no.systema.godsno.service.GodsnoService;
@@ -51,6 +53,7 @@ import no.systema.godsno.model.JsonContainerDaoGODSAF;
 import no.systema.godsno.model.JsonContainerDaoGODSFI;
 import no.systema.godsno.model.JsonContainerDaoGODSJF;
 import no.systema.godsno.model.JsonContainerDaoGODSGF;
+import no.systema.godsno.model.JsonContainerDaoMERKNF;
 import no.systema.godsno.filter.SearchFilterGodsnoMainList;
 import no.systema.godsno.mapper.url.request.UrlRequestParameterMapper;
 
@@ -279,6 +282,8 @@ public class GodsnoRegistreringController {
 					this.adjustFieldsForFetch(recordToValidate);
 					model.addAttribute(GodsnoConstants.DOMAIN_RECORD, recordToValidate);
 				}
+				//Fetch all merkned item lines
+				model.addAttribute("merknadList", this.getListMerknf(appUser, recordToValidate.getGogn(), recordToValidate.getGotrnr()));
 				
 			}
 			
@@ -948,6 +953,41 @@ public class GodsnoRegistreringController {
     	logger.info(Calendar.getInstance().getTime() +  " CGI-end timestamp");
     	if(jsonPayload!=null){
     		JsonContainerDaoGODSFI listContainer = this.godsnoService.getContainerGodsfi(jsonPayload);
+    		outputList = listContainer.getList();	
+    	}		
+	    
+		return outputList;
+	}
+	
+	/**
+	 * 
+	 * @param appUser
+	 * @param gogn
+	 * @param gotrnr
+	 * @return
+	 */
+	private Collection<MerknfDao> getListMerknf(SystemaWebUser appUser, String gogn, String gotrnr){
+		Collection<MerknfDao> outputList = new ArrayList<MerknfDao>();
+		//---------------
+    	//Get main list
+		//---------------
+		final String BASE_URL = GodsnoUrlDataStore.GODSNO_BASE_MERKNF_LIST_URL;
+		//add URL-parameters
+		StringBuffer urlRequestParams = new StringBuffer();
+		urlRequestParams.append("user=" + appUser.getUser());
+		urlRequestParams.append("&gogn=" + gogn);
+		urlRequestParams.append("&gotrnr=" + gotrnr);
+		
+		//session.setAttribute(TransportDispConstants.ACTIVE_URL_RPG_TRANSPORT_DISP, BASE_URL + "==>params: " + urlRequestParams.toString()); 
+    	logger.info(Calendar.getInstance().getTime() + " CGI-start timestamp");
+    	logger.info("URL: " + BASE_URL);
+    	logger.info("URL PARAMS: " + urlRequestParams);
+    	String jsonPayload = this.urlCgiProxyService.getJsonContent(BASE_URL, urlRequestParams.toString());
+    	//Debug --> 
+    	logger.debug(jsonDebugger.debugJsonPayloadWithLog4J(jsonPayload));
+    	logger.info(Calendar.getInstance().getTime() +  " CGI-end timestamp");
+    	if(jsonPayload!=null){
+    		JsonContainerDaoMERKNF listContainer = this.godsnoService.getContainerMerknf(jsonPayload);
     		outputList = listContainer.getList();	
     	}		
 	    

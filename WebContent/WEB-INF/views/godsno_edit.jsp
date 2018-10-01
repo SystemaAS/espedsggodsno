@@ -53,10 +53,10 @@
 		<%-- --------------- --%>
 		<tr>
 		<td >
-		<table align="center" style="width:95%" border="0" cellspacing="1" cellpadding="0">
+		<table align="center" style="width:100%" border="0" cellspacing="1" cellpadding="0">
 
 		<tr>
-			<td class="text14" valign="top">
+			<td align="center" style="width:50%" class="text14" valign="top">
 				<form action="godsno_edit.do" name="editForm" id="editForm" method="post">
 				<input type="hidden" name="applicationUser" id="applicationUser" value='${user.user}'>
 				<input type="hidden" name="action" id="action" value='${action}'>
@@ -68,7 +68,7 @@
 					<input type="hidden" name="gotrnrOrig" id="gotrnrOrig" value='${record.gotrnr}'>
 					<input type="hidden" name="updateFlag" id="updateFlag" value="${updateFlag}">
 				</c:if>
-				<table style="width:50%" align="left" border="0" cellspacing="0" cellpadding="0">
+				<table style="width:90%" align="left" border="0" cellspacing="0" cellpadding="0">
 				 	<tr >
 					 	<td >
 						<table style="width:100%"  class="dashboardFrameHeader" border="0" cellspacing="1" cellpadding="0">
@@ -312,6 +312,144 @@
 	            </table>
 	            </form>
             </td>
+            <td align="center" style="width:50%" valign="top" >
+            	<table class="greenContainerFrameE2" align="center" style="width:95%" id="containerdatatableTable" border="0" cellspacing="0" cellpadding="0">
+					<tr >
+			 			<td class="text14"><b>Merknadsjournal</b></td>
+		 			</tr>
+		 			<tr height="5"><td></td></tr>
+					<tr>
+						<td >
+						<table style="width:100%" id="merknadList" class="display compact cell-border" >
+							<thead>
+							<tr class="tableHeaderField" >
+								<th width="2%" class="tableHeaderFieldFirst12">Endre</th>
+								<th align="left" class="tableHeaderField12">&nbsp;<spring:message code="systema.godsno.merknedlist.label.gopos"/></th>
+								<th align="left" class="tableHeaderField12">&nbsp;<spring:message code="systema.godsno.merknedlist.label.goantk"/></th>
+								<th align="left" class="tableHeaderField12">&nbsp;<spring:message code="systema.godsno.merknedlist.label.govsla"/></th>
+								<th align="left" class="tableHeaderField12">&nbsp;<spring:message code="systema.godsno.merknedlist.label.gomerk"/></th>
+								<th nowrap align="center" class="tableHeaderField12">&nbsp;<spring:message code="systema.godsno.merknedlist.label.gomkod"/></th>
+								
+								 
+							</tr>
+							</thead>
+			                
+			                <tbody>
+				            <c:forEach items="${merknadList}" var="record" varStatus="counter">    
+				             <tr class="tableRow" >  
+				               <td align="center" width="2%" class="tableCellFirst" >
+				               		<a id="alinkEdit_${counter.count}" style="display:block;" href="TODOgodsno_edit.do?updateFlag=1&gogn=${Xrecord.gogn}&gotrnr=${Xrecord.gotrnr}" onClick="setBlockUI()" >
+				               			<img title="Endre post" style="vertical-align:bottom;" src="resources/images/update.gif" border="0" alt="edit">
+				               		</a>	
+				               </td>
+				               <td width="2%" class="tableCell" style="color:navy;">${record.gopos}</td>
+				               <td width="2%" class="tableCell" >${record.goantk}</td>
+				               <td width="2%" class="tableCell" >${record.govsla}</td>
+				               <td width="2%" class="tableCell" >${record.gomerk}</td>
+				               <td align="center" width="2%" class="tableCell" >${record.gomkod}</td>
+				               
+				               </tr>
+			               	</c:forEach>
+			            	</tbody>
+						</table>
+						</td>
+					</tr>
+					<tr height="5"><td>&nbsp;</td></tr>
+					<tr>
+						<td align="center" class="text14" valign="top" >
+		            	<table align="center" style="width:100%" id="containerdatatableTable" border="0" cellspacing="0" cellpadding="0">
+		            		<tr >
+					 			<td >
+					 			<table style="width:100%" align="center" class="formFrameHeader" border="0" cellspacing="0" cellpadding="0">
+					 				<tr height="15">
+						 				<td class="text14White">&nbsp;Lage ny / Endre merknad</td>
+					 				</tr>
+					 			</table>	
+				 				</td>
+		 					</tr>
+		            	
+							<tr >
+					 			<td >
+									<table style="width:100%" align="center" class="formFrame" border="0" cellspacing="0" cellpadding="0">
+									 <tr>
+									 	<td class="text14"><span title="gomkod">Merk.jourkode</span></td>
+									 	<td class="text14"><span title="gopos">Pos.nr.</span></td>
+									 	<td class="text14"><span title="goantk">Ant.kolli</span></td>
+									 	<td class="text14"><span title="govsla"><spring:message code="systema.godsno.merknedlist.label.govsla"/></span></td>
+									 	<td class="text14"><span title="gomer1">Merket</span></td>
+									 	<td class="text14"><span title="gosted">Oppstart sted</span></td>
+									 	<td class="text14"><span title="gopos2">Pos. i lastel.</span></td>
+									 	
+									 </tr>
+									 <tr>
+									 	<td class="text14">
+									 		<select class="inputTextMediumBlue" style="width:60px" name="gomkod" id="gomkod" >
+						 						<option value="DI" >DI</option>
+						 						<option value="NE" >NE</option>
+						 						 
+											</select>									 		
+									 	</td>
+									 	<td class="text14">
+									 		<input onKeyPress="return numberKey(event)" style="text-align: right" type="text" class="inputTextMediumBlue" name="gopos" id="gopos" size="5" maxlength="4" value="">									 		
+									 	</td>
+									 	<td class="text14">
+									 		<input onKeyPress="return numberKey(event)" style="text-align: right" type="text" class="inputTextMediumBlue" name="goantk" id="goantk" size="6" maxlength="5" value="">									 		
+									 	</td>
+									 	<td class="text14">
+									 		<input type="text" class="inputTextMediumBlue" name="govsla" id="govsla" size="20" maxlength="18" value="">									 		
+									 	</td>
+									 	<td class="text14">
+									 		<input type="text" class="inputTextMediumBlue" name="gomer1" id="gomer1" size="10" maxlength="9" value="">									 		
+									 	</td>
+									 	<td class="text14">
+									 		<input type="text" class="inputTextMediumBlue" name="gosted" id="gosted" size="20" maxlength="18" value="">									 		
+									 	</td>
+									 	<td class="text14">
+									 		<input onKeyPress="return numberKey(event)" style="text-align: right" type="text" class="inputTextMediumBlue" name="gopos2" id="gopos2" size="5" maxlength="4" value="">									 		
+									 	</td>
+									 	
+									 </tr>
+									 
+									 <tr>
+									 	<td colspan="3" class="text14"><span title="gomotm">Varemottaker</span></td>
+									 	<td class="text14"><span title="gomerk">Merknad</td>
+									 	<td colspan="2" class="text14"><span title="gomerb">Merknad 2</span></td>
+									 </tr>
+									 <tr>
+										<td colspan="3" class="text14">
+									 		<input type="text" class="inputTextMediumBlue" name="gomotm" id="gomotm" size="30" maxlength="28" value="">									 		
+									 	</td>
+									 	<td class="text14">
+									 		<input type="text" class="inputTextMediumBlue" name="gomerk" id="gomerk" size="21" maxlength="20" value="">									 		
+									 	</td>
+									 	<td colspan="2" class="text14">
+									 		<input type="text" class="inputTextMediumBlue" name="gomerb" id="gomerb" size="21" maxlength="20" value="">									 		
+									 	</td>
+									 	
+									 </tr>
+									 
+									 <tr>
+									 	<td colspan="3" class="text14"><span title="gomerc">Merknad 3</span></td>
+									 	<td class="text14"><span title="gomerd">Merknad 4</span></td>
+									 	
+									 </tr>
+									 <tr>
+										<td colspan="3" class="text14">
+									 		<input type="text" class="inputTextMediumBlue" name="gomerc" id="gomerc" size="21" maxlength="20" value="">									 		
+									 	</td>
+									 	<td class="text14">
+									 		<input type="text" class="inputTextMediumBlue" name="gomerd" id="gomerd" size="21" maxlength="20" value="">									 		
+									 	</td>
+									 </tr>
+									</table>
+								</td>
+				 			</tr>
+				 			
+			 			</table>
+					 	</td>
+		 			</tr>		
+				</table>
+			</td>	
             <%--
             <td width="40%"class="text14" valign="top">
             	<table width="80%" align="left" border="0" cellspacing="0" cellpadding="0">
@@ -360,6 +498,8 @@
             </td>
              --%>
 		</tr>
+		
+		
 		<tr height="20"><td colspan="2">&nbsp;</td></tr>
 
 	</table> 

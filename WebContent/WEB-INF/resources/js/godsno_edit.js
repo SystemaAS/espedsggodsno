@@ -114,8 +114,32 @@
 	  jq('#owngogn_2').val(id + "_" + id2);
 	  jq('#owngogn_2').focus();
   }
-  
-	 
+ 
+  //-------------------
+  //Datatables jquery
+  //-------------------
+  jq(document).ready(function() {
+	jq('#merknadList').dataTable( {
+	  "jQueryUI": false,
+	  "dom": '<"top">t<"bottom"><"clear">', //look at mainListFilter on JSP SCRIPT-tag
+	  "scrollY":  "300px",
+  	  "scrollCollapse":  true,
+  	  "tabIndex": -1,
+  	  "order": [[ 1, "asc" ]],
+	  
+	} );
+
+    //event on input field for search
+    jq('input.merknadList_filter').on( 'keyup click', function () {
+    		filtersInit();
+    } );
+  } );
+  function filtersInit () {
+    jq('#merknadList').DataTable().search(
+		jq('#merknadList_filter').val()
+    ).draw();
+  }
+
 
 
   
