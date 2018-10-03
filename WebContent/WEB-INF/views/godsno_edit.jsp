@@ -81,13 +81,21 @@
 					 	<td >
 						<table style="width:100%"  class="dashboardFrameHeader" border="0" cellspacing="1" cellpadding="0">
 					 		<tr height="15">
-					 			<td class="text14White">&nbsp;Godsnr:&nbsp;<font style="color: yellow;"><b>${record.gogn}</b></font></td>
+					 			<td class="text14White">&nbsp;Godsnr:&nbsp;<font style="color: yellow;"><b>${record.gogn}</b></font>
+					 				<c:if test="${ not empty updateFlag}">
+						 				&nbsp;&nbsp;&nbsp;
+						 				<a style="cursor:pointer;" id="alinkClone_${counter.count}" style="display:block;" href="godsno_clone.do?action=doFetch&gogn=${record.gogn}&gotrnr=${record.gotrnr}" onClick="setBlockUI()" >
+					               		<img style="vertical-align:bottom;" title="Tillegg av transitt på godsnr." src="resources/images/copy.png" border="0" alt="copy">
+						               	</a>
+						 			</c:if>
+					 			</td>
 					 			<c:if test="${ empty updateFlag}">
 						 			<td align="right">
 						 				<img title="Bev.koder" id="bevKoderDialogImgReadOnly" style="vertical-align:middle; cursor:pointer;" width="14px" height="14px" src="resources/images/info4.png" border="0" alt="bev.koder">
 						 				&nbsp;
 						 			</td>
 					 			</c:if>
+						 			
 			 				</tr>
 			            </table>
 			            </td>

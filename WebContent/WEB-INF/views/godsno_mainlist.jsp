@@ -129,7 +129,7 @@
 		                    <th align="left" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.bilnr"/></th>
 		                    <th width="2%" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.avgtollsted"/></th>
 		                    <th width="2%" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.transittdato"/></th>
-		                    
+		                    <th width="2%" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.copy"/></th>
 		                    <th width="2%" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.delete"/></th>
 		                </tr> 
 		                </thead>
@@ -150,7 +150,12 @@
 			               <td width="2%" class="tableCell" >${record.goavg}</td>
 			               <td width="2%" class="tableCell" >${record.gotrdt}</td>
 			               <td align="center" width="2%" class="tableCell" >
-			               		<a sytle="cursor:pointer;" id="id_${record.gogn}@id2_${record.gotrnr}" onClick="doDeleteOrder(this)" style="display:block;"  >
+			               		<a style="cursor:pointer;display:block;" id="alinkClone_${counter.count}" style="display:block;" href="godsno_clone.do?action=doFetch&gogn=${record.gogn}&gotrnr=${record.gotrnr}" onClick="setBlockUI()" >
+			               			<img title="Tillegg av transitt på godsnr." src="resources/images/copy.png" border="0" alt="copy">
+			               		</a>
+			               	</td>	
+			               <td align="center" width="2%" class="tableCell" >
+			               		<a style="cursor:pointer;display:block;" id="id_${record.gogn}@id2_${record.gotrnr}" onClick="doDeleteOrder(this)" >
 			               			<img title="Slett post" style="vertical-align:bottom;" src="resources/images/delete.gif" border="0" alt="edit">
 			               		</a>	
 			               </td>
