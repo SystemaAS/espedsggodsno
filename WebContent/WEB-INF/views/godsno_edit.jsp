@@ -32,7 +32,15 @@
 			</td>
 			<td width="15%" valign="bottom" class="tab" align="center" nowrap>
 				<img style="vertical-align:bottom;" src="resources/images/update.gif" border="0" alt="general list">
-				<font class="tabLink">Forhåndsregistrering</font>
+				<c:choose>
+					<c:when test="${not empty updateFlag}">
+						<font class="tabLink">Godsregistrering</font>
+					</c:when>
+					<c:otherwise>
+						<font class="tabLink">Forhåndsregistrering</font>
+					</c:otherwise>
+				</c:choose>
+				
 			</td>
 			 
 			<td width="85%" class="tabFantomSpace" align="center" nowrap><font class="tabDisabledLink">&nbsp;</font></td>
@@ -91,26 +99,25 @@
 					 		<c:if test="${empty updateFlag}">
 						 		<tr >
 						 			<td class="text14"><span title="gogn">Godsnr:&nbsp;</span></td>
-						 			<td class="text14">
+						 				<td colspan="3" class="text14">
 						 				<c:choose>
-						 				
-						 				<%--<c:when test="${fn:contains(godsnr,'ERROR') || fn:contains(godsnr,'FEIL')}" > --%>
-						 				
 						 				<c:when test="${fn:length(godsnr) == 4}" ><%-- Meaning there is no match. The user MUST fill up accord. to requir. mask --%>
-						 					<input tabindex=-1 readonly type="text" class="inputTextReadOnly" name="owngogn_1" id="owngogn_1" size="4"  value="${godsnr}">
+						 					
+						 					<input type="hidden" name="owngogn_1" id="owngogn_1" size="4"  value="${godsnr}">
+						 					<input type="hidden" name="owngogn_3" id="owngogn_3" size="3"  value="${dayOfYear}">
 						 					<select  name="owngogn_2" id="owngogn_2" required oninvalid="this.setCustomValidity('Obligatorisk')" oninput="setCustomValidity('')" class="inputTextMediumBlueMandatoryField" >
 						 						<option value="">Velg Bev.kode</option>
 						 						<c:forEach var="record" items="${bevKodeList}" >
 							 				  		<option value="${record.gflbko}_${record.gfenh}" >${record.gflbko}&nbsp;&nbsp;${record.gfenh}</option>
 												</c:forEach>  
-											</select>
+											</select><font class="text16RedBold" >*</font>
 											<img title="search" id="divBevKodeListDialogImgReadOnly" style="vertical-align:middle; cursor:pointer;" width="10px" height="10px" src="resources/images/sort_down.png" border="0" alt="bev.koder">
-											
-											<input tabindex=-1 readonly type="text" class="inputTextReadOnly" name="owngogn_3" id="owngogn_3" size="3"  value="${dayOfYear}">
-											<font class="text16RedBold" >*</font>
+											&nbsp;
+											<input tabindex=-1 readonly type="text" class="inputTextReadOnly" name="tmpGogn" id="tmpGogn" size="20"  value="${tmpGogn}">
+										
 						 				</c:when>
 						 				<c:otherwise>
-						 					<input tabindex=-1 readonly type="text" class="inputTextReadOnly" name="gogn" id="gogn" size="15"  value="${godsnr}">
+						 					<input tabindex=-1 readonly type="text" class="inputTextReadOnly" name="gogn" id="gogn" size="20" value="${godsnr}">
 						 					<font class="text16RedBold" >*</font>
 						 					<img title="search" id="divBevKodeListDialogImgReadOnly" style="vertical-align:middle; cursor:pointer;" width="10px" height="10px" src="resources/images/sort_down.png" border="0" alt="bev.koder">
 						 				</c:otherwise>
@@ -127,9 +134,7 @@
 												</c:forEach>
 											</table>	
 										</div>	
-						 						
-						 			</td>
-						 			
+									</td>	
 						 		</tr>							 		
 						 		<tr >
 						 			<td class="text14"><span title="gognManualCounter">Manuelltnr</span></td>
@@ -312,242 +317,205 @@
 	            </table>
 	            </form>
             </td>
-            <td align="center" style="width:50%" valign="top" >
-            	<table style="width:90%" class="greenContainerFrameE2" align="center" id="containerdatatableTable" border="0" cellspacing="0" cellpadding="0">
-					<tr >
-			 			<td class="text14">
-			 			<img style="vertical-align: bottom" src="resources/images/app.png" width="16" hight="16" border="0" alt="journal">
-			 			<b>Merknadsjournal</b>
-			 			</td>
-		 			</tr>
-		 			<tr height="5"><td></td></tr>
-					<tr>
-						<td >
-						<table style="width:100%" id="merknadList" class="display compact cell-border" >
-							<thead>
-							<tr class="tableHeaderField" >
-								<th width="2%" class="tableHeaderFieldFirst14">Endre</th>
-								<th align="left" class="tableHeaderField14">&nbsp;<spring:message code="systema.godsno.merknedlist.label.gopos"/></th>
-								<th align="left" class="tableHeaderField14">&nbsp;<spring:message code="systema.godsno.merknedlist.label.goantk"/></th>
-								<th align="left" class="tableHeaderField14">&nbsp;<spring:message code="systema.godsno.merknedlist.label.govsla"/></th>
-								<th align="left" class="tableHeaderField14">&nbsp;<spring:message code="systema.godsno.merknedlist.label.gomerk"/></th>
-								<th nowrap align="center" class="tableHeaderField14">&nbsp;<spring:message code="systema.godsno.merknedlist.label.gomkod"/></th>
-								
-								 
-							</tr>
-							</thead>
-			                
-			                <tbody>
-				            <c:forEach items="${merknadList}" var="record" varStatus="counter">    
-				             <tr class="tableRow" >  
-				               <td align="center" width="2%" class="tableCellFirst" >
-				               		<a id="alinkEdit_${counter.count}" style="display:block;" href="TODOgodsno_edit.do?updateFlag=1&gogn=${Xrecord.gogn}&gotrnr=${Xrecord.gotrnr}" onClick="setBlockUI()" >
-				               			<img title="Endre post" style="vertical-align:bottom;" src="resources/images/update.gif" border="0" alt="edit">
-				               		</a>	
-				               </td>
-				               <td width="2%" class="tableCell" style="color:navy;">${record.gopos}</td>
-				               <td width="2%" class="tableCell" >${record.goantk}</td>
-				               <td width="2%" class="tableCell" >${record.govsla}</td>
-				               <td width="2%" class="tableCell" >${record.gomerk}</td>
-				               <td align="center" width="2%" class="tableCell" >${record.gomkod}</td>
-				               
-				               </tr>
-			               	</c:forEach>
-			            	</tbody>
-						</table>
-						</td>
-					</tr>
-					<tr height="5"><td>&nbsp;</td></tr>
-					<tr>
-						<td align="center" class="text14" valign="top" >
-		            	<table style="width:100%" align="center" id="containerdatatableTable" border="0" cellspacing="0" cellpadding="0">
-		            		<tr >
-					 			<td >
-					 			<table style="width:100%" align="center" class="formFrameHeader" border="0" cellspacing="0" cellpadding="0">
-					 				<tr height="15">
-						 				<td class="text14White">&nbsp;Lage ny / Endre merknad</td>
-					 				</tr>
-					 			</table>	
-				 				</td>
-		 					</tr>
-		            	
-							<tr >
-					 			<td >
-									<table style="width:100%" align="center" class="formFrame" border="0" cellspacing="0" cellpadding="0">
-									 <tr>
-									 	<td class="text14"><span title="gomkod">M-jourkode</span></td>
-									 	<td class="text14"><span title="gopos">&nbsp;Pos.nr.</span></td>
-									 	<td class="text14"><span title="goantk">&nbsp;Ant.kolli</span></td>
-									 	<td class="text14"><span title="govsla">&nbsp;<spring:message code="systema.godsno.merknedlist.label.govsla"/></span></td>
-									 	<td class="text14"><span title="gomer1">&nbsp;Merket</span></td>
-									 	<td class="text14"><span title="gosted">&nbsp;Oppstart sted</span></td>
-									 	
-									 </tr>
-									 <tr>
-									 	<td class="text14">
-									 		<select class="inputTextMediumBlue" style="width:60px" name="gomkod" id="gomkod" >
-						 						<option value="DI" >DI</option>
-						 						<option value="NE" >NE</option>
-											</select>									 		
-									 	</td>
-									 	<td class="text14">
-									 		<input onKeyPress="return numberKey(event)" style="text-align: right" type="text" class="inputTextMediumBlue" name="gopos" id="gopos" size="4" maxlength="4" value="">									 		
-									 	</td>
-									 	<td class="text14">
-									 		<input onKeyPress="return numberKey(event)" style="text-align: right" type="text" class="inputTextMediumBlue" name="goantk" id="goantk" size="5" maxlength="5" value="">									 		
-									 	</td>
-									 	<td class="text14">
-									 		<input type="text" class="inputTextMediumBlue" name="govsla" id="govsla" size="18" maxlength="18" value="">									 		
-									 	</td>
-									 	<td class="text14">
-									 		<input type="text" class="inputTextMediumBlue" name="gomer1" id="gomer1" size="9" maxlength="9" value="">									 		
-									 	</td>
-									 	<td class="text14">
-									 		<input type="text" class="inputTextMediumBlue" name="gosted" id="gosted" size="18" maxlength="18" value="">									 		
-									 	</td>
-									 </tr>
+            <%-- ONLY with UPDATE --%>
+            <c:choose>
+            <c:when test="${not empty updateFlag}">
+	            <td align="center" style="width:50%" valign="top" >
+	            	<table style="width:90%" class="greenContainerFrameE2" align="center" id="containerdatatableTable" border="0" cellspacing="0" cellpadding="0">
+						<tr >
+				 			<td class="text14">
+				 			<img style="vertical-align: bottom" src="resources/images/app.png" width="16" hight="16" border="0" alt="journal">
+				 			<b>Merknadsjournal</b>
+				 			</td>
+			 			</tr>
+			 			<tr height="5"><td></td></tr>
+						<tr>
+							<td >
+							<table style="width:100%" id="merknadList" class="display compact cell-border" >
+								<thead>
+								<tr class="tableHeaderField" >
+									<th width="2%" class="tableHeaderFieldFirst14">Endre</th>
+									<th align="left" class="tableHeaderField14">&nbsp;<spring:message code="systema.godsno.merknedlist.label.gopos"/></th>
+									<th align="left" class="tableHeaderField14">&nbsp;<spring:message code="systema.godsno.merknedlist.label.goantk"/></th>
+									<th align="left" class="tableHeaderField14">&nbsp;<spring:message code="systema.godsno.merknedlist.label.govsla"/></th>
+									<th align="left" class="tableHeaderField14">&nbsp;<spring:message code="systema.godsno.merknedlist.label.gomerk"/></th>
+									<th nowrap align="center" class="tableHeaderField14">&nbsp;<spring:message code="systema.godsno.merknedlist.label.gomkod"/></th>
+									
 									 
-									 <tr>
-									 	<td class="text14"><span title="gopos2">Pos. i lastel.</span></td>
-									 	<td colspan="2" class="text14"><span title="gomotm">&nbsp;Varemottaker</span></td>
-									 	<td colspan="2" class="text14"><span title="gomerk">&nbsp;Merknad</td>
-									 	
-									 </tr>
-									 <tr>
-									 	
-									 	<td class="text14">
-									 		<input onKeyPress="return numberKey(event)" style="text-align: right" type="text" class="inputTextMediumBlue" name="gopos2" id="gopos2" size="4" maxlength="4" value="">									 		
-									 	</td>
-										<td colspan="2" class="text14">
-									 		<input type="text" class="inputTextMediumBlue" name="gomerk" id="gomerk" size="15" maxlength="20" value="">									 		
-									 	</td>
-									 	<td colspan="2" class="text14">
-									 		<input type="text" class="inputTextMediumBlue" name="gomotm" id="gomotm" size="25" maxlength="28" value="">									 		
-									 	</td>
-									 	
-									 </tr>
-									 <tr height="10"><td>&nbsp;</td></tr>
-									 <tr>
-									 	<td colspan="3" class="text14"><span title="gomerb">&nbsp;Merknad 2</span></td>
-									 	<td class="text14"><span title="gomerc">&nbsp;Merknad 3</span></td>
-									 	<td colspan="2" class="text14"><span title="gomerd">&nbsp;Merknad 4</span></td>
-									 </tr>
-									 <tr>
-									 	
-									 	<td colspan="3" class="text14">
-									 		<input type="text" class="inputTextMediumBlue" name="gomerb" id="gomerb" size="15" maxlength="20" value="">									 		
-									 	</td>
-										<td class="text14">
-									 		<input type="text" class="inputTextMediumBlue" name="gomerc" id="gomerc" size="15" maxlength="20" value="">									 		
-									 	</td>
-									 	<td colspan="2" class="text14">
-									 		<input type="text" class="inputTextMediumBlue" name="gomerd" id="gomerd" size="15" maxlength="20" value="">									 		
-									 	</td>
-									 </tr>
-									</table>
-								</td>
-				 			</tr>
-				 			
-			 			</table>
-					 	</td>
-		 			</tr>		
-				</table>
-			</td>	
-            <%--
-            <td width="40%"class="text14" valign="top">
-            	<table width="80%" align="left" border="0" cellspacing="0" cellpadding="0">
-				 	<tr >
-					 	<td >
-						<table width="100%" class="dashboardFrameHeader" border="0" cellspacing="1" cellpadding="0">
-					 		<tr height="15">
-					 			<td class="text14White">
-					 			&nbsp;&nbsp;Info&nbsp;
-					 			</td>
-			 				</tr>
-			            </table>
-			            </td>
-		            </tr>
-		            
-		            <tr >
-					 	<td>
-						<table width="100%" class="formFrame" border="0" cellspacing="2" cellpadding="1">
-							
-			 				<tr height="5"><td></td></tr>
-			 				<tr>
-			 					<td class="text14MediumBlue">&nbsp;Endring av registrert Godsnr:&nbsp;<b>${record.gogn}</b></td>
-			 				</tr>
-		 					<tr height="5"><td></td></tr>
-			 				<tr>
-			 					<td>
-				 					<table>
-				 					<tr>	
-					 					<td class="text14MediumBlue">
-					 						<img style="vertical-align:middle;" src="resources/images/calendar.gif" width="12px" height="12px" border="0" alt="dato">&nbsp;<b>${today}</b>
-					 					</td>
-					 					<td class="text14MediumBlue">
-					 						&nbsp;&nbsp;<img style="vertical-align:middle;" src="resources/images/clock2.png" width="12px" height="12px" border="0" alt="kl"><b>${time}</b>
-					 					</td>
-				 					</tr>
-				 					</table>
-			 					</td>
-			 				</tr>
-		 					
-			 				<tr><td colspan="10"><hr size="1" width="100%"/></td></tr>
-
-			            </table>
-			            </td>
-		            </tr>
-	            </table>
-            </td>
-             --%>
+								</tr>
+								</thead>
+				                
+				                <tbody>
+					            <c:forEach items="${merknadList}" var="record" varStatus="counter">    
+					             <tr class="tableRow" >  
+					               <td align="center" width="2%" class="tableCellFirst" >
+					               		<a id="alinkEdit_${counter.count}" style="display:block;" href="TODOgodsno_edit.do?updateFlag=1&gogn=${Xrecord.gogn}&gotrnr=${Xrecord.gotrnr}" onClick="setBlockUI()" >
+					               			<img title="Endre post" style="vertical-align:bottom;" src="resources/images/update.gif" border="0" alt="edit">
+					               		</a>	
+					               </td>
+					               <td width="2%" class="tableCell" style="color:navy;">${record.gopos}</td>
+					               <td width="2%" class="tableCell" >${record.goantk}</td>
+					               <td width="2%" class="tableCell" >${record.govsla}</td>
+					               <td width="2%" class="tableCell" >${record.gomerk}</td>
+					               <td align="center" width="2%" class="tableCell" >${record.gomkod}</td>
+					               
+					               </tr>
+				               	</c:forEach>
+				            	</tbody>
+							</table>
+							</td>
+						</tr>
+						<tr height="5"><td>&nbsp;</td></tr>
+						<tr>
+							<td align="center" class="text14" valign="top" >
+			            	<table style="width:100%" align="center" id="containerdatatableTable" border="0" cellspacing="0" cellpadding="0">
+			            		<tr >
+						 			<td >
+						 			<table style="width:100%" align="center" class="formFrameHeader" border="0" cellspacing="0" cellpadding="0">
+						 				<tr height="15">
+							 				<td class="text14White">&nbsp;Lage ny / Endre merknad</td>
+						 				</tr>
+						 			</table>	
+					 				</td>
+			 					</tr>
+			            	
+								<tr >
+						 			<td >
+										<table style="width:100%" align="center" class="formFrame" border="0" cellspacing="0" cellpadding="0">
+										 <tr>
+										 	<td class="text14"><span title="gomkod">M-jourkode</span></td>
+										 	<td class="text14"><span title="gopos">&nbsp;Pos.nr.</span></td>
+										 	<td class="text14"><span title="goantk">&nbsp;Ant.kolli</span></td>
+										 	<td class="text14"><span title="govsla">&nbsp;<spring:message code="systema.godsno.merknedlist.label.govsla"/></span></td>
+										 	<td class="text14"><span title="gomer1">&nbsp;Merket</span></td>
+										 	<td class="text14"><span title="gosted">&nbsp;Oppstart sted</span></td>
+										 	
+										 </tr>
+										 <tr>
+										 	<td class="text14">
+										 		<select class="inputTextMediumBlue" style="width:60px" name="gomkod" id="gomkod" >
+							 						<option value="DI" >DI</option>
+							 						<option value="NE" >NE</option>
+												</select>									 		
+										 	</td>
+										 	<td class="text14">
+										 		<input onKeyPress="return numberKey(event)" style="text-align: right" type="text" class="inputTextMediumBlue" name="gopos" id="gopos" size="4" maxlength="4" value="">									 		
+										 	</td>
+										 	<td class="text14">
+										 		<input onKeyPress="return numberKey(event)" style="text-align: right" type="text" class="inputTextMediumBlue" name="goantk" id="goantk" size="5" maxlength="5" value="">									 		
+										 	</td>
+										 	<td class="text14">
+										 		<input type="text" class="inputTextMediumBlue" name="govsla" id="govsla" size="18" maxlength="18" value="">									 		
+										 	</td>
+										 	<td class="text14">
+										 		<input type="text" class="inputTextMediumBlue" name="gomer1" id="gomer1" size="9" maxlength="9" value="">									 		
+										 	</td>
+										 	<td class="text14">
+										 		<input type="text" class="inputTextMediumBlue" name="gosted" id="gosted" size="18" maxlength="18" value="">									 		
+										 	</td>
+										 </tr>
+										 
+										 <tr>
+										 	<td class="text14"><span title="gopos2">Pos. i lastel.</span></td>
+										 	<td colspan="2" class="text14"><span title="gomotm">&nbsp;Varemottaker</span></td>
+										 	<td colspan="2" class="text14"><span title="gomerk">&nbsp;Merknad</td>
+										 	
+										 </tr>
+										 <tr>
+										 	
+										 	<td class="text14">
+										 		<input onKeyPress="return numberKey(event)" style="text-align: right" type="text" class="inputTextMediumBlue" name="gopos2" id="gopos2" size="4" maxlength="4" value="">									 		
+										 	</td>
+											<td colspan="2" class="text14">
+										 		<input type="text" class="inputTextMediumBlue" name="gomerk" id="gomerk" size="15" maxlength="20" value="">									 		
+										 	</td>
+										 	<td colspan="2" class="text14">
+										 		<input type="text" class="inputTextMediumBlue" name="gomotm" id="gomotm" size="25" maxlength="28" value="">									 		
+										 	</td>
+										 	
+										 </tr>
+										 <tr height="10"><td>&nbsp;</td></tr>
+										 <tr>
+										 	<td colspan="3" class="text14"><span title="gomerb">&nbsp;Merknad 2</span></td>
+										 	<td class="text14"><span title="gomerc">&nbsp;Merknad 3</span></td>
+										 	<td colspan="2" class="text14"><span title="gomerd">&nbsp;Merknad 4</span></td>
+										 </tr>
+										 <tr>
+										 	
+										 	<td colspan="3" class="text14">
+										 		<input type="text" class="inputTextMediumBlue" name="gomerb" id="gomerb" size="15" maxlength="20" value="">									 		
+										 	</td>
+											<td class="text14">
+										 		<input type="text" class="inputTextMediumBlue" name="gomerc" id="gomerc" size="15" maxlength="20" value="">									 		
+										 	</td>
+										 	<td colspan="2" class="text14">
+										 		<input type="text" class="inputTextMediumBlue" name="gomerd" id="gomerd" size="15" maxlength="20" value="">									 		
+										 	</td>
+										 </tr>
+										</table>
+									</td>
+					 			</tr>
+					 			
+				 			</table>
+						 	</td>
+			 			</tr>		
+					</table>
+				</td>
+			</c:when>
+			<c:otherwise>
+				<td align="center" style="width:50%" valign="top" >&nbsp;</td>
+			</c:otherwise>
+			</c:choose>	
 		</tr>
-		<tr height="20"><td colspan="2">&nbsp;</td></tr>
 		
-		<tr >
-			<td colspan="2" class="text14">&nbsp;
-			<img style="vertical-align: bottom" src="resources/images/log-icon.gif" width="16" hight="16" border="0" alt="show log">
-			<b>Hendelseslogg</b>
-			</td>
-		</tr>
-		<tr>
-			<td style="width:50%" >
-			<table style="width:90%" id="containerdatatableTable" border="0" cellspacing="0" cellpadding="0">
-			<tr>
-				<td>
-				
-				<table style="width:100%" id="hfLoggerList" class="display compact cell-border" >
-					<thead>
-					<tr class="tableHeaderField" >
-						<th align="left" width="2%" class="tableHeaderFieldFirst12"><spring:message code="systema.godsno.maintenance.godshf.gogn"/></th>
-						<th align="left" class="tableHeaderField12">&nbsp;<spring:message code="systema.godsno.maintenance.godshf.gotrnr"/></th>
-						<th align="left" class="tableHeaderField12">&nbsp;<spring:message code="systema.godsno.maintenance.godshf.gohdat"/></th>
-						<th align="left" class="tableHeaderField12">&nbsp;<spring:message code="systema.godsno.maintenance.godshf.gohtim"/></th>
-						<th align="left" class="tableHeaderField12">&nbsp;<spring:message code="systema.godsno.maintenance.godshf.gohusr"/></th>
-						<th nowrap align="center" class="tableHeaderField12">&nbsp;<spring:message code="systema.godsno.maintenance.godshf.gohkod"/></th>
-						<th nowrap align="center" class="tableHeaderField12">&nbsp;<spring:message code="systema.godsno.maintenance.godshf.gohpgm"/></th>
-					</tr>
-					</thead>
-	                
-	                <tbody>
-		            <c:forEach items="${hfLoggerList}" var="record" varStatus="counter">    
-		             <tr class="tableRow" >  
-		               <td align="left" width="2%" class="tableCellFirst12" >${record.gogn}</td>
-		               <td width="2%" class="tableCell12" style="color:navy;">${record.gotrnr}</td>
-		               <td width="2%" class="tableCell12" >${record.gohdat}</td>
-		               <td width="2%" class="tableCell12" >${record.gohtim}</td>
-		               <td width="2%" class="tableCell12" >${record.gohusr}</td>
-		               <td width="2%" align="center" class="tableCell12" >${record.gohkod}</td>
-		               <td width="2%" align="center" class="tableCell12" >${record.gohpgm}</td>
-	                 </tr>
-	               	</c:forEach>
-	            	</tbody>
-				</table>
+		<%-- ONLY with UPDATE --%>
+		<c:if test="${not empty updateFlag}">
+			<tr height="20"><td colspan="2">&nbsp;</td></tr>
+			<tr >
+				<td colspan="2" class="text14">&nbsp;
+				<img style="vertical-align: bottom" src="resources/images/log-icon.gif" width="16" hight="16" border="0" alt="show log">
+				<b>Hendelseslogg</b>
 				</td>
 			</tr>
-			</table>
-			</td>	
-		</tr>
-
+			<tr>
+				<td style="width:50%" >
+				<table style="width:90%" id="containerdatatableTable" border="0" cellspacing="0" cellpadding="0">
+				<tr>
+					<td>
+					
+					<table style="width:100%" id="hfLoggerList" class="display compact cell-border" >
+						<thead>
+						<tr class="tableHeaderField" >
+							<th align="left" width="2%" class="tableHeaderFieldFirst12"><spring:message code="systema.godsno.maintenance.godshf.gogn"/></th>
+							<th align="left" class="tableHeaderField12">&nbsp;<spring:message code="systema.godsno.maintenance.godshf.gotrnr"/></th>
+							<th align="left" class="tableHeaderField12">&nbsp;<spring:message code="systema.godsno.maintenance.godshf.gohdat"/></th>
+							<th align="left" class="tableHeaderField12">&nbsp;<spring:message code="systema.godsno.maintenance.godshf.gohtim"/></th>
+							<th align="left" class="tableHeaderField12">&nbsp;<spring:message code="systema.godsno.maintenance.godshf.gohusr"/></th>
+							<th nowrap align="center" class="tableHeaderField12">&nbsp;<spring:message code="systema.godsno.maintenance.godshf.gohkod"/></th>
+							<th nowrap align="center" class="tableHeaderField12">&nbsp;<spring:message code="systema.godsno.maintenance.godshf.gohpgm"/></th>
+						</tr>
+						</thead>
+		                
+		                <tbody>
+			            <c:forEach items="${hfLoggerList}" var="record" varStatus="counter">    
+			             <tr class="tableRow" >  
+			               <td align="left" width="2%" class="tableCellFirst12" >${record.gogn}</td>
+			               <td width="2%" class="tableCell12" style="color:navy;">${record.gotrnr}</td>
+			               <td width="2%" class="tableCell12" >${record.gohdat}</td>
+			               <td width="2%" class="tableCell12" >${record.gohtim}</td>
+			               <td width="2%" class="tableCell12" >${record.gohusr}</td>
+			               <td width="2%" align="center" class="tableCell12" >${record.gohkod}</td>
+			               <td width="2%" align="center" class="tableCell12" >${record.gohpgm}</td>
+		                 </tr>
+		               	</c:forEach>
+		            	</tbody>
+					</table>
+					</td>
+				</tr>
+				</table>
+				</td>	
+			</tr>
+		</c:if>
 		<tr height="20"><td colspan="2">&nbsp;</td></tr>
 	</table> 
 	</td>

@@ -296,8 +296,11 @@ public class GodsnoRegistreringController {
 				String calcGodsNr = this.calculateGodsNrAutomatically_withoutCounter(avd, appUser, model, recordToValidate);
 				//START This is used only for user input but we send it also as information when the godsnr was automatically calculated
 				model.addAttribute("dayOfYear", dateMgr.getDayNrOfYear());
-				List<GodsfiDao> list = (List)this.getListGodsfi(appUser);
-				model.addAttribute("bevKodeListMainTbl", list);
+				//get Godsnr bev.kode since we will be creating a new record...
+				List<GodsafDao> afList = (List)this.getBeviljningsKodeList(appUser);
+				List<GodsfiDao> fiList = (List)this.getListGodsfi(appUser);
+				List<GodsfiDao> bevKodeList = this.getMatchedBevKodeList(afList, fiList);
+				model.addAttribute("bevKodeListMainTbl", bevKodeList);
 				//END 
 				action = "doUpdate";
 				if(action.equals("ERROR_ON_CREATE")){
@@ -318,6 +321,29 @@ public class GodsnoRegistreringController {
 			//successView.addObject(GodsnoConstants.DOMAIN_MODEL , model);
 			return successView;
 		}
+	}
+	
+	/**
+	 * 
+	 * Cleans the Main db-table to keep only those matching the sourceList for GUI purposes
+	 * @param sourceList
+	 * @param targetList
+	 * @return
+	 */
+	private List<GodsfiDao> getMatchedBevKodeList(List<GodsafDao> sourceList, List<GodsfiDao> targetList ){
+		List<GodsfiDao> resultList = new ArrayList<GodsfiDao>();
+		
+		for (GodsfiDao record : targetList){
+			for (GodsafDao record2 : sourceList){
+				//must be the same
+				if(record.getGflbko().equals(record2.getGflbko())){
+					if(record.getGfenh().equals(record2.getGfenh())){
+						resultList.add(record);
+					}
+				}
+			}
+		}
+		return resultList;
 	}
 	/**
 	 * 

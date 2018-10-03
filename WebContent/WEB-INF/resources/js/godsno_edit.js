@@ -55,6 +55,20 @@
 	    		refreshCustomValidity(jq('#owngogn_2')[0]);
 	  		}
 	  	});
+	  
+	  jq('#owngogn_2').on('change', function(){
+		  var rawValue = this.value;
+		  var record = rawValue.split("_");
+		  var bevKode = record[0];
+		  var enh = '0'; //default
+		  if(record[1]!=''){
+			  enh = record[1];
+		  }
+		  //console.log(bevKode + "XX" + enh);
+		  var tmpGogn = jq('#owngogn_1').val() + bevKode + enh + jq('#owngogn_3').val();
+		  jq('#tmpGogn').val(tmpGogn + "XX");//The suffix XX will be known after the "Save" and calculation of the whole gogn
+		  
+	  });
   });
   
   
@@ -111,7 +125,7 @@
 	  var id = record[0].replace("id_","");
 	  var id2 = record[1].replace("id2_","");
 	  //choose drop-down value
-	  jq('#owngogn_2').val(id + "_" + id2);
+	  jq('#owngogn_2').val(id + "_" + id2).change();
 	  jq('#owngogn_2').focus();
   }
  
