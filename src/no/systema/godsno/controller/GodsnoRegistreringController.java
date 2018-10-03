@@ -262,6 +262,7 @@ public class GodsnoRegistreringController {
 						}else{
 							//Error on create new
 							action = "ERROR_ON_CREATE";
+							model.addAttribute("tmpGogn",request.getParameter("tmpGogn"));
 						}
 					}else{
 						//Create OK. Prepare for upcoming Update

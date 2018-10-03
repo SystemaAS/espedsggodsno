@@ -122,7 +122,17 @@
 											<img title="search" id="divBevKodeListDialogImgReadOnly" style="vertical-align:middle; cursor:pointer;" width="10px" height="10px" src="resources/images/sort_down.png" border="0" alt="bev.koder">
 											&nbsp;
 											<input tabindex=-1 readonly type="text" class="inputTextReadOnly" name="tmpGogn" id="tmpGogn" size="20"  value="${tmpGogn}">
-										
+											<img onMouseOver="showPop('gogn_info');" onMouseOut="hidePop('gogn_info');"style="vertical-align:middle;" width="14px" height="14px" src="resources/images/info3.png" border="0" alt="info">
+											<div class="text11" style="position: relative;" align="left">
+											<span style="position:absolute; left:250px; top:3px; width:250px" id="gogn_info" class="popupWithInputText"  >
+												<font class="text11">
+								           			<b>Godsnr.</b>
+								           			<div>
+								           			<p><b>xx</b> blir erstattet med neste nr fra telleverk ved fullføring.</p>
+								           			</div>
+							           			</font>
+											</span>
+											</div>
 						 				</c:when>
 						 				<c:otherwise>
 						 					<input tabindex=-1 readonly type="text" class="inputTextReadOnly" name="gogn" id="gogn" size="20" value="${godsnr}">
@@ -390,6 +400,7 @@
 								<tr >
 						 			<td >
 										<table style="width:100%" align="center" class="formFrame" border="0" cellspacing="0" cellpadding="0">
+										<form name="editMerknadForm" id="editMerknadForm" >
 										 <tr>
 										 	<td class="text14"><span title="gomkod">M-jourkode</span></td>
 										 	<td class="text14"><span title="gopos">&nbsp;Pos.nr.</span></td>
@@ -446,7 +457,7 @@
 										 <tr>
 										 	<td colspan="3" class="text14"><span title="gomerb">&nbsp;Merknad 2</span></td>
 										 	<td class="text14"><span title="gomerc">&nbsp;Merknad 3</span></td>
-										 	<td colspan="2" class="text14"><span title="gomerd">&nbsp;Merknad 4</span></td>
+										 	<td class="text14"><span title="gomerd">&nbsp;Merknad 4</span></td>
 										 </tr>
 										 <tr>
 										 	
@@ -456,11 +467,15 @@
 											<td class="text14">
 										 		<input type="text" class="inputTextMediumBlue" name="gomerc" id="gomerc" size="15" maxlength="20" value="">									 		
 										 	</td>
-										 	<td colspan="2" class="text14">
+										 	<td class="text14">
 										 		<input type="text" class="inputTextMediumBlue" name="gomerd" id="gomerd" size="15" maxlength="20" value="">									 		
 										 	</td>
+										 	<td align="left" class="text14" >
+					 							<input class="inputFormSubmit" type="button" name="buttonMerknadSubmit" id="buttonMerknadSubmit" value='Lagre Merknad'>
+					 						</td>
 										 </tr>
 										</table>
+										</form>
 									</td>
 					 			</tr>
 					 			

@@ -1,6 +1,7 @@
   //this variable is a global jQuery var instead of using "$" all the time. Very handy
   var jq = jQuery.noConflict();
   var counterIndex = 0;
+  var BLOCKUI_OVERLAY_MESSAGE_DEFAULT = "Please wait...";
   
   jq(function() {
 	  //General Header Menus
@@ -65,8 +66,8 @@
 			  enh = record[1];
 		  }
 		  //console.log(bevKode + "XX" + enh);
-		  var tmpGogn = jq('#owngogn_1').val() + bevKode + enh + jq('#owngogn_3').val();
-		  jq('#tmpGogn').val(tmpGogn + "XX");//The suffix XX will be known after the "Save" and calculation of the whole gogn
+		  var tmpGogn = jq('#owngogn_1').val() + bevKode + jq('#owngogn_3').val() + enh ;
+		  jq('#tmpGogn').val(tmpGogn + "xx");//The suffix xx will be known after the "Save" and calculation of the whole gogn
 		  
 	  });
   });
@@ -166,5 +167,41 @@
 		   ).draw();
       } );
   } );
-    
+  
+  //update Merknad and refresh datatable
+  jq(function() {
+	  jq('#buttonMerknadSubmit').click(function() {
+		
+		  	var form = new FormData(document.getElementById('editMerknadForm'));
+		  	
+		    jq.ajax({
+		        type        : 'POST',
+		        url         : 'updateMerknad.do',
+		        data        : form,
+		        dataType    : 'text',
+		        cache: false,
+		  	  	processData: false,
+		        contentType : false,
+		        success     : function(data){
+		        		
+		        		jq.blockUI({ css: { fontSize: '22px' }, message: BLOCKUI_OVERLAY_MESSAGE_DEFAULT});
+		        		console.log("B");
+		        		window.location.href = 'godsno_edit.do?updateFlag=1&gogn=' + jq("#gogn").val() + '&gotrnr=' + jq("#gotrnr").val();
+		        		/* not working
+		        		var table = jq('#merknadList').dataTable();
+		        		var rowNode = table.row.add( [ 'fuck', 'a duck','','','','X' ] ).draw().node();
+		        		jq( rowNode )
+		        		    .css( 'color', 'red' )
+		        		    .animate( { color: 'black' } );
+		        		*/
+                 },
+                 error: function() {
+			  		  //alert('Error loading ...');
+                	  console.log('Error loading');
+                	  
+				  }
+		    });
+		    jq.unblockUI();
+		});
+  	});
   

@@ -103,8 +103,7 @@ public class GodsnoRegistreringCloneController {
 	 */
 	@RequestMapping(value="godsno_clone.do", method={RequestMethod.GET, RequestMethod.POST} )
 	public ModelAndView doGodsnoClone(ModelMap model, @ModelAttribute ("record") GodsjfDao recordToValidate, BindingResult bindingResult, HttpSession session, HttpServletRequest request){
-		ModelAndView errorView = new ModelAndView("godsno_clone");
-		ModelAndView successView = new ModelAndView("redirect:godsno_mainlist.do?action=doFind&rd=1");
+		ModelAndView successView = new ModelAndView("godsno_clone");
 		logger.info("Inside: doGodsnoClone");
 		
 		SystemaWebUser appUser = this.loginValidator.getValidUser(session);
@@ -164,8 +163,7 @@ public class GodsnoRegistreringCloneController {
 					if(dmlRetval<0){
 						isValidRecord = false;
 						model.addAttribute(GodsnoConstants.ASPECT_ERROR_MESSAGE, errMsg.toString());
-						//stay in this form...
-						successView = errorView;
+						
 					}else{
 						//bye bye ... 
 						successView = new ModelAndView("redirect:godsno_mainlist.do?action=doFind&rd=1");
