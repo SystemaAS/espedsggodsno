@@ -103,27 +103,16 @@ public class GodsnoRegistreringCloneController {
 	 */
 	@RequestMapping(value="godsno_clone.do", method={RequestMethod.GET, RequestMethod.POST} )
 	public ModelAndView doGodsnoClone(ModelMap model, @ModelAttribute ("record") GodsjfDao recordToValidate, BindingResult bindingResult, HttpSession session, HttpServletRequest request){
-		ModelAndView successView = new ModelAndView("godsno_clone");
+		ModelAndView errorView = new ModelAndView("godsno_clone");
+		ModelAndView successView = new ModelAndView("redirect:godsno_mainlist.do?action=doFind&rd=1");
 		logger.info("Inside: doGodsnoClone");
 		
 		SystemaWebUser appUser = this.loginValidator.getValidUser(session);
 		
 		String action = request.getParameter("action");
-		String avd = request.getParameter("avd");
-		String sign = request.getParameter("sign");
-		String updateFlag = request.getParameter("updateFlag");
-		String gognManualCounter = strMgr.leadingStringWithNumericFiller(request.getParameter("gognManualCounter"), 2, "0");
-		String gotrnrOrig = request.getParameter("gotrnrOrig");
-		//Special case for goavg
-		recordToValidate.setGoavg(this.constructGoavg(request, model));
-		
 		logger.info("action:" + action);
-		logger.info("gognManualCounter:" + gognManualCounter);
 		logger.info("goavg:" + recordToValidate.getGoavg());
 		
-		if(strMgr.isNotNull(updateFlag)){
-			model.addAttribute("updateFlag", "1");
-		}
 		boolean isValidRecord = true;
 		
 		//check user (should be in session already)
@@ -132,7 +121,8 @@ public class GodsnoRegistreringCloneController {
 		
 		}else{
 			logger.info(Calendar.getInstance().getTime() + " CONTROLLER start - timestamp");
-
+			
+			//There will always be a doCreate. All updates are outside this controller
 			if(GodsnoConstants.ACTION_CREATE.equals(action)){
 				//validator
 				GodsnoRegistreringValidator validator = new GodsnoRegistreringValidator();
@@ -174,15 +164,15 @@ public class GodsnoRegistreringCloneController {
 					if(dmlRetval<0){
 						isValidRecord = false;
 						model.addAttribute(GodsnoConstants.ASPECT_ERROR_MESSAGE, errMsg.toString());
+						//stay in this form...
+						successView = errorView;
 					}else{
 						//bye bye ... 
 						successView = new ModelAndView("redirect:godsno_mainlist.do?action=doFind&rd=1");
 					}
 			    }
 			}else if (GodsnoConstants.ACTION_FETCH.equals(action)){
-				//--------------
-				//Fetch record
-				//--------------
+				//This will only be executed in the first call
 				if(strMgr.isNotNull(recordToValidate.getGogn()) ){
 					if(isValidRecord){
 						GodsjfDao updatedDao = this.getRecordGodsjf(appUser, recordToValidate);
@@ -194,6 +184,7 @@ public class GodsnoRegistreringCloneController {
 						this.adjustFieldsForFetch(recordToValidate);
 						model.addAttribute(GodsnoConstants.DOMAIN_RECORD, recordToValidate);
 					}
+					//prepare for the update for the form submit
 					action = "doCreate";	
 				}
 			}
