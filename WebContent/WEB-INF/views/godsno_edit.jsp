@@ -73,7 +73,7 @@
 					 	<td >
 						<table style="width:100%"  class="dashboardFrameHeader" border="0" cellspacing="1" cellpadding="0">
 					 		<tr height="15">
-					 			<td class="text14White">&nbsp;Godsnr:&nbsp;<font style="color: lemonchiffon;">${record.gogn}</font></td>
+					 			<td class="text14White">&nbsp;Godsnr:&nbsp;<font style="color: yellow;"><b>${record.gogn}</b></font></td>
 					 			<c:if test="${ empty updateFlag}">
 						 			<td align="right">
 						 				<img title="Bev.koder" id="bevKoderDialogImgReadOnly" style="vertical-align:middle; cursor:pointer;" width="14px" height="14px" src="resources/images/info4.png" border="0" alt="bev.koder">
@@ -315,7 +315,10 @@
             <td align="center" style="width:50%" valign="top" >
             	<table style="width:90%" class="greenContainerFrameE2" align="center" id="containerdatatableTable" border="0" cellspacing="0" cellpadding="0">
 					<tr >
-			 			<td class="text14"><b>Merknadsjournal</b></td>
+			 			<td class="text14">
+			 			<img style="vertical-align: bottom" src="resources/images/app.png" width="16" hight="16" border="0" alt="journal">
+			 			<b>Merknadsjournal</b>
+			 			</td>
 		 			</tr>
 		 			<tr height="5"><td></td></tr>
 					<tr>
@@ -498,10 +501,54 @@
             </td>
              --%>
 		</tr>
-		
-		
 		<tr height="20"><td colspan="2">&nbsp;</td></tr>
+		
+		<tr >
+			<td colspan="2" class="text14">&nbsp;
+			<img style="vertical-align: bottom" src="resources/images/log-icon.gif" width="16" hight="16" border="0" alt="show log">
+			<b>Hendelseslogg</b>
+			</td>
+		</tr>
+		<tr>
+			<td style="width:50%" >
+			<table style="width:90%" id="containerdatatableTable" border="0" cellspacing="0" cellpadding="0">
+			<tr>
+				<td>
+				
+				<table style="width:100%" id="hfLoggerList" class="display compact cell-border" >
+					<thead>
+					<tr class="tableHeaderField" >
+						<th align="left" width="2%" class="tableHeaderFieldFirst12"><spring:message code="systema.godsno.maintenance.godshf.gogn"/></th>
+						<th align="left" class="tableHeaderField12">&nbsp;<spring:message code="systema.godsno.maintenance.godshf.gotrnr"/></th>
+						<th align="left" class="tableHeaderField12">&nbsp;<spring:message code="systema.godsno.maintenance.godshf.gohdat"/></th>
+						<th align="left" class="tableHeaderField12">&nbsp;<spring:message code="systema.godsno.maintenance.godshf.gohtim"/></th>
+						<th align="left" class="tableHeaderField12">&nbsp;<spring:message code="systema.godsno.maintenance.godshf.gohusr"/></th>
+						<th nowrap align="center" class="tableHeaderField12">&nbsp;<spring:message code="systema.godsno.maintenance.godshf.gohkod"/></th>
+						<th nowrap align="center" class="tableHeaderField12">&nbsp;<spring:message code="systema.godsno.maintenance.godshf.gohpgm"/></th>
+					</tr>
+					</thead>
+	                
+	                <tbody>
+		            <c:forEach items="${hfLoggerList}" var="record" varStatus="counter">    
+		             <tr class="tableRow" >  
+		               <td align="left" width="2%" class="tableCellFirst12" >${record.gogn}</td>
+		               <td width="2%" class="tableCell12" style="color:navy;">${record.gotrnr}</td>
+		               <td width="2%" class="tableCell12" >${record.gohdat}</td>
+		               <td width="2%" class="tableCell12" >${record.gohtim}</td>
+		               <td width="2%" class="tableCell12" >${record.gohusr}</td>
+		               <td width="2%" align="center" class="tableCell12" >${record.gohkod}</td>
+		               <td width="2%" align="center" class="tableCell12" >${record.gohpgm}</td>
+	                 </tr>
+	               	</c:forEach>
+	            	</tbody>
+				</table>
+				</td>
+			</tr>
+			</table>
+			</td>	
+		</tr>
 
+		<tr height="20"><td colspan="2">&nbsp;</td></tr>
 	</table> 
 	</td>
  </tr>

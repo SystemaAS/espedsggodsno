@@ -39,6 +39,7 @@ import no.systema.jservices.common.dao.GodsafDao;
 import no.systema.jservices.common.dao.GodsfiDao;
 import no.systema.jservices.common.dao.GodsjfDao;
 import no.systema.jservices.common.dao.GodsgfDao;
+import no.systema.jservices.common.dao.GodshfDao;
 import no.systema.jservices.common.dao.MerknfDao;
 
 
@@ -284,7 +285,7 @@ public class GodsnoRegistreringController {
 				}
 				//Fetch all merkned item lines
 				model.addAttribute("merknadList", this.getListMerknf(appUser, recordToValidate.getGogn(), recordToValidate.getGotrnr()));
-				
+				model.addAttribute("hfLoggerList", this.godsnoLoggerService.getLogHfList(appUser, this.getGodshrDao(recordToValidate)));
 			}
 			
 			if(action==null || "".equals(action)){ 
@@ -319,35 +320,16 @@ public class GodsnoRegistreringController {
 		}
 	}
 	/**
-	 * Goavg is 15(VARCHAR) long. The last 3-positions are reserved for the T-papirtype. The first 12-chars are the Avg.sted
-	 * @param request
+	 * 
+	 * @param recordToValidate
 	 * @return
 	 */
-	private String constructGoavg(HttpServletRequest request, ModelMap model){
-		String DEFAULT_TPAPIR_TYPE = "T1";
-		int FILLER_LIMIT = 12;
-		String FILLER_CHAR = " ";
-		String retval = "";
-		
-		String owngoavg_ptype = request.getParameter("owngoavg_ptype");
-		String owngoavg_toll = request.getParameter("owngoavg_toll");
-		if(strMgr.isNull(owngoavg_ptype)){
-			owngoavg_ptype = DEFAULT_TPAPIR_TYPE;
-		}
-		if(strMgr.isNull(owngoavg_toll)){
-			owngoavg_toll = ""; //important for trailing function below
-		}
-	
-		owngoavg_toll = strMgr.trailingStringWithFiller(owngoavg_toll, FILLER_LIMIT, FILLER_CHAR);
-		//set value
-		retval = owngoavg_toll + owngoavg_ptype;
-		//
-		model.addAttribute("owngoavg_ptype", owngoavg_ptype);
-		model.addAttribute("owngoavg_toll", owngoavg_toll.trim());
-		
-				
-		return retval;
+	public GodshfDao getGodshrDao(GodsjfDao recordToValidate){
+		GodshfDao dao = new GodshfDao();
+		dao.setGogn(recordToValidate.getGogn());
+		return dao;
 	}
+		
 	
 	/**
 	 * 
@@ -450,6 +432,36 @@ public class GodsnoRegistreringController {
 	}
 	
 	/**
+	 * Goavg is 15(VARCHAR) long. The last 3-positions are reserved for the T-papirtype. The first 12-chars are the Avg.sted
+	 * @param request
+	 * @return
+	 */
+	private String constructGoavg(HttpServletRequest request, ModelMap model){
+		String DEFAULT_TPAPIR_TYPE = "T1";
+		int FILLER_LIMIT = 12;
+		String FILLER_CHAR = " ";
+		String retval = "";
+		
+		String owngoavg_ptype = request.getParameter("owngoavg_ptype");
+		String owngoavg_toll = request.getParameter("owngoavg_toll");
+		if(strMgr.isNull(owngoavg_ptype)){
+			owngoavg_ptype = DEFAULT_TPAPIR_TYPE;
+		}
+		if(strMgr.isNull(owngoavg_toll)){
+			owngoavg_toll = ""; //important for trailing function below
+		}
+	
+		owngoavg_toll = strMgr.trailingStringWithFiller(owngoavg_toll, FILLER_LIMIT, FILLER_CHAR);
+		//set value
+		retval = owngoavg_toll + owngoavg_ptype;
+		//
+		model.addAttribute("owngoavg_ptype", owngoavg_ptype);
+		model.addAttribute("owngoavg_toll", owngoavg_toll.trim());
+		
+				
+		return retval;
+	}
+	/**
 	 * Construct the godsNr from user input
 	 * @param request
 	 * @return
@@ -487,20 +499,7 @@ public class GodsnoRegistreringController {
 		}
 		return retval;
 	}
-	/**
-	 * To elucidate if we have gotten the complete godsnr or not.
-	 * If not: there will be a user input in GUI.	
-	 * @param value
-	 * @return
-	 */
-		
-	private boolean godsNrMustBeManuallyInput(String value){
-		boolean retval = false;
-		if(strMgr.isNotNull(value) && value.length() == 4){ //since there is only the year indicating a not found complete godsnr automatically
-			retval = true;
-		}
-		return retval;
-	}
+	
 	/**
 	 * 
 	 * @param gggn1
