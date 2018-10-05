@@ -40,11 +40,6 @@
 	    		refreshCustomValidity(jq('#gomott')[0]);
 	  		}
 	  	});
-	  jq('#gotrnr').focus(function() {
-	    	if(jq('#gotrnr').val()!=''){
-	    		refreshCustomValidity(jq('#gotrnr')[0]);
-	  		}
-	  	});
 	  jq('#gogn').focus(function() {
 	    	if(jq('#gogn').val()!=''){
 	    		refreshCustomValidity(jq('#gogn')[0]);
@@ -385,4 +380,41 @@
 	  });
 	  
   	});
+  
+  //Special MERKNF section to trigger ENTER as submit-behavior. (Button has no std-dafault as Submit type)
+  jq(function() {
+	  jq('#gopos').keypress(function(e){
+		  saveItemLine(e);});
+	  jq('#gomkod').keypress(function(e){
+		  saveItemLine(e);});
+	  jq('#goantk').keypress(function(e){
+		  saveItemLine(e);});
+	  jq('#govsla').keypress(function(e){
+		  saveItemLine(e);});
+	  jq('#gomer1').keypress(function(e){
+		  saveItemLine(e);});
+	  jq('#gosted').keypress(function(e){
+		  saveItemLine(e);});
+	  jq('#gopos2').keypress(function(e){
+		  saveItemLine(e)});
+	  jq('#gomotm').keypress(function(e){
+		  saveItemLine(e);});
+	  jq('#gomerk').keypress(function(e){
+		  saveItemLine(e);});
+	  jq('#gomerb').keypress(function(e){
+		  saveItemLine(e);});
+	  jq('#gomerc').keypress(function(e){
+		  saveItemLine(e)});
+	  jq('#gomerd').keypress(function(e){
+		  saveItemLine(e);});
+  })
+  function saveItemLine(e){
+  		if(e.which == 13) {
+			e.preventDefault();//this is necessary in order to avoid form.action in form submit button (Save)
+			if(!jq("#buttonMerknadSubmit").is(":disabled")){
+				jq( "#buttonMerknadSubmit" ).click();
+			}
+		}	
+  }
+  
   

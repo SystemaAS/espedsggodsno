@@ -35,6 +35,7 @@ import no.systema.main.model.SystemaWebUser;
 import no.systema.main.util.StringManager;
 
 import no.systema.jservices.common.dao.GodsjfDao;
+import no.systema.jservices.common.dao.MerknfDao;
 import no.systema.jservices.common.dao.GodshfDao;
 
 //GODSNO
@@ -43,6 +44,7 @@ import no.systema.godsno.filter.SearchFilterGodsnoMainList;
 import no.systema.godsno.url.store.GodsnoUrlDataStore;
 import no.systema.godsno.util.GodsnoConstants;
 import no.systema.godsno.model.JsonContainerDaoGODSJF;
+import no.systema.godsno.model.JsonContainerDaoMERKNF;
 import no.systema.godsno.model.JsonContainerDaoGODSHF;
 import no.systema.godsno.util.manager.CodeDropDownMgr;
 
@@ -138,14 +140,8 @@ public class GodsnoMainListController {
 	    		//Final successView with domain objects
 	    		//--------------------------------------
 	    		//drop downs
-    			List signatureList = this.codeDropDownMgr.getSignatures(appUser.getUser());
-    			List avdList = this.codeDropDownMgr.getAvdList(appUser.getUser());
-    			model.put(GodsnoConstants.RESOURCE_MODEL_KEY_SIGNATURE_LIST, signatureList);
-    			model.put(GodsnoConstants.RESOURCE_MODEL_KEY_AVD_LIST, avdList);
-    			
-	    		//this.setCodeDropDownMgr(appUser, model);
 				model.put(GodsnoConstants.DOMAIN_LIST, mainList);
-	    		
+				
 				successView.addObject(GodsnoConstants.DOMAIN_MODEL , model);
 	    		
 	    		//domain and search filter
@@ -223,37 +219,19 @@ public class GodsnoMainListController {
     	if(jsonPayload!=null){
     		JsonContainerDaoGODSJF listContainer = this.godsnoService.getContainerGodsjf(jsonPayload);
     		outputList = listContainer.getList();
-    		int counter = 0;
+
     		for(GodsjfDao record : outputList){
     			this.adjustFieldsForFetch(record);
-				this.splitGoavg(record, model, counter);	
+    			//limit ... just in case
+    			if(outputList.size()<150){
+    				this.getListOfExistingMerknf(appUser, record.getGogn(), record.getGotrnr(), model);
+    			}
     		}
-    		
-    		
     	}		
 	    
 		return outputList;
 	}
-	/**
-	 * 
-	 * @param record
-	 * @param model
-	 */
-	private void splitGoavg(GodsjfDao record, Map model, int counter){
-		try{
-			if(strMgr.isNotNull(record.getGoavg())){
-				if(record.getGoavg().length()>12){
-					String a = record.getGoavg().substring(0,12);
-					String b = record.getGoavg().substring(12);
-					model.put(counter + "A", a);
-					model.put(counter + "B", b);
-					
-				}
-			}
-		}catch(Exception e){
-			logger.info("Error on splitGoavg..." + e.toString());
-		}
-	}
+	
 	private void adjustFieldsForFetch(GodsjfDao recordToValidate){
 		recordToValidate.setGogrdt(this.convertToDate_NO(recordToValidate.getGogrdt()));
 		recordToValidate.setGolsdt(this.convertToDate_NO(recordToValidate.getGolsdt()));
@@ -270,6 +248,45 @@ public class GodsnoMainListController {
 		return dateMgr.getDateFormatted_NO(value, DateTimeManager.ISO_FORMAT);
 	}
 	
+	/**
+	 * 
+	 * @param appUser
+	 * @param gogn
+	 * @param gotrnr
+	 * @return
+	 */
+	private Collection<MerknfDao> getListOfExistingMerknf(SystemaWebUser appUser, String gogn, String gotrnr, Map model){
+		Collection<MerknfDao> outputList = new ArrayList<MerknfDao>();
+		//---------------
+    	//Get main list
+		//---------------
+		final String BASE_URL = GodsnoUrlDataStore.GODSNO_BASE_MERKNF_COUNT_URL;
+		//add URL-parameters
+		StringBuffer urlRequestParams = new StringBuffer();
+		urlRequestParams.append("user=" + appUser.getUser());
+		urlRequestParams.append("&gogn=" + gogn);
+		urlRequestParams.append("&gotrnr=" + gotrnr);
+		
+		//session.setAttribute(TransportDispConstants.ACTIVE_URL_RPG_TRANSPORT_DISP, BASE_URL + "==>params: " + urlRequestParams.toString()); 
+    	logger.info(Calendar.getInstance().getTime() + " CGI-start timestamp");
+    	logger.info("URL: " + BASE_URL);
+    	logger.info("URL PARAMS: " + urlRequestParams);
+    	String jsonPayload = this.urlCgiProxyService.getJsonContent(BASE_URL, urlRequestParams.toString());
+    	//Debug --> 
+    	logger.debug(jsonDebugger.debugJsonPayloadWithLog4J(jsonPayload));
+    	logger.info(Calendar.getInstance().getTime() +  " CGI-end timestamp");
+    	if(jsonPayload!=null){
+    		JsonContainerDaoMERKNF listContainer = this.godsnoService.getContainerMerknf(jsonPayload);
+    		outputList = listContainer.getList();
+    		if(outputList!=null && !outputList.isEmpty()){
+    			
+    			String key = gogn + gotrnr;
+    			model.put(key, gogn);//will be used in the JSP
+    		}
+    	}		
+	    
+		return outputList;
+	}
 	
 }
 

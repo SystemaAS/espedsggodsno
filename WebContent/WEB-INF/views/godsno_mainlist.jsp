@@ -127,6 +127,7 @@
 						<tr class="tableHeaderField" height="20" >
 							<th width="2%" class="tableHeaderFieldFirst">Endre</th>
 							<th width="2%" align="left" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.godsnr"/></th> 
+							<th width="2%" align="center" class="tableHeaderField" title="Merknadsjournal" >&nbsp;<spring:message code="systema.godsno.mjournallist.label.merknadsjournal"/></th> 
 							<th align="left" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.godsmottaker"/></th> 
 							<th width="2%" align="left" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.transittnr"/></th>
 		                    <th width="2%" align="center" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.type"/></th>
@@ -134,7 +135,7 @@
 		                    <th width="2%" align="left" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.bilnr"/></th>
 		                    <th width="2%" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.avgtollsted"/></th>
 		                    <th width="2%" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.transittdato"/></th>
-		                    <th title="Tillegg av transitt på godsnummer" width="2%" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.copy"/>
+		                    <th width="2%" class="tableHeaderField" title="Tillegg av transitt på godsnummer" >&nbsp;<spring:message code="systema.godsno.mainlist.label.copy"/>
 		                    </th>
 		                    <th width="2%" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.delete"/></th>
 		                </tr> 
@@ -148,7 +149,15 @@
 			               			<img title="Endre post" style="vertical-align:bottom;" src="resources/images/update.gif" border="0" alt="edit">
 			               		</a>	
 			               </td>
-			               <td width="2%" class="tableCell" style="color:navy;">${record.gogn}</td>
+			               <td width="2%" class="tableCell" style="color:navy;">
+			               		${record.gogn}
+			               	</td>
+			               	<td width="2%" align="center" class="tableCell" >
+			               		<c:set var = "key" value = "${record.gogn}${record.gotrnr}"/>
+			               		<c:if test="${not empty model[key]}">
+			               			<img title="Merknadsjournal" src="resources/images/veiledning.png" width="20px" height="20" border="0" alt="Merknadsjournal">
+			               		</c:if>	
+			               	</td>
 			               <td class="tableCell" >${record.gomott}</td>
 			               <td width="2%" class="tableCell" >${record.gotrnr}</td>
 			               <td width="2%" align="center" class="tableCell" >
