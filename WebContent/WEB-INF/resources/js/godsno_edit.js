@@ -167,13 +167,38 @@
 		   ).draw();
       } );
   } );
+  //Check mandatory
+  function checkMandatoryFields(){
+	  var flag = -1
+	  if(jq('#gomkod').val()!=''){
+		  if(jq('#gopos').val()!=''){
+			  if(jq('#goantk').val()!=''){
+				  if(jq('#govsla').val()!=''){
+					  if(jq('#gosted').val()!=''){
+						  if(jq('#gomotm').val()!=''){
+							  flag = 0;
+							  //console.log("A");
+						  }
+					  } 
+				  }
+			  } 
+		  } 
+	  }
+	  if(flag == -1){
+		  jq('#buttonMerknadSubmit').prop('disabled', true);
+	  }else{
+		  jq('#buttonMerknadSubmit').prop('disabled',false);
+	  }
+
+  }
   
   //update Merknad and refresh datatable
   jq(function() {
+	  
+	  
 	  jq('#buttonMerknadSubmit').click(function() {
 		
 		  	var form = new FormData(document.getElementById('editMerknadForm'));
-		  	
 		    jq.ajax({
 		        type        : 'POST',
 		        url         : 'updateMerknad.do',
@@ -185,15 +210,9 @@
 		        success     : function(data){
 		        		
 		        		jq.blockUI({ css: { fontSize: '22px' }, message: BLOCKUI_OVERLAY_MESSAGE_DEFAULT});
-		        		console.log("B");
+		        		//console.log("B");
 		        		window.location.href = 'godsno_edit.do?updateFlag=1&gogn=' + jq("#gogn").val() + '&gotrnr=' + jq("#gotrnr").val();
-		        		/* not working
-		        		var table = jq('#merknadList').dataTable();
-		        		var rowNode = table.row.add( [ 'fuck', 'a duck','','','','X' ] ).draw().node();
-		        		jq( rowNode )
-		        		    .css( 'color', 'red' )
-		        		    .animate( { color: 'black' } );
-		        		*/
+		        		
                  },
                  error: function() {
 			  		  //alert('Error loading ...');

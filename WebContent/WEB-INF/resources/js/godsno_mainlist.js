@@ -36,7 +36,7 @@
 	
 	jq('#mainList').dataTable( {
 	  "jQueryUI": false,
-	  "dom": '<"top"lf>t<"bottom"ip><"clear">', //look at mainListFilter on JSP SCRIPT-tag
+	  "dom": '<"mainListFilter"if>t<"bottom"lp><"clear">', //look at mainListFilter on JSP SCRIPT-tag
 	  "scrollY":     "700px",
   	  "scrollCollapse":  true,
   	  "tabIndex": -1,
@@ -47,7 +47,7 @@
       },
 	  "fnDrawCallback": function( oSettings ) {
     	jq('.dataTables_filter input').addClass("inputText12LightYellow");
-    	}
+	  }
 	} );
 	//css styling not working with language localization. We must use fnDrawCallback function above
     //jq('.dataTables_filter input').addClass("inputText12LightYellow");

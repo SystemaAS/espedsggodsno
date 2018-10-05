@@ -12,6 +12,10 @@
 	<style type = "text/css">
 		.ui-dialog{font-size:11pt;}
 		.ui-datepicker { font-size:9pt;}
+		/* this line will align the datatable search field in the left */
+		.dataTables_wrapper .mainListFilter .dataTables_filter{float:left}
+		.dataTables_wrapper .mainListFilter .dataTables_info{float:right}
+		
 	</style>
 
 <table width="100%"  class="text14" cellspacing="0" border="0" cellpadding="0">

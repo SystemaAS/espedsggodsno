@@ -339,7 +339,7 @@
             <c:choose>
             <c:when test="${not empty updateFlag}">
 	            <td align="center" style="width:50%" valign="top" >
-	            	<table style="width:90%" class="greenContainerFrameE2" align="center" id="containerdatatableTable" border="0" cellspacing="0" cellpadding="0">
+	            	<table style="width:95%" class="greenContainerFrameE2" align="center" id="containerdatatableTable" border="0" cellspacing="0" cellpadding="0">
 						<tr >
 				 			<td class="text14">
 				 			<img style="vertical-align: bottom" src="resources/images/app.png" width="16" hight="16" border="0" alt="journal">
@@ -353,11 +353,11 @@
 								<thead>
 								<tr class="tableHeaderField" >
 									<th width="2%" class="tableHeaderFieldFirst14">Endre</th>
-									<th align="left" class="tableHeaderField14">&nbsp;<spring:message code="systema.godsno.merknedlist.label.gopos"/></th>
-									<th align="left" class="tableHeaderField14">&nbsp;<spring:message code="systema.godsno.merknedlist.label.goantk"/></th>
-									<th align="left" class="tableHeaderField14">&nbsp;<spring:message code="systema.godsno.merknedlist.label.govsla"/></th>
+									<th width="2%" align="center" class="tableHeaderField14">&nbsp;<spring:message code="systema.godsno.merknedlist.label.gopos"/></th>
+									<th width="2%" align="center" class="tableHeaderField14">&nbsp;<spring:message code="systema.godsno.merknedlist.label.goantk"/></th>
+									<th nowrap align="left" class="tableHeaderField14">&nbsp;<spring:message code="systema.godsno.merknedlist.label.govsla"/></th>
 									<th align="left" class="tableHeaderField14">&nbsp;<spring:message code="systema.godsno.merknedlist.label.gomerk"/></th>
-									<th nowrap align="center" class="tableHeaderField14">&nbsp;<spring:message code="systema.godsno.merknedlist.label.gomkod"/></th>
+									<th align="center" class="tableHeaderField14">&nbsp;<spring:message code="systema.godsno.merknedlist.label.gomkod"/></th>
 									
 									 
 								</tr>
@@ -366,16 +366,16 @@
 				                <tbody>
 					            <c:forEach items="${merknadList}" var="record" varStatus="counter">    
 					             <tr class="tableRow" >  
-					               <td align="center" width="2%" class="tableCellFirst" >
+					               <td align="center" width="2%" class="tableCellFirst12" >
 					               		<a id="alinkEdit_${counter.count}" style="display:block;" href="TODOgodsno_edit.do?updateFlag=1&gogn=${Xrecord.gogn}&gotrnr=${Xrecord.gotrnr}" onClick="setBlockUI()" >
 					               			<img title="Endre post" style="vertical-align:bottom;" src="resources/images/update.gif" border="0" alt="edit">
 					               		</a>	
 					               </td>
-					               <td width="2%" class="tableCell" style="color:navy;">${record.gopos}</td>
-					               <td width="2%" class="tableCell" >${record.goantk}</td>
-					               <td width="2%" class="tableCell" >${record.govsla}</td>
-					               <td width="2%" class="tableCell" >${record.gomerk}</td>
-					               <td align="center" width="2%" class="tableCell" >${record.gomkod}</td>
+					               <td align="center" width="2%" class="tableCell12" style="color:navy;">${record.gopos}</td>
+					               <td align="right" width="2%" class="tableCell12" >${record.goantk}&nbsp;</td>
+					               <td class="tableCell12" >${record.govsla}</td>
+					               <td class="tableCell12" >${record.gomerk}</td>
+					               <td align="center" width="2%" class="tableCell12" >${record.gomkod}</td>
 					               
 					               </tr>
 				               	</c:forEach>
@@ -399,44 +399,44 @@
 			            	
 								<tr >
 						 			<td >
+						 				<form name="editMerknadForm" id="editMerknadForm" >
 										<table style="width:100%" align="center" class="formFrame" border="0" cellspacing="0" cellpadding="0">
-										<form name="editMerknadForm" id="editMerknadForm" >
 										 <tr>
-										 	<td class="text14"><span title="gomkod">M-jourkode</span></td>
-										 	<td class="text14"><span title="gopos">&nbsp;Pos.nr.</span></td>
-										 	<td class="text14"><span title="goantk">&nbsp;Ant.kolli</span></td>
-										 	<td class="text14"><span title="govsla">&nbsp;<spring:message code="systema.godsno.merknedlist.label.govsla"/></span></td>
+										 	<td class="text14"><span title="gomkod">M-jourkode</span><font class="text12RedBold" >*</font></td>
+										 	<td class="text14"><span title="gopos">&nbsp;Pos.nr.</span><font class="text12RedBold" >*</font></td>
+										 	<td class="text14"><span title="goantk">&nbsp;Ant.kolli</span><font class="text12RedBold" >*</font></td>
+										 	<td class="text14"><span title="govsla">&nbsp;<spring:message code="systema.godsno.merknedlist.label.govsla"/></span><font class="text12RedBold" >*</font></td>
 										 	<td class="text14"><span title="gomer1">&nbsp;Merket</span></td>
-										 	<td class="text14"><span title="gosted">&nbsp;Oppstart sted</span></td>
+										 	<td class="text14"><span title="gosted">&nbsp;Oppstart sted</span><font class="text12RedBold" >*</font></td>
 										 	
 										 </tr>
 										 <tr>
 										 	<td class="text14">
-										 		<select class="inputTextMediumBlue" style="width:60px" name="gomkod" id="gomkod" >
+										 		<select class="inputTextMediumBlueMandatoryField" style="width:60px" name="gomkod" id="gomkod" >
 							 						<option value="DI" >DI</option>
 							 						<option value="NE" >NE</option>
 												</select>									 		
 										 	</td>
 										 	<td class="text14">
-										 		<input onKeyPress="return numberKey(event)" style="text-align: right" type="text" class="inputTextMediumBlue" name="gopos" id="gopos" size="4" maxlength="4" value="">									 		
+										 		<input onBlur="checkMandatoryFields()" onKeyPress="return numberKey(event)" style="text-align: right" type="text" class="inputTextMediumBlueMandatoryField" name="gopos" id="gopos" size="4" maxlength="4" value="">									 		
 										 	</td>
 										 	<td class="text14">
-										 		<input onKeyPress="return numberKey(event)" style="text-align: right" type="text" class="inputTextMediumBlue" name="goantk" id="goantk" size="5" maxlength="5" value="">									 		
+										 		<input onBlur="checkMandatoryFields()" onKeyPress="return numberKey(event)" style="text-align: right" type="text" class="inputTextMediumBlueMandatoryField" name="goantk" id="goantk" size="5" maxlength="5" value="">									 		
 										 	</td>
 										 	<td class="text14">
-										 		<input type="text" class="inputTextMediumBlue" name="govsla" id="govsla" size="18" maxlength="18" value="">									 		
+										 		<input onBlur="checkMandatoryFields()" type="text" class="inputTextMediumBlueMandatoryField" name="govsla" id="govsla" size="18" maxlength="18" value="">									 		
 										 	</td>
 										 	<td class="text14">
 										 		<input type="text" class="inputTextMediumBlue" name="gomer1" id="gomer1" size="9" maxlength="9" value="">									 		
 										 	</td>
 										 	<td class="text14">
-										 		<input type="text" class="inputTextMediumBlue" name="gosted" id="gosted" size="18" maxlength="18" value="">									 		
+										 		<input onBlur="checkMandatoryFields()" type="text" class="inputTextMediumBlueMandatoryField" name="gosted" id="gosted" size="18" maxlength="18" value="">									 		
 										 	</td>
 										 </tr>
 										 
 										 <tr>
 										 	<td class="text14"><span title="gopos2">Pos. i lastel.</span></td>
-										 	<td colspan="2" class="text14"><span title="gomotm">&nbsp;Varemottaker</span></td>
+										 	<td colspan="2" class="text14"><span title="gomotm">&nbsp;Varemottaker</span><font class="text12RedBold" >*</font></td>
 										 	<td colspan="2" class="text14"><span title="gomerk">&nbsp;Merknad</td>
 										 	
 										 </tr>
@@ -446,10 +446,10 @@
 										 		<input onKeyPress="return numberKey(event)" style="text-align: right" type="text" class="inputTextMediumBlue" name="gopos2" id="gopos2" size="4" maxlength="4" value="">									 		
 										 	</td>
 											<td colspan="2" class="text14">
-										 		<input type="text" class="inputTextMediumBlue" name="gomerk" id="gomerk" size="15" maxlength="20" value="">									 		
+										 		<input onBlur="checkMandatoryFields()" type="text" class="inputTextMediumBlueMandatoryField" name="gomotm" id="gomotm" size="25" maxlength="28" value="">									 		
 										 	</td>
 										 	<td colspan="2" class="text14">
-										 		<input type="text" class="inputTextMediumBlue" name="gomotm" id="gomotm" size="25" maxlength="28" value="">									 		
+										 		<input type="text" class="inputTextMediumBlue" name="gomerk" id="gomerk" size="15" maxlength="20" value="">									 		
 										 	</td>
 										 	
 										 </tr>
@@ -471,7 +471,7 @@
 										 		<input type="text" class="inputTextMediumBlue" name="gomerd" id="gomerd" size="15" maxlength="20" value="">									 		
 										 	</td>
 										 	<td align="left" class="text14" >
-					 							<input class="inputFormSubmit" type="button" name="buttonMerknadSubmit" id="buttonMerknadSubmit" value='Lagre Merknad'>
+					 							<input  class="inputFormSubmit" type="button" name="buttonMerknadSubmit" id="buttonMerknadSubmit" value='Lagre Merknad' disabled>
 					 						</td>
 										 </tr>
 										</table>
