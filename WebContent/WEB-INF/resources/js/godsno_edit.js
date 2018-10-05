@@ -176,8 +176,15 @@
 				  if(jq('#govsla').val()!=''){
 					  if(jq('#gosted').val()!=''){
 						  if(jq('#gomotm').val()!=''){
-							  flag = 0;
-							  //console.log("A");
+							  if(jq('#updateMerknad_flag').val()!=''){
+								  flag = 0;
+							  }else{
+								  //with new record
+								  if(!jq('#gopos').is(".isa_error")){
+									  flag = 0;
+									  //console.log("A");
+								  }								  
+							  }
 						  }
 					  } 
 				  }
@@ -191,36 +198,191 @@
 	  }
 
   }
+  //Get record - Merknad for update 
+  function getRecordMerknad(record){
+	  var id = record.id;
+	  var fields = id.split('@');
+	  var gogn = fields[0];
+	  var gotrnr = fields[1];
+	  var gopos = fields[2];
+	  gogn = gogn.replace("gogn_","");
+	  gotrnr = gotrnr.replace("gotrnr_","");
+	  gopos = gopos.replace("gopos_","");
+	  
+	  jq.ajax({
+	        type        : 'GET',
+	        url         : 'getSpecificRecord_merknf.do',
+	        data		: { applicationUser : jq('#applicationUser').val(), 
+	        				gogn : gogn,
+	        				gotrnr : gotrnr,
+	        				gopos : gopos },
+	        dataType    : 'json',
+	        cache: false,
+	        contentType : 'application/json',
+	        success     : function(data){
+	        	var len = data.length;
+	        	for ( var i = 0; i < len; i++) {
+	        		//special treatment for key gopos
+		  			jq('#gopos').val(data[i].gopos);
+		  			jq('#gopos').prop('readonly', true);
+			  		jq('#gopos').removeClass("inputTextMediumBlueMandatoryField");
+			  		jq('#gopos').addClass("inputTextReadOnly");
+		  			//rest of the gang
+			  		jq('#gomkod').val(data[i].gomkod).change();
+		  			jq('#goantk').val(data[i].goantk);
+		  			jq('#govsla').val(data[i].govsla);
+		  			jq('#gomer1').val(data[i].gomer1);
+		  			jq('#gosted').val(data[i].gosted);
+		  			jq('#gopos2').val(data[i].gopos2);
+		  			jq('#gomotm').val(data[i].gomotm);
+		  			jq('#gomerk').val(data[i].gomerk);
+		  			jq('#gomerb').val(data[i].gomerb);
+		  			jq('#gomerc').val(data[i].gomerc);
+		  			jq('#gomerd').val(data[i].gomerd);
+		  			//
+		  			jq('#updateMerknad_flag').val('1');
+	        		//END
+		  			jq('#gomkod').focus();
+		  			jq('#buttonMerknadSubmit').prop('disabled',false);
+		  		}
+	        },
+          error: function() {
+		  		  //alert('Error loading ...');
+        	  console.log('Error loading');
+        	  
+			  }
+	    })
+  }
   
-  //update Merknad and refresh datatable
+  //Get record - Merknad for update 
+  function doDeleteMerknad(record){
+	  var id = record.id;
+	  var fields = id.split('@');
+	  var gogn = fields[0];
+	  var gotrnr = fields[1];
+	  var gopos = fields[2];
+	  gogn = gogn.replace("gogn_","");
+	  gotrnr = gotrnr.replace("gotrnr_","");
+	  gopos = gopos.replace("gopos_","");
+	  	
+	  jq.ajax({
+	        type        : 'GET',
+	        url         : 'deleteSpecificRecord_merknf.do',
+	        data		: { applicationUser : jq('#applicationUser').val(), 
+	        				gogn : gogn,
+	        				gotrnr : gotrnr,
+	        				gopos : gopos },
+	        dataType    : 'json',
+	        cache: false,
+	        contentType : 'application/json',
+	        success     : function(data){
+	        	var len = data.length;
+	        	for ( var i = 0; i < len; i++) {
+	        		//console.log("B");
+	        		window.location.href = 'godsno_edit.do?updateFlag=1&gogn=' + jq("#gogn").val() + '&gotrnr=' + jq("#gotrnr").val();
+		  		}
+	        },
+          error: function() {
+		  		  //alert('Error loading ...');
+        	  console.log('Error loading');
+        	  
+			  }
+	    })
+	    
+  }
+  
+  //SAVE merknad line
+  function doUpdateMerknad() {
+	  	var form = new FormData(document.getElementById('editMerknadForm'));
+	  	//add values to form since we do not combine form data and other data in the same ajax call.
+	  	//all fields in the form MUST exists in the DTO or DAO in the rest-Controller
+	  	form.append("applicationUserMerknf", jq('#applicationUser').val());
+	  	form.append("gogn", jq('#gogn').val());
+	  	form.append("gotrnr", jq('#gotrnr').val());
+	  	var payload = jq('editMerknadForm').serialize();
+	  	
+	    jq.ajax({
+	        type        : 'POST',
+	        url         : 'updateSpecificRecord_merknf.do?' + payload,
+	        data        : form,
+	        dataType    : 'text',
+	        cache: false,
+	  	  	processData: false,
+	        contentType : false,
+	        success     : function(data){
+	        		//console.log("B");
+	        		window.location.href = 'godsno_edit.do?updateFlag=1&gogn=' + jq("#gogn").val() + '&gotrnr=' + jq("#gotrnr").val();
+	        		
+             },
+             error: function() {
+		  		  //alert('Error loading ...');
+            	  console.log('Error loading');
+            	  
+			  }
+	    });
+	}
+  
+  
+  //Delete values Merknad
   jq(function() {
+	  	jq('#newRecordButton').click(function() {
+	  	//for a future update
+	    jq('#updateMerknad_flag').val("");	
+	  	//adjust	
+	  	jq('#gopos').val("");
+	  	jq('#gopos').prop('readonly', false);
+	  	jq('#gopos').removeClass("inputTextReadOnly");
+	  	jq('#gopos').addClass("inputTextMediumBlueMandatoryField");
+		//rest of the gang
+  		jq('#gomkod').val("DI").change();
+		jq('#goantk').val("");
+		jq('#govsla').val("");
+		jq('#gomer1').val("");
+		jq('#gosted').val("");
+		jq('#gopos2').val("");
+		jq('#gomotm').val("");
+		jq('#gomerk').val("");
+		jq('#gomerb').val("");
+		jq('#gomerc').val("");
+		jq('#gomerd').val("");
+		//END
+		jq('#gomkod').focus();
+		jq('#buttonMerknadSubmit').prop('disabled',true);
+	  });	
+  });
+  
+  //check for duplicates Merknad and refresh datatable
+  jq(function() {
+	  jq('#gopos').blur(function(){
+		    //only for new records and not for those being updated
+		  	if(jq('#updateMerknad_flag').val()==''){
+			    jq.ajax({
+			        type        : 'GET',
+			        url         : 'getSpecificRecord_merknf.do',
+			        data		: { applicationUser : jq('#applicationUser').val(), 
+			        				gogn : jq('#gogn').val(),
+			        				gotrnr : jq('#gotrnr').val(),
+			        				gopos :jq('#gopos').val()},
+			        dataType    : 'json',
+			        cache: false,
+			        contentType : 'application/json',
+			        success     : function(data){
+			        	var len = data.length;
+				  		if(len==1){
+				  			jq('#gopos').addClass( "isa_error" );
+				  			jq('#gopos').focus();
+				  		}else{
+				  			jq('#gopos').removeClass( "isa_error" );
+				  		}
+			        },
+	                error: function() {
+				  		  //alert('Error loading ...');
+	              	  console.log('Error loading');
+	              	  
+					  }
+			    })
+		  	}
+	  });
 	  
-	  
-	  jq('#buttonMerknadSubmit').click(function() {
-		
-		  	var form = new FormData(document.getElementById('editMerknadForm'));
-		    jq.ajax({
-		        type        : 'POST',
-		        url         : 'updateMerknad.do',
-		        data        : form,
-		        dataType    : 'text',
-		        cache: false,
-		  	  	processData: false,
-		        contentType : false,
-		        success     : function(data){
-		        		
-		        		jq.blockUI({ css: { fontSize: '22px' }, message: BLOCKUI_OVERLAY_MESSAGE_DEFAULT});
-		        		//console.log("B");
-		        		window.location.href = 'godsno_edit.do?updateFlag=1&gogn=' + jq("#gogn").val() + '&gotrnr=' + jq("#gotrnr").val();
-		        		
-                 },
-                 error: function() {
-			  		  //alert('Error loading ...');
-                	  console.log('Error loading');
-                	  
-				  }
-		    });
-		    jq.unblockUI();
-		});
   	});
   

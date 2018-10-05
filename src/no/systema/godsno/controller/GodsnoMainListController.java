@@ -132,7 +132,7 @@ public class GodsnoMainListController {
 	    			recordToValidate = searchFilter;
 	    		}
     			//get list
-    			mainList = this.getList(appUser, recordToValidate, maxWarningMap);
+    			mainList = this.getList(appUser, recordToValidate, maxWarningMap, model);
     			
     			//--------------------------------------
 	    		//Final successView with domain objects
@@ -178,7 +178,7 @@ public class GodsnoMainListController {
 	 * @param maxWarningMap
 	 * @return
 	 */
-	private Collection<GodsjfDao> getList(SystemaWebUser appUser, SearchFilterGodsnoMainList recordToValidate, Map<String,String> maxWarningMap){
+	private Collection<GodsjfDao> getList(SystemaWebUser appUser, SearchFilterGodsnoMainList recordToValidate, Map<String,String> maxWarningMap, Map model){
 		Collection<GodsjfDao> outputList = new ArrayList();
 		String defaultDaysBack = "10";
 		//---------------
@@ -223,12 +223,37 @@ public class GodsnoMainListController {
     	if(jsonPayload!=null){
     		JsonContainerDaoGODSJF listContainer = this.godsnoService.getContainerGodsjf(jsonPayload);
     		outputList = listContainer.getList();
-    		outputList.forEach(record -> this.adjustFieldsForFetch(record));
+    		int counter = 0;
+    		for(GodsjfDao record : outputList){
+    			this.adjustFieldsForFetch(record);
+				this.splitGoavg(record, model, counter);	
+    		}
+    		
+    		
     	}		
 	    
 		return outputList;
 	}
-	
+	/**
+	 * 
+	 * @param record
+	 * @param model
+	 */
+	private void splitGoavg(GodsjfDao record, Map model, int counter){
+		try{
+			if(strMgr.isNotNull(record.getGoavg())){
+				if(record.getGoavg().length()>12){
+					String a = record.getGoavg().substring(0,12);
+					String b = record.getGoavg().substring(12);
+					model.put(counter + "A", a);
+					model.put(counter + "B", b);
+					
+				}
+			}
+		}catch(Exception e){
+			logger.info("Error on splitGoavg..." + e.toString());
+		}
+	}
 	private void adjustFieldsForFetch(GodsjfDao recordToValidate){
 		recordToValidate.setGogrdt(this.convertToDate_NO(recordToValidate.getGogrdt()));
 		recordToValidate.setGolsdt(this.convertToDate_NO(recordToValidate.getGolsdt()));

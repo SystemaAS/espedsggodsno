@@ -126,14 +126,16 @@
 						<thead>
 						<tr class="tableHeaderField" height="20" >
 							<th width="2%" class="tableHeaderFieldFirst">Endre</th>
-							<th align="left" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.godsnr"/></th> 
+							<th width="2%" align="left" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.godsnr"/></th> 
 							<th align="left" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.godsmottaker"/></th> 
-							<th align="left" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.transittnr"/></th>
+							<th width="2%" align="left" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.transittnr"/></th>
+		                    <th width="2%" align="center" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.type"/></th>
 		                    <th align="left" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.turnr"/></th>
-		                    <th align="left" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.bilnr"/></th>
+		                    <th width="2%" align="left" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.bilnr"/></th>
 		                    <th width="2%" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.avgtollsted"/></th>
 		                    <th width="2%" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.transittdato"/></th>
-		                    <th width="2%" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.copy"/></th>
+		                    <th title="Tillegg av transitt på godsnummer" width="2%" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.copy"/>
+		                    </th>
 		                    <th width="2%" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.delete"/></th>
 		                </tr> 
 		                </thead>
@@ -146,12 +148,33 @@
 			               			<img title="Endre post" style="vertical-align:bottom;" src="resources/images/update.gif" border="0" alt="edit">
 			               		</a>	
 			               </td>
-			               <td class="tableCell" style="color:navy;">${record.gogn}</td>
+			               <td width="2%" class="tableCell" style="color:navy;">${record.gogn}</td>
 			               <td class="tableCell" >${record.gomott}</td>
-			               <td class="tableCell" >${record.gotrnr}</td>
+			               <td width="2%" class="tableCell" >${record.gotrnr}</td>
+			               <td width="2%" align="center" class="tableCell" >
+				               	<c:choose>		
+					               	<c:when test="${not empty record.goavg && fn:length(record.goavg)>12}">
+					               			${fn:substring(record.goavg, 12, fn:length(record.goavg))}
+				               		</c:when>
+				               		<c:otherwise>
+				               				${record.goavg}
+				               		</c:otherwise>
+			               		</c:choose>
+		               	   </td>
 			               <td class="tableCell" >${record.goturn}</td>
-			               <td class="tableCell" >${record.gobiln}</td>
-			               <td width="2%" class="tableCell" >${record.goavg}</td>
+			               <td width="2%" class="tableCell" >${record.gobiln}</td>
+			               <td width="2%" class="tableCell" >
+				               	<c:choose>		
+					               	<c:when test="${not empty record.goavg && fn:length(record.goavg)>12}">
+					               		${fn:substring(record.goavg, 0, 12)}
+				               		</c:when>
+				               		<c:otherwise>
+				               			<c:if test="${not empty record.goavg && fn:length(record.goavg)>3}">
+					               			${fn:substring(record.goavg, 0, fn:length(record.goavg))}
+				               			</c:if>
+				               		</c:otherwise>
+			               		</c:choose>
+			               	</td>
 			               <td width="2%" class="tableCell" >${record.gotrdt}</td>
 			               <td align="center" width="2%" class="tableCell" >
 			               		<a style="cursor:pointer;display:block;" id="alinkClone_${counter.count}" style="display:block;" href="godsno_clone.do?action=doFetch&gogn=${record.gogn}&gotrnr=${record.gotrnr}" onClick="setBlockUI()" >

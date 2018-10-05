@@ -358,6 +358,7 @@
 									<th nowrap align="left" class="tableHeaderField14">&nbsp;<spring:message code="systema.godsno.merknedlist.label.govsla"/></th>
 									<th align="left" class="tableHeaderField14">&nbsp;<spring:message code="systema.godsno.merknedlist.label.gomerk"/></th>
 									<th align="center" class="tableHeaderField14">&nbsp;<spring:message code="systema.godsno.merknedlist.label.gomkod"/></th>
+									<th width="2%" class="tableHeaderFieldFirst14">Slett</th>
 									
 									 
 								</tr>
@@ -367,7 +368,7 @@
 					            <c:forEach items="${merknadList}" var="record" varStatus="counter">    
 					             <tr class="tableRow" >  
 					               <td align="center" width="2%" class="tableCellFirst12" >
-					               		<a id="alinkEdit_${counter.count}" style="display:block;" href="TODOgodsno_edit.do?updateFlag=1&gogn=${Xrecord.gogn}&gotrnr=${Xrecord.gotrnr}" onClick="setBlockUI()" >
+					               		<a onClick="getRecordMerknad(this);" id="gogn_${record.gogn}@gotrnr_${record.gotrnr}@gopos_${record.gopos}" style="display:block;" >
 					               			<img title="Endre post" style="vertical-align:bottom;" src="resources/images/update.gif" border="0" alt="edit">
 					               		</a>	
 					               </td>
@@ -376,7 +377,11 @@
 					               <td class="tableCell12" >${record.govsla}</td>
 					               <td class="tableCell12" >${record.gomerk}</td>
 					               <td align="center" width="2%" class="tableCell12" >${record.gomkod}</td>
-					               
+					               <td align="center" width="2%" class="tableCell12" >
+					               		<a onClick="setBlockUI();doDeleteMerknad(this);" id="gogn_${record.gogn}@gotrnr_${record.gotrnr}@gopos_${record.gopos}" style="display:block;" >
+					               			<img title="remove post" style="vertical-align:bottom;" src="resources/images/delete.gif" border="0" alt="remove">
+					               		</a>	
+					               </td>
 					               </tr>
 				               	</c:forEach>
 				            	</tbody>
@@ -384,6 +389,9 @@
 							</td>
 						</tr>
 						<tr height="5"><td>&nbsp;</td></tr>
+						<tr>
+							<td><button name="newRecordButton" id="newRecordButton" class="inputFormSubmitStd" type="button" ><spring:message code="systema.godsno.maintenance.new"/></button></td>
+						</tr>	
 						<tr>
 							<td align="center" class="text14" valign="top" >
 			            	<table style="width:100%" align="center" id="containerdatatableTable" border="0" cellspacing="0" cellpadding="0">
@@ -400,10 +408,11 @@
 								<tr >
 						 			<td >
 						 				<form name="editMerknadForm" id="editMerknadForm" >
-										<table style="width:100%" align="center" class="formFrame" border="0" cellspacing="0" cellpadding="0">
+						 				<input type="hidden" name="updateMerknad_flag" id="updateMerknad_flag" value=""/>
+						 				<table style="width:100%" align="center" class="formFrame" border="0" cellspacing="0" cellpadding="0">
 										 <tr>
-										 	<td class="text14"><span title="gomkod">M-jourkode</span><font class="text12RedBold" >*</font></td>
 										 	<td class="text14"><span title="gopos">&nbsp;Pos.nr.</span><font class="text12RedBold" >*</font></td>
+										 	<td class="text14"><span title="gomkod">M-jourkode</span><font class="text12RedBold" >*</font></td>
 										 	<td class="text14"><span title="goantk">&nbsp;Ant.kolli</span><font class="text12RedBold" >*</font></td>
 										 	<td class="text14"><span title="govsla">&nbsp;<spring:message code="systema.godsno.merknedlist.label.govsla"/></span><font class="text12RedBold" >*</font></td>
 										 	<td class="text14"><span title="gomer1">&nbsp;Merket</span></td>
@@ -412,13 +421,13 @@
 										 </tr>
 										 <tr>
 										 	<td class="text14">
+										 		<input onBlur="checkMandatoryFields()" onKeyPress="return numberKey(event)" style="text-align: right" type="text" class="inputTextMediumBlueMandatoryField" name="gopos" id="gopos" size="4" maxlength="4" value="">									 		
+										 	</td>
+										 	<td class="text14">
 										 		<select class="inputTextMediumBlueMandatoryField" style="width:60px" name="gomkod" id="gomkod" >
 							 						<option value="DI" >DI</option>
 							 						<option value="NE" >NE</option>
 												</select>									 		
-										 	</td>
-										 	<td class="text14">
-										 		<input onBlur="checkMandatoryFields()" onKeyPress="return numberKey(event)" style="text-align: right" type="text" class="inputTextMediumBlueMandatoryField" name="gopos" id="gopos" size="4" maxlength="4" value="">									 		
 										 	</td>
 										 	<td class="text14">
 										 		<input onBlur="checkMandatoryFields()" onKeyPress="return numberKey(event)" style="text-align: right" type="text" class="inputTextMediumBlueMandatoryField" name="goantk" id="goantk" size="5" maxlength="5" value="">									 		
@@ -449,7 +458,7 @@
 										 		<input onBlur="checkMandatoryFields()" type="text" class="inputTextMediumBlueMandatoryField" name="gomotm" id="gomotm" size="25" maxlength="28" value="">									 		
 										 	</td>
 										 	<td colspan="2" class="text14">
-										 		<input type="text" class="inputTextMediumBlue" name="gomerk" id="gomerk" size="15" maxlength="20" value="">									 		
+										 		<input type="text" class="inputTextMediumBlue" name="gomerk" id="gomerk" size="21" maxlength="20" value="">									 		
 										 	</td>
 										 	
 										 </tr>
@@ -471,7 +480,7 @@
 										 		<input type="text" class="inputTextMediumBlue" name="gomerd" id="gomerd" size="15" maxlength="20" value="">									 		
 										 	</td>
 										 	<td align="left" class="text14" >
-					 							<input  class="inputFormSubmit" type="button" name="buttonMerknadSubmit" id="buttonMerknadSubmit" value='Lagre Merknad' disabled>
+					 							<input onClick="setBlockUI();doUpdateMerknad();" class="inputFormSubmit" type="button" name="buttonMerknadSubmit" id="buttonMerknadSubmit" value='Lagre Merknad' disabled>
 					 						</td>
 										 </tr>
 										</table>
