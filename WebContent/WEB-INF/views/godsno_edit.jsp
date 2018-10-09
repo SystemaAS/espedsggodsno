@@ -119,7 +119,7 @@
 							 				  		<option value="${record.gflbko}_${record.gfenh}" >${record.gflbko}&nbsp;&nbsp;${record.gfenh}</option>
 												</c:forEach>  
 											</select><font class="text16RedBold" >*</font>
-											<img title="search" id="divBevKodeListDialogImgReadOnly" style="vertical-align:middle; cursor:pointer;" width="10px" height="10px" src="resources/images/sort_down.png" border="0" alt="bev.koder">
+											<img title="search" id="divBevKodeListDialogImgReadOnly" style="vertical-align:middle; cursor:pointer;" width="12px" height="12px" src="resources/images/find.png" height="11px" width="11px" border="0" alt="bev.koder">
 											&nbsp;
 											<input tabindex=-1 readonly type="text" class="inputTextReadOnly" name="tmpGogn" id="tmpGogn" size="20"  value="${tmpGogn}">
 											<img onMouseOver="showPop('gogn_info');" onMouseOut="hidePop('gogn_info');"style="vertical-align:middle;" width="14px" height="14px" src="resources/images/info3.png" border="0" alt="info">

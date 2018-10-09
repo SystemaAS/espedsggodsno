@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 import javax.servlet.http.HttpServletRequest;
@@ -27,6 +27,7 @@ import javax.servlet.http.HttpSession;
 import no.systema.main.context.TdsAppContext;
 import no.systema.main.service.UrlCgiProxyService;
 import no.systema.main.validator.LoginValidator;
+import no.systema.z.main.maintenance.service.MaintMainKodtaService;
 import no.systema.main.util.AppConstants;
 import no.systema.main.util.DateTimeManager;
 import no.systema.main.util.JsonDebugger;
@@ -73,8 +74,7 @@ public class GodsnoMainListController {
 	@Autowired
 	private GodsnoService godsnoService;
 	
-		
-	
+
 	@PostConstruct
 	public void initIt() throws Exception {
 		if("DEBUG".equals(AppConstants.LOG4J_LOGGER_LEVEL)){
@@ -140,6 +140,7 @@ public class GodsnoMainListController {
 	    		//Final successView with domain objects
 	    		//--------------------------------------
 	    		//drop downs
+    			this.setCodeDropDownMgr(appUser, model);
 				model.put(GodsnoConstants.DOMAIN_LIST, mainList);
 				
 				successView.addObject(GodsnoConstants.DOMAIN_MODEL , model);
@@ -286,6 +287,18 @@ public class GodsnoMainListController {
     	}		
 	    
 		return outputList;
+	}
+	
+	/**
+	 * 
+	 * @param appUser
+	 * @param model
+	 */
+	private void setCodeDropDownMgr(SystemaWebUser appUser, Map model){
+		//Sign / AVD
+		model.put("signatureList", this.codeDropDownMgr.getSignatures(appUser.getUser()) );
+		model.put("avdList", this.codeDropDownMgr.getAvdList(appUser.getUser()) );
+		
 	}
 	
 }
