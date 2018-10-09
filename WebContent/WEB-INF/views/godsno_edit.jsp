@@ -153,19 +153,20 @@
 											</table>	
 										</div>	
 									</td>	
-						 		</tr>							 		
+						 		</tr>
+						 		<%-- hide it temporarily according to JOVO,CB							 		
 						 		<tr >
 						 			<td class="text14"><span title="gognManualCounter">Manuelltnr</span></td>
 						 			<td class="text14">
 						 				<input onKeyPress="return numberKey(event)" style="text-align: right" type="text" class="inputTextMediumBlue" name="gognManualCounter" id="gognManualCounter" size="3" maxlength="2" value="">
 						 			</td>
 						 		</tr>
+						 		 --%>
 					 		</c:if>
 					 		<tr >
 					 			<td class="text14"><span title="gogren">Grensepassering</span></td>
 					 			<td class="text14">
-					 				<input type="text" required oninvalid="this.setCustomValidity('Obligatorisk')" oninput="setCustomValidity('')" class="inputTextMediumBlueMandatoryField" name="gogren" id="gogren" size="21" maxlength="20" value="${record.gogren}">
-					 				<font class="text16RedBold" >*</font>
+					 				<input type="text" class="inputTextMediumBlueUPPERCASE" name="gogren" id="gogren" size="21" maxlength="20" value="${record.gogren}">
 					 			</td>
 					 			<td class="text14">
 					 				<img style="vertical-align:middle;" src="resources/images/calendar.gif" width="12px" height="12px" border="0" alt="dato">
@@ -203,7 +204,7 @@
 					 		<tr >
 					 			<td class="text14"><span title="gobiln">Kjennetegn</span></td>
 					 			<td class="text14">
-					 				<input type="text" required oninvalid="this.setCustomValidity('Obligatorisk')" oninput="setCustomValidity('')" class="inputTextMediumBlueMandatoryField" name="gobiln" id="gobiln" size="21" maxlength="13" value="${record.gobiln}">
+					 				<input type="text" required oninvalid="this.setCustomValidity('Obligatorisk')" oninput="setCustomValidity('')" class="inputTextMediumBlueUPPERCASEMandatoryField" name="gobiln" id="gobiln" size="21" maxlength="13" value="${record.gobiln}">
 					 				<font class="text16RedBold" >*</font>
 					 			</td>
 					 		</tr>
@@ -478,9 +479,12 @@
 										 	<td class="text14">
 										 		<input type="text" class="inputTextMediumBlue" name="gomerd" id="gomerd" size="15" maxlength="20" value="">									 		
 										 	</td>
-										 	<td align="left" class="text14" >
-					 							<input onClick="setBlockUI();doUpdateMerknad();" class="inputFormSubmit" type="button" name="buttonMerknadSubmit" id="buttonMerknadSubmit" value='Lagre Merknad' disabled>
-					 						</td>
+										 	<%-- SUBMIT button --%>
+			 								<c:if test="${record.gotrnr != '*SLETTET' && (!fn:contains(godsnr,'ERROR') && !fn:contains(godsnr,'FEIL')) }">
+										 		<td align="left" class="text14" >
+					 								<input onClick="setBlockUI();doUpdateMerknad();" class="inputFormSubmit" type="button" name="buttonMerknadSubmit" id="buttonMerknadSubmit" value='Lagre Merknad' disabled>
+					 							</td>
+					 						</c:if>
 										 </tr>
 										</table>
 										</form>
@@ -517,12 +521,12 @@
 					<table style="width:100%" id="hfLoggerList" class="display compact cell-border" >
 						<thead>
 						<tr class="tableHeaderField" >
-							<th align="left" width="2%" class="tableHeaderFieldFirst12"><spring:message code="systema.godsno.maintenance.godshf.gogn"/></th>
-							<th align="left" class="tableHeaderField12">&nbsp;<spring:message code="systema.godsno.maintenance.godshf.gotrnr"/></th>
+							<th width="2%" nowrap align="center" class="tableHeaderFieldFirst12">&nbsp;<spring:message code="systema.godsno.maintenance.godshf.gohkod"/></th>
+							<th align="left" class="tableHeaderField12">&nbsp;<spring:message code="systema.godsno.maintenance.godshf.gohusr"/></th>
 							<th align="left" class="tableHeaderField12">&nbsp;<spring:message code="systema.godsno.maintenance.godshf.gohdat"/></th>
 							<th align="left" class="tableHeaderField12">&nbsp;<spring:message code="systema.godsno.maintenance.godshf.gohtim"/></th>
-							<th align="left" class="tableHeaderField12">&nbsp;<spring:message code="systema.godsno.maintenance.godshf.gohusr"/></th>
-							<th nowrap align="center" class="tableHeaderField12">&nbsp;<spring:message code="systema.godsno.maintenance.godshf.gohkod"/></th>
+							<th align="left" width="2%" class="tableHeaderField12"><spring:message code="systema.godsno.maintenance.godshf.gogn"/></th>
+							<th align="left" width="2%" class="tableHeaderField12">&nbsp;<spring:message code="systema.godsno.maintenance.godshf.gotrnr"/></th>
 							<th nowrap align="center" class="tableHeaderField12">&nbsp;<spring:message code="systema.godsno.maintenance.godshf.gohpgm"/></th>
 						</tr>
 						</thead>
@@ -530,12 +534,12 @@
 		                <tbody>
 			            <c:forEach items="${hfLoggerList}" var="record" varStatus="counter">    
 			             <tr class="tableRow" >  
-			               <td align="left" width="2%" class="tableCellFirst12" >${record.gogn}</td>
-			               <td width="2%" class="tableCell12" style="color:navy;">${record.gotrnr}</td>
+			               <td width="2%" align="center" class="tableCellFirst12" >${record.gohkod}</td>
+			               <td width="2%" class="tableCell12" >${record.gohusr}</td>
 			               <td width="2%" class="tableCell12" >${record.gohdat}</td>
 			               <td width="2%" class="tableCell12" >${record.gohtim}</td>
-			               <td width="2%" class="tableCell12" >${record.gohusr}</td>
-			               <td width="2%" align="center" class="tableCell12" >${record.gohkod}</td>
+			               <td align="left" width="2%" class="tableCell12" >${record.gogn}</td>
+			               <td width="2%" class="tableCell12" style="color:navy;">${record.gotrnr}</td>
 			               <td width="2%" align="center" class="tableCell12" >${record.gohpgm}</td>
 		                 </tr>
 		               	</c:forEach>

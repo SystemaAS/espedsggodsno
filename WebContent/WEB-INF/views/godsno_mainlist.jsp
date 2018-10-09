@@ -63,8 +63,8 @@
 					<td class="text14" title="avd">&nbsp;Avd</td>
 					<td class="text14" title="sign">&nbsp;Signatur</td>
 					<td class="text14" title="gogn">&nbsp;Godsnr</td>
-					<td class="text14" title="gomott">&nbsp;Varemottaker</td>
 					<td class="text14" title="gotrnr">&nbsp;Transittnr.</td>
+					<td class="text14" title="gomott">&nbsp;Varemottaker</td>
 					<td class="text14" title="goturn">&nbsp;Turnr.</td>
 					<td class="text14" title="gobiln">&nbsp;Bilnr.</td>
 				</tr>
@@ -72,8 +72,8 @@
 					<td class="text14"><input type="text" class="inputText" name="avd" id="avd" size="8" maxlength="6" value='${searchFilter.avd}'></td>
 		        	<td class="text14"><input type="text" class="inputText" name="sign" id="sign" size="5" maxlength="4" value='${searchFilter.sign}'></td>
 		        	<td class="text14"><input type="text" class="inputText" name="gogn" id="gogn" size="16" maxlength="15" value='${searchFilter.gogn}'></td>
-		        	<td class="text14"><input type="text" class="inputText" name="gomott" id="gomott" size="16" maxlength="15" value='${searchFilter.gomott}'></td>
 		        	<td class="text14"><input type="text" class="inputText" name="gotrnr" id="gotrnr" size="21" maxlength="20" value='${searchFilter.gotrnr}'></td>
+		        	<td class="text14"><input type="text" class="inputText" name="gomott" id="gomott" size="16" maxlength="15" value='${searchFilter.gomott}'></td>
 		        	<td class="text14"><input type="text" class="inputText" name="goturn" id="goturn" size="18" maxlength="17" value='${searchFilter.goturn}'></td>
 		        	<td class="text14"><input type="text" class="inputText" name="gobiln" id="gobiln" size="14" maxlength="13" value='${searchFilter.gobiln}'></td>
 		        	
@@ -127,11 +127,11 @@
 						<tr class="tableHeaderField" height="20" >
 							<th width="2%" class="tableHeaderFieldFirst">Endre</th>
 							<th width="2%" align="left" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.godsnr"/></th> 
-							<th width="2%" align="center" class="tableHeaderField" title="Merknadsjournal" >&nbsp;<spring:message code="systema.godsno.mjournallist.label.merknadsjournal"/></th> 
-							<th align="left" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.godsmottaker"/></th> 
 							<th width="2%" align="left" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.transittnr"/></th>
 		                    <th width="2%" align="center" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.type"/></th>
-		                    <th align="left" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.turnr"/></th>
+		                    <th width="2%" align="center" class="tableHeaderField" title="Merknadsjournal" >&nbsp;<spring:message code="systema.godsno.mjournallist.label.merknadsjournal"/></th> 
+							<th align="left" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.godsmottaker"/></th> 
+							<th align="left" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.turnr"/></th>
 		                    <th width="2%" align="left" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.bilnr"/></th>
 		                    <th width="2%" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.avgtollsted"/></th>
 		                    <th width="2%" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.transittdato"/></th>
@@ -152,15 +152,8 @@
 			               <td width="2%" class="tableCell" style="color:navy;">
 			               		${record.gogn}
 			               	</td>
+			               	<td width="2%" class="tableCell" >${record.gotrnr}</td>
 			               	<td width="2%" align="center" class="tableCell" >
-			               		<c:set var = "key" value = "${record.gogn}${record.gotrnr}"/>
-			               		<c:if test="${not empty model[key]}">
-			               			<img title="Merknadsjournal" src="resources/images/veiledning.png" width="20px" height="20" border="0" alt="Merknadsjournal">
-			               		</c:if>	
-			               	</td>
-			               <td class="tableCell" >${record.gomott}</td>
-			               <td width="2%" class="tableCell" >${record.gotrnr}</td>
-			               <td width="2%" align="center" class="tableCell" >
 				               	<c:choose>		
 					               	<c:when test="${not empty record.goavg && fn:length(record.goavg)>12}">
 					               			${fn:substring(record.goavg, 12, fn:length(record.goavg))}
@@ -169,7 +162,15 @@
 				               				${record.goavg}
 				               		</c:otherwise>
 			               		</c:choose>
-		               	   </td>
+		               	   	</td>
+			               	<td width="2%" align="center" class="tableCell" >
+			               		<c:set var = "key" value = "${record.gogn}${record.gotrnr}"/>
+			               		<c:if test="${not empty model[key]}">
+			               			<img title="Merknadsjournal" src="resources/images/veiledning.png" width="20px" height="20" border="0" alt="Merknadsjournal">
+			               		</c:if>	
+			               	</td>
+			               <td class="tableCell" >${record.gomott}</td>
+			               
 			               <td class="tableCell" >${record.goturn}</td>
 			               <td width="2%" class="tableCell" >${record.gobiln}</td>
 			               <td width="2%" class="tableCell" >

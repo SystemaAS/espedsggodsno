@@ -540,6 +540,13 @@ public class GodsnoRegistreringCloneController {
 		if(strMgr.isNull(recordToValidate.getGolsdt())){ recordToValidate.setGolsdt("0"); }
 		if(recordToValidate.getGolskl()==null){ recordToValidate.setGolskl(0); }
 		
+		//transform to UPPERCASE values some given fields
+		if(strMgr.isNotNull(recordToValidate.getGogren())){
+			recordToValidate.setGogren(recordToValidate.getGogren().toUpperCase());
+		}
+		if(strMgr.isNotNull(recordToValidate.getGobiln())){
+			recordToValidate.setGobiln(recordToValidate.getGobiln().toUpperCase());
+		}
 	}
 	/**
 	 * 

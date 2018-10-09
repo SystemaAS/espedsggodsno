@@ -24,12 +24,7 @@
 	  jq("#gotrdt").datepicker({ 
 		  dateFormat: 'ddmmy'
 	  });
-	  //Custom Validity
-	  jq('#gogren').focus(function() {
-	    	if(jq('#gogren').val()!=''){
-	    		refreshCustomValidity(jq('#gogren')[0]);
-	  		}
-	  });
+	  
 	  jq('#gobiln').focus(function() {
 	    	if(jq('#gobiln').val()!=''){
 	    		refreshCustomValidity(jq('#gobiln')[0]);

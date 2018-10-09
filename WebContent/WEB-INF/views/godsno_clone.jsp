@@ -83,8 +83,7 @@
 					 		<tr >
 					 			<td class="text14"><span title="gogren">Grensepassering</span></td>
 					 			<td class="text14">
-					 				<input type="text" required oninvalid="this.setCustomValidity('Obligatorisk')" oninput="setCustomValidity('')" class="inputTextMediumBlueMandatoryField" name="gogren" id="gogren" size="21" maxlength="20" value="${record.gogren}">
-					 				<font class="text16RedBold" >*</font>
+					 				<input type="text" class="inputTextMediumBlueUPPERCASE" name="gogren" id="gogren" size="21" maxlength="20" value="${record.gogren}">
 					 			</td>
 					 			<td class="text14">
 					 				<img style="vertical-align:middle;" src="resources/images/calendar.gif" width="12px" height="12px" border="0" alt="dato">
@@ -122,7 +121,7 @@
 					 		<tr >
 					 			<td class="text14"><span title="gobiln">Kjennetegn</span></td>
 					 			<td class="text14">
-					 				<input type="text" required oninvalid="this.setCustomValidity('Obligatorisk')" oninput="setCustomValidity('')" class="inputTextMediumBlueMandatoryField" name="gobiln" id="gobiln" size="21" maxlength="13" value="${record.gobiln}">
+					 				<input type="text" required oninvalid="this.setCustomValidity('Obligatorisk')" oninput="setCustomValidity('')" class="inputTextMediumBlueUPPERCASEMandatoryField" name="gobiln" id="gobiln" size="21" maxlength="13" value="${record.gobiln}">
 					 				<font class="text16RedBold" >*</font>
 					 			</td>
 					 		</tr>

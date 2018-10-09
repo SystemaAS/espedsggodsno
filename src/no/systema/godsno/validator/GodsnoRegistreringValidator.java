@@ -38,7 +38,7 @@ public class GodsnoRegistreringValidator implements Validator {
 		//Check for Mandatory fields
 		GodsjfDao record = (GodsjfDao)obj;
 		
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "gogren", "systema.godsno.edit.form.update.error.null.grensepassering");
+		//ValidationUtils.rejectIfEmptyOrWhitespace(errors, "gogren", "systema.godsno.edit.form.update.error.null.grensepassering");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "gobiln", "systema.godsno.edit.form.update.error.null.kjennetegn");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "gomott", "systema.godsno.edit.form.update.error.null.varemottaker");
 	
@@ -71,16 +71,7 @@ public class GodsnoRegistreringValidator implements Validator {
 				}
 			}
 			
-			/*
-			//Godsnr (the number can not have empty fields in the precedent field. If field 2 is filled up then field 2 MUST be there ...
-			if(strMgr.isNull(record.getOwnHegn1()) && (strMgr.isNotNull(record.getOwnHegn2()) || strMgr.isNotNull(record.getOwnHegn3()) ) ){
-				errors.rejectValue("hegn", "systema.tror.orders.form.update.error.rule.godsnr.invalid");
-			}else{
-				if( (strMgr.isNotNull(record.getOwnHegn1()) && strMgr.isNull(record.getOwnHegn2()) ) && strMgr.isNotNull(record.getOwnHegn3()) ){	
-					errors.rejectValue("hegn", "systema.tror.orders.form.update.error.rule.godsnr.invalid");
-				}
-			}
-			*/
+			
 		}
 	}	
 	
