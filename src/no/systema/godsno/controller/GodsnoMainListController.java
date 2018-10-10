@@ -1,9 +1,7 @@
 package no.systema.godsno.controller;
 
-import java.lang.reflect.Field;
 import java.util.*;
 import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 
 
 import org.apache.log4j.Level;
@@ -12,22 +10,17 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Scope;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 
 //application imports
-import no.systema.main.context.TdsAppContext;
 import no.systema.main.service.UrlCgiProxyService;
 import no.systema.main.validator.LoginValidator;
-import no.systema.z.main.maintenance.service.MaintMainKodtaService;
 import no.systema.main.util.AppConstants;
 import no.systema.main.util.DateTimeManager;
 import no.systema.main.util.JsonDebugger;
@@ -37,7 +30,6 @@ import no.systema.main.util.StringManager;
 
 import no.systema.jservices.common.dao.GodsjfDao;
 import no.systema.jservices.common.dao.MerknfDao;
-import no.systema.jservices.common.dao.GodshfDao;
 
 //GODSNO
 import no.systema.godsno.service.GodsnoService;
@@ -46,7 +38,6 @@ import no.systema.godsno.url.store.GodsnoUrlDataStore;
 import no.systema.godsno.util.GodsnoConstants;
 import no.systema.godsno.model.JsonContainerDaoGODSJF;
 import no.systema.godsno.model.JsonContainerDaoMERKNF;
-import no.systema.godsno.model.JsonContainerDaoGODSHF;
 import no.systema.godsno.util.manager.CodeDropDownMgr;
 
 /**
@@ -64,6 +55,7 @@ public class GodsnoMainListController {
 	private ModelAndView loginView = new ModelAndView("redirect:logout.do");
 	private LoginValidator loginValidator = new LoginValidator();
 	private StringManager strMgr = new StringManager();
+	private PayloadContentFlusher payloadContentFlusher = new PayloadContentFlusher();
 	
 	@Autowired
 	private UrlCgiProxyService urlCgiProxyService;
@@ -165,6 +157,62 @@ public class GodsnoMainListController {
 		}
 	}
 	
+	
+	/**
+	 * General method to render a file in a browser
+	 * @param session
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value="godsno_renderFile.do", method={ RequestMethod.GET })
+	public ModelAndView doRenderFile(HttpSession session, HttpServletRequest request, HttpServletResponse response){
+		logger.info("Inside doRenderFile...");
+		SystemaWebUser appUser = this.loginValidator.getValidUser(session);
+		
+		if(appUser==null){
+			return this.loginView;
+			
+		}else{
+			
+			String filePath = request.getParameter("fp");
+			if(filePath!=null && !"".equals(filePath)){
+				
+                String absoluteFilePath = filePath;
+                
+                //must know the file type in order to put the correct content type on the Servlet response.
+                String fileType = this.payloadContentFlusher.getFileType(filePath);
+                if(AppConstants.DOCUMENTTYPE_PDF.equals(fileType)){
+                		response.setContentType(AppConstants.HTML_CONTENTTYPE_PDF);
+                }else if(AppConstants.DOCUMENTTYPE_TIFF.equals(fileType) || AppConstants.DOCUMENTTYPE_TIF.equals(fileType)){
+            			response.setContentType(AppConstants.HTML_CONTENTTYPE_TIFF);
+                }else if(AppConstants.DOCUMENTTYPE_JPEG.equals(fileType) || AppConstants.DOCUMENTTYPE_JPG.equals(fileType)){
+                		response.setContentType(AppConstants.HTML_CONTENTTYPE_JPEG);
+                }else if(AppConstants.DOCUMENTTYPE_TXT.equals(fileType)){
+            			response.setContentType(AppConstants.HTML_CONTENTTYPE_TEXTHTML);
+                }else if(AppConstants.DOCUMENTTYPE_DOC.equals(fileType)){
+            			response.setContentType(AppConstants.HTML_CONTENTTYPE_WORD);
+                }else if(AppConstants.DOCUMENTTYPE_XLS.equals(fileType)){
+            			response.setContentType(AppConstants.HTML_CONTENTTYPE_EXCEL);
+                }
+                //--> with browser dialogbox: response.setHeader ("Content-disposition", "attachment; filename=\"edifactPayload.txt\"");
+                response.setHeader ("Content-disposition", "filename=\"fileDocument." + fileType + "\"");
+                
+                logger.info("Start flushing file payload...");
+                //send the file output to the ServletOutputStream
+                try{
+                		this.payloadContentFlusher.flushServletOutput(response, absoluteFilePath);
+                		//payloadContentFlusher.flushServletOutput(response, "plain text test...".getBytes());
+                	
+                }catch (Exception e){
+                		e.printStackTrace();
+                }
+            }
+			//this to present the output in an independent window
+            return(null);
+			
+		}
+			
+	}	
 	
 	
 	

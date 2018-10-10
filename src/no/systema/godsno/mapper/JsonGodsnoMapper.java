@@ -12,6 +12,8 @@ import no.systema.godsno.model.JsonContainerDaoGODSFI;
 import no.systema.godsno.model.JsonContainerDaoGODSGF;
 import no.systema.godsno.model.JsonContainerDaoGODSJF;
 import no.systema.godsno.model.JsonContainerDaoMERKNF;
+import no.systema.godsno.model.JsonContainerDaoPrintGogn;
+
 
 import no.systema.main.mapper.jsonjackson.general.ObjectMapperAbstractGrandFather;
 
@@ -73,6 +75,15 @@ public class JsonGodsnoMapper extends ObjectMapperAbstractGrandFather {
 		//At this point we now have an UTF-8 payload
 		//logger.info("PAYLOAD:" + utfPayload);
 		JsonContainerDaoMERKNF container = super.getObjectMapper().readValue(utfPayload.getBytes(), JsonContainerDaoMERKNF.class); 
+		//logger.info("[JSON-String payload status=OK]  " + container.getUser());
+		//logger.info(container.getList().size());
+		
+		return container;
+	}
+	public JsonContainerDaoPrintGogn getContainerPrintGogn(String utfPayload) throws Exception{
+		//At this point we now have an UTF-8 payload
+		//logger.info("PAYLOAD:" + utfPayload);
+		JsonContainerDaoPrintGogn container = super.getObjectMapper().readValue(utfPayload.getBytes(), JsonContainerDaoPrintGogn.class); 
 		//logger.info("[JSON-String payload status=OK]  " + container.getUser());
 		//logger.info(container.getList().size());
 		

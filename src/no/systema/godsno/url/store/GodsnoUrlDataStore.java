@@ -54,6 +54,10 @@ public final class GodsnoUrlDataStore {
 	static public String GODSNO_BASE_MERKNF_LIST_URL = AppConstants.HTTP_ROOT_SERVLET_JSERVICES + "/syjservicesgodsno/syjsSYMERKNF.do";
 	//http://gw.systema.no:8080/syjservicesgodsno/syjsSYMERKNF_COUNT.do?user=OSCAR...
 	static public String GODSNO_BASE_MERKNF_COUNT_URL = AppConstants.HTTP_ROOT_SERVLET_JSERVICES + "/syjservicesgodsno/syjsSYMERKNF_COUNT.do";
-				
+	
+	//AS400 services
+	//http://gw.systema.no/sycgip/TJTL06.PGM?user=JOVO&gogn=201801062275101&type=P
+	static public String GODSNO_BASE_PRINT_MERKNADER_SPECIFIC_GOGN_URL = AppConstants.HTTP_ROOT_CGI + "/sycgip/TJTL06.pgm";
+	
 	
 }

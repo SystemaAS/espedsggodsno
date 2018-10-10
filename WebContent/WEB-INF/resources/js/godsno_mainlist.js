@@ -1,6 +1,7 @@
   //this variable is a global jQuery var instead of using "$" all the time. Very handy
   var jq = jQuery.noConflict();
   var counterIndex = 0;
+  var BLOCKUI_OVERLAY_MESSAGE_DEFAULT = "Please wait...";
   
   jq(function() {
 	  //General Header Menus
@@ -154,8 +155,136 @@
 		     }
 		});  //end dialog
   }	 
-	 
+  
+//-----------------------------------
+  //START Model dialog Print Merknad
+  //-----------------------------------
+  //Initialize <div> here
+  /*
+  jq(function() { 
+	  jq( ".clazz_dialog" ).each(function(){
+		jq(this).dialog({
+			autoOpen: false,
+			modal: true
+		});
+	  });
+  });
+//Present dialog box onClick (href in parent JSP)
+  jq(function() {
+	  jq(".printMerknaderLink").click(function() {
+		  var id = this.id;
+		  counterIndex = id.replace("printMerknaderLink","");
+		  //setters (add more if needed)
+		  jq('#dialogPrintMerknader'+counterIndex).dialog( "option", "title", "Generere merknadsjournal");// + jq('#printMerknaderGogn'+counterIndex).val() );
+		  
+		  //deal with buttons for this modal window
+		  jq('#dialogPrintMerknader'+counterIndex).dialog({
+			 buttons: [ 
+	            {
+				 id: "dialogSave"+counterIndex,	
+				 text: "Fortsett",
+				 click: function(){
+					 		//jq('#copyForm'+counterIndex).submit();
+					 		executePrintMerknadGognPgm(counterIndex);
+				 		}
+			 	 },
+	 	 		{
+			 	 id: "dialogCancel"+counterIndex,
+			 	 text: "Avbryt", 
+				 click: function(){
+					 		//back to initial state of form elements on modal dialog
+					 		jq("#dialogSave"+counterIndex).button("option", "disabled", false);
+					 		jq( this ).dialog( "close" ); 
+					 		  
+				 		} 
+	 	 		 } ] 
+			  
+		  });
+		  //init values
+		  //jq("#dialogSave"+counterIndex).button("option", "disabled", true);
+		  
+		  //open now
+		  jq('#dialogPrintMerknader'+counterIndex).dialog('open');
+		 
+	  });
+  });
+	
+  function executePrintMerknadGognPgm(counterIndex){
+	  //do it
+	  jq.ajax({
+	  	  type: 'GET',
+	  	  url: 'printMerknaderSpecificGogn.do',
+	  	  data: { applicationUser : jq('#applicationUser').val(),
+	  		  	  gogn : jq('#printMerknaderGogn'+counterIndex).val(),
+	  		  	  type : "P" },
+	  	  dataType: 'json',
+	  	  cache: false,
+	  	  contentType: 'application/json',
+	  	  success: function(data) {
+	  		var len = data.length;
+	  		
+	  		for ( var i = 0; i < len; i++) {
+	  			if(data[i].errMsg != ''){
+	  				jq("#printMerknaderStatus" + counterIndex).removeClass( "isa_success" );
+	  				jq("#printMerknaderStatus" + counterIndex).addClass( "isa_error" );
+	  				jq("#printMerknaderStatus" + counterIndex).text("Error: " + data[i].errMsg);
+	  			}else{
+	  				jq("#printMerknaderStatus" + counterIndex).removeClass( "isa_error" );
+	  				jq("#printMerknaderStatus" + counterIndex).addClass( "isa_success" );
+	  				jq("#printMerknaderStatus" + counterIndex).text(data[i].lenke);
+	  				//place the link inside the lable
+	  				var oHtml = jq("#printMerknaderStatus" + counterIndex).html();
+	  				var docLink = "<a href='godsno_renderFile.do?fp=" + data[i].lenke + "'" + " target='_new' > " + oHtml + " </a>"; 
+	  				jq("#printMerknaderStatus" + counterIndex).html(docLink);
+	  	
+	  			}
+	  		}
+	  	  },
+	  	  error: function() {
+	  	    alert('Error loading on Ajax callback (?) sendSMS...check js');
+	  	  }
+	  });
+	  
+  }
+*/
+  
+  function executePrintMerknadGognPgm(element){
+	  var id = element.id;
+	  var counterIndex = id.replace("printMerknaderLink","");
+	  //do it
+	  setBlockUI();
+	  
+	  jq.ajax({
+	  	  type: 'GET',
+	  	  url: 'printMerknaderSpecificGogn.do',
+	  	  data: { applicationUser : jq('#applicationUser').val(),
+	  		  	  gogn : jq('#printMerknaderGogn'+counterIndex).val(),
+	  		  	  type : "P" },
+	  	  dataType: 'json',
+	  	  cache: false,
+	  	  contentType: 'application/json',
+	  	  success: function(data) {
+	  		var len = data.length;
+	  		
+	  		for ( var i = 0; i < len; i++) {
+	  			if(data[i].errMsg != ''){
+	  				//Do something
+	  			}else{
+	  				window.open('godsno_renderFile.do?fp=' + data[i].lenke, '_blank');
+	  			}
+	  		}
+	  		jq.unblockUI();
+	  	  },
+	  	  error: function() {
+	  		jq.unblockUI();  
+	  	    alert('Error loading on Ajax callback (?) executePrintMerknadGognPgm...check js');
+	  	    
+	  	  }
+	  	  
+	  });
 
+  }
+  
 
   
   

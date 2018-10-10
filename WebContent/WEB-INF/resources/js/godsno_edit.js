@@ -166,14 +166,18 @@
 				  if(jq('#govsla').val()!=''){
 					  if(jq('#gosted').val()!=''){
 						  if(jq('#gomotm').val()!=''){
-							  if(jq('#updateMerknad_flag').val()!=''){
-								  flag = 0;
-							  }else{
-								  //with new record
-								  if(!jq('#gopos').is(".isa_error")){
+							  if(jq('#gomerk').val()!=''){
+								  if(jq('#updateMerknad_flag').val()!=''){
+									  enableButtonMerknadSubmit();
 									  flag = 0;
-									  //console.log("A");
-								  }								  
+								  }else{
+									  //with new record
+									  if(!jq('#gopos').is(".isa_error")){
+										  enableButtonMerknadSubmit();
+										  flag = 0;
+										  //console.log("A");
+									  }								  
+								  }
 							  }
 						  }
 					  } 
@@ -183,11 +187,22 @@
 	  }
 	  if(flag == -1){
 		  jq('#buttonMerknadSubmit').prop('disabled', true);
+		  disableButtonMerknadSubmit();
 	  }else{
 		  jq('#buttonMerknadSubmit').prop('disabled',false);
+		  enableButtonMerknadSubmit();
 	  }
 
   }
+  function enableButtonMerknadSubmit(){
+	  jq("#buttonMerknadSubmit").removeClass("inputFormSubmitGrayDisabled");
+	  jq("#buttonMerknadSubmit").addClass("inputFormSubmit");
+  }
+  function disableButtonMerknadSubmit(){
+	  jq("#buttonMerknadSubmit").removeClass("inputFormSubmit");
+	  jq("#buttonMerknadSubmit").addClass("inputFormSubmitGrayDisabled");
+  }
+  
   //Get record - Merknad for update 
   function getRecordMerknad(record){
 	  var id = record.id;
@@ -214,9 +229,9 @@
 	        	for ( var i = 0; i < len; i++) {
 	        		//special treatment for key gopos
 		  			jq('#gopos').val(data[i].gopos);
-		  			jq('#gopos').prop('readonly', true);
-			  		jq('#gopos').removeClass("inputTextMediumBlueMandatoryField");
-			  		jq('#gopos').addClass("inputTextReadOnly");
+		  			//jq('#gopos').prop('readonly', true);
+			  		//jq('#gopos').removeClass("inputTextMediumBlueMandatoryField");
+			  		//jq('#gopos').addClass("inputTextReadOnly");
 		  			//rest of the gang
 			  		jq('#gomkod').val(data[i].gomkod).change();
 		  			jq('#goantk').val(data[i].goantk);
@@ -319,10 +334,10 @@
 	  	//for a future update
 	    jq('#updateMerknad_flag').val("");	
 	  	//adjust	
-	  	jq('#gopos').val("");
-	  	jq('#gopos').prop('readonly', false);
-	  	jq('#gopos').removeClass("inputTextReadOnly");
-	  	jq('#gopos').addClass("inputTextMediumBlueMandatoryField");
+	  	//jq('#gopos').val("");
+	  	//jq('#gopos').prop('readonly', false);
+	  	//jq('#gopos').removeClass("inputTextReadOnly");
+	  	//jq('#gopos').addClass("inputTextMediumBlueMandatoryField");
 		//rest of the gang
   		jq('#gomkod').val("DI").change();
 		jq('#goantk').val("");
@@ -338,6 +353,7 @@
 		//END
 		jq('#gomkod').focus();
 		jq('#buttonMerknadSubmit').prop('disabled',true);
+		disableButtonMerknadSubmit();
 	  });	
   });
   
@@ -345,6 +361,7 @@
   jq(function() {
 	  jq('#gopos').blur(function(){
 		    //only for new records and not for those being updated
+		  	/*OBSOLETE since the field is now readyonly ...
 		  	if(jq('#updateMerknad_flag').val()==''){
 			    jq.ajax({
 			        type        : 'GET',
@@ -372,14 +389,13 @@
 					  }
 			    })
 		  	}
-	  });
+		  	*/
+	  	});
 	  
   	});
   
   //Special MERKNF section to trigger ENTER as submit-behavior. (Button has no std-dafault as Submit type)
   jq(function() {
-	  jq('#gopos').keypress(function(e){
-		  saveItemLine(e);});
 	  jq('#gomkod').keypress(function(e){
 		  saveItemLine(e);});
 	  jq('#goantk').keypress(function(e){

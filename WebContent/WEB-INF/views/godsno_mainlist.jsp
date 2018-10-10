@@ -162,7 +162,32 @@
 			               	<td width="2%" align="center" class="tableCell" >
 			               		<c:set var = "key" value = "${record.gogn}${record.gotrnr}"/>
 			               		<c:if test="${not empty model[key]}">
-			               			<img title="Merknadsjournal" src="resources/images/veiledning.png" width="20px" height="20" border="0" alt="Merknadsjournal">
+			               			<a title="print" class="printMerknaderLink" style="display:block;" id="printMerknaderLink${counter.count}" OnClick="executePrintMerknadGognPgm(this);" runat="server" href="#">
+			               				<img title="Merknadsjournal utskrift" src="resources/images/veiledning.png" width="20px" height="20" border="0" alt="Merknadsjournal utskrift">
+			               			</a>
+			               			<div style="display: none;" class="clazz_dialog" id="dialogPrintMerknader${counter.count}" title="Dialog">
+										<form id="printMerknaderForm">
+										<input type="hidden" name="printMerknaderGogn${counter.count}" id="printMerknaderGogn${counter.count}" value='${record.gogn}'/>
+									 	<table>
+					   						<tr height="3"><td></td></tr>
+											<tr>
+												<td class="text14" align="left" ><b>Godsnr.</b>&nbsp;
+													<input readonly type="text" class="inputTextReadOnly" id="gognForPrint${counter.count}" name="gognForPrint${counter.count}" size="20" value='${record.gogn}'>
+												</td>
+					   						</tr>
+					   						
+											<tr height="15"><td></td></tr>
+											<tr>
+												<td colspan="3" class="text14MediumBlue" align="left">
+													
+								               		
+														<label id="printMerknaderStatus${counter.count}"></label>
+												</td>
+											</tr>
+											
+										</table>
+										</form>
+									</div>
 			               		</c:if>	
 			               	</td>
 			               <td class="tableCell" >${record.gomott}</td>
