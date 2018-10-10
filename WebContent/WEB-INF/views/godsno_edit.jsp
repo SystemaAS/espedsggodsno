@@ -115,7 +115,7 @@
 						 					<input type="hidden" name="owngogn_3" id="owngogn_3" size="3"  value="${dayOfYear}">
 						 					<select  name="owngogn_2" id="owngogn_2" required oninvalid="this.setCustomValidity('Obligatorisk')" oninput="setCustomValidity('')" class="inputTextMediumBlueMandatoryField" >
 						 						<option value="">Velg Bev.kode</option>
-						 						<c:forEach var="record" items="${bevKodeList}" >
+						 						<c:forEach var="record" items="${bevKodeListMainTbl}" >
 							 				  		<option value="${record.gflbko}_${record.gfenh}" >${record.gflbko}&nbsp;&nbsp;${record.gfenh}</option>
 												</c:forEach>  
 											</select><font class="text16RedBold" >*</font>
@@ -416,7 +416,7 @@
 										 	<td class="text14"><span title="goantk">&nbsp;Ant.kolli</span><font class="text12RedBold" >*</font></td>
 										 	<td class="text14"><span title="govsla">&nbsp;<spring:message code="systema.godsno.merknedlist.label.govsla"/></span><font class="text12RedBold" >*</font></td>
 										 	<td class="text14"><span title="gomer1">&nbsp;Merket</span></td>
-										 	<td class="text14"><span title="gosted">&nbsp;Oppstart sted</span><font class="text12RedBold" >*</font></td>
+										 	<td class="text14"><span title="gosted">&nbsp;Avg.tollsted</span><font class="text12RedBold" >*</font></td>
 										 	
 										 </tr>
 										 <tr>

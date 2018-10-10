@@ -60,8 +60,6 @@
 				<input type="hidden" name="todo" id="todo" value=''>
 				<table id="containerdatatableTable" width="100%" cellspacing="2" align="left">
 				<tr>
-					<td class="text14" title="avd">&nbsp;Avd</td>
-					<td class="text14" title="sign">&nbsp;Signatur</td>
 					<td class="text14" title="gogn">&nbsp;Godsnr</td>
 					<td class="text14" title="gotrnr">&nbsp;Transittnr.</td>
 					<td class="text14" title="gomott">&nbsp;Varemottaker</td>
@@ -69,9 +67,7 @@
 					<td class="text14" title="gobiln">&nbsp;Bilnr.</td>
 				</tr>
 				<tr>	
-					<td class="text14"><input type="text" class="inputText" name="avd" id="avd" size="8" maxlength="6" value='${searchFilter.avd}'></td>
-		        	<td class="text14"><input type="text" class="inputText" name="sign" id="sign" size="5" maxlength="4" value='${searchFilter.sign}'></td>
-		        	<td class="text14"><input type="text" class="inputText" name="gogn" id="gogn" size="16" maxlength="15" value='${searchFilter.gogn}'></td>
+					<td class="text14"><input type="text" class="inputText" name="gogn" id="gogn" size="16" maxlength="15" value='${searchFilter.gogn}'></td>
 		        	<td class="text14"><input type="text" class="inputText" name="gotrnr" id="gotrnr" size="21" maxlength="20" value='${searchFilter.gotrnr}'></td>
 		        	<td class="text14"><input type="text" class="inputText" name="gomott" id="gomott" size="16" maxlength="15" value='${searchFilter.gomott}'></td>
 		        	<td class="text14"><input type="text" class="inputText" name="goturn" id="goturn" size="18" maxlength="17" value='${searchFilter.goturn}'></td>

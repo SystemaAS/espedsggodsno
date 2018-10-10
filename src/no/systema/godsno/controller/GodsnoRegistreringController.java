@@ -298,10 +298,11 @@ public class GodsnoRegistreringController {
 				//START This is used only for user input but we send it also as information when the godsnr was automatically calculated
 				model.addAttribute("dayOfYear", dateMgr.getDayNrOfYear());
 				//get Godsnr bev.kode since we will be creating a new record...
-				List<GodsafDao> afList = (List)this.getBeviljningsKodeList(appUser);
 				List<GodsfiDao> fiList = (List)this.getListGodsfi(appUser);
-				List<GodsfiDao> bevKodeList = this.getMatchedBevKodeList(afList, fiList);
-				model.addAttribute("bevKodeListMainTbl", bevKodeList);
+				//OBSOLETE? ... List<GodsafDao> afList = (List)this.getBeviljningsKodeList(appUser);
+				//OBSOLETE? ... List<GodsfiDao> bevKodeList = this.getMatchedBevKodeList(afList, fiList);
+				
+				model.addAttribute("bevKodeListMainTbl", fiList);
 				//END 
 				action = "doUpdate";
 				if(action.equals("ERROR_ON_CREATE")){

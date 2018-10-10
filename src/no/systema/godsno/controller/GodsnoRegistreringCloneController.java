@@ -110,8 +110,10 @@ public class GodsnoRegistreringCloneController {
 		
 		String action = request.getParameter("action");
 		logger.info("action:" + action);
-		logger.info("goavg:" + recordToValidate.getGoavg());
-		
+		//logger.info("goavg:" + recordToValidate.getGoavg());
+		//Special case for goavg
+		recordToValidate.setGoavg(this.constructGoavg(request, model));
+				
 		boolean isValidRecord = true;
 		
 		//check user (should be in session already)
