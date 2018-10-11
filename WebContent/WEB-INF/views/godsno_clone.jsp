@@ -169,12 +169,37 @@
 					 		<tr >
 					 			<td class="text14"><span title="goavg">Avg.tollsted</span></td>
 					 			<td class="text14">
-					 				<input type="text" class="inputTextMediumBlue" name="goavg" id="goavg" size="15" maxlength="12" value="${record.goavg}">
-					 				<input type="text" tabindex=-1 readonly class="inputTextReadOnly" name="xreadyOnly" id="xreadyOnly" size="4" value="${record.gotrty}">
+					 				<input type="text" class="inputTextMediumBlue" name="goavg" id="goavg" size="15" maxlength="12" value="${record.goavg}">					 				
 					 			</td>
 					 		</tr>
+					 		<tr height="2"><td></td></tr>
 					 		
-					 		<tr height="10"><td></td></tr>
+					 		<tr >
+					 			<td class="text14"><img onMouseOver="showPop('goortn_info');" onMouseOut="hidePop('goortn_info');"style="vertical-align:middle;" width="12px" height="12px" src="resources/images/info3.png" border="0" alt="info">
+									<span title="goortn">Orig.transittnr.</span>	
+									<div class="text11" style="position: relative;" align="left">
+									<span style="position:absolute; top:3px; width:250px" id="goortn_info" class="popupWithInputText"  >
+										<font class="text11">
+						           			<b>Orig.transittnr.</b>
+						           			<p>Ved forpassing</p>
+						           			
+					           			</font>
+									</span>
+									</div>
+					 			</td>
+					 			<td class="text14">
+					 				<input type="text" class="inputTextMediumBlue" name="goortn" id="goortn" size="21" maxlength="20" value="">
+					 				
+					 			</td>
+					 			<td class="text14" colspan="3">
+					 				<span title="goorty">Type</span>
+					 				<input type="text" class="inputTextMediumBlue" name="goorty" id="goorty" size="5" maxlength="5" value="">
+					 				<font class="text12" style="font-style: italic;">Blank=T2</font>
+					 				
+					 			</td>
+					 			
+					 		</tr>
+					 		<tr height="2"><td></td></tr>
 			 				<tr><td colspan="10"><hr size="1" width="100%" 	/></td></tr>
 			 				<tr height="10"><td></td></tr>
 					 		<tr >
@@ -209,6 +234,7 @@
 					 			</td>
 					 		</tr>
 					 		<tr height="5"><td></td></tr>
+					 		<%--
 					 		<tr >
 					 			<td class="text14"><span title="golsen">Reiserute 1-2</span></td>
 					 			<td class="text14">
@@ -229,12 +255,12 @@
 							</tr> 				
 			 				
 			 				<tr height="15"><td></td></tr>
-			 				
+			 				 --%>
 			 				<%-- SUBMIT button --%>
 			 				<c:if test="${record.gotrnr != '*SLETTET' && (!fn:contains(godsnr,'ERROR') && !fn:contains(godsnr,'FEIL')) }">
 				 				<tr>
 				 					<td colspan="10">
-				 					<table style="width:95%" border="0" cellspacing="0" cellpadding="0">
+				 					<table style="width:98%" border="0" cellspacing="0" cellpadding="0">
 					 					<tr>
 					 					<td align="right" class="text14" valign="top">
 					 						<input class="inputFormSubmit" type="submit" name="submit" id="submit" value='Lagre'>

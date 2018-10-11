@@ -41,7 +41,7 @@ import no.systema.jservices.common.dao.GodsjfDao;
 import no.systema.jservices.common.dao.GodsgfDao;
 import no.systema.jservices.common.dao.GodshfDao;
 import no.systema.jservices.common.dao.MerknfDao;
-
+import no.systema.jservices.common.dao.LlmrfDao;
 
 //GODSNO
 import no.systema.godsno.service.GodsnoService;
@@ -55,6 +55,8 @@ import no.systema.godsno.model.JsonContainerDaoGODSFI;
 import no.systema.godsno.model.JsonContainerDaoGODSJF;
 import no.systema.godsno.model.JsonContainerDaoGODSGF;
 import no.systema.godsno.model.JsonContainerDaoMERKNF;
+import no.systema.godsno.model.JsonContainerDaoLLMRF;
+
 import no.systema.godsno.filter.SearchFilterGodsnoMainList;
 import no.systema.godsno.mapper.url.request.UrlRequestParameterMapper;
 
@@ -77,7 +79,8 @@ public class GodsnoRegistreringController {
 	private UrlRequestParameterMapper urlRequestParameterMapper = new UrlRequestParameterMapper();
 	private final String LOGGER_CODE_EDIT = "E";
 	private final String LOGGER_CODE_NEW = "N";
-	private final String DEFAULT_TPAPIR_TYPE = "T1";
+	private final String DEFAULT_TPAPIR_TYPE_T1 = "T1";
+	private final String DEFAULT_TPAPIR_TYPE_T2 = "T2";
 	
 	@Autowired
 	private GodsnoService godsnoService;
@@ -115,7 +118,10 @@ public class GodsnoRegistreringController {
 		String gotrnrOrig = request.getParameter("gotrnrOrig");
 		//Special case for gotrty
 		if(strMgr.isNull(recordToValidate.getGotrty())){
-			recordToValidate.setGotrty(this.DEFAULT_TPAPIR_TYPE);
+			recordToValidate.setGotrty(this.DEFAULT_TPAPIR_TYPE_T1	);
+		}
+		if(strMgr.isNull(recordToValidate.getGoorty())){
+			recordToValidate.setGoorty(this.DEFAULT_TPAPIR_TYPE_T2);
 		}
 		
 		
@@ -273,20 +279,26 @@ public class GodsnoRegistreringController {
 			//--------------
 			//Fetch record
 			//--------------
+			GodsjfDao auxDao = null;
 			if(strMgr.isNotNull(recordToValidate.getGogn()) ){
 				if(isValidRecord){
 					GodsjfDao updatedDao = this.getRecordGodsjf(appUser, recordToValidate);
 					this.adjustFieldsForFetch(updatedDao);
 					model.addAttribute(GodsnoConstants.DOMAIN_RECORD, updatedDao);
+					auxDao = updatedDao;
 					
 				}else{
 					//in case of validation errors
 					this.adjustFieldsForFetch(recordToValidate);
 					model.addAttribute(GodsnoConstants.DOMAIN_RECORD, recordToValidate);
+					auxDao = recordToValidate;
 				}
 				//Fetch all merkned item lines
-				model.addAttribute("merknadList", this.getListMerknf(appUser, recordToValidate.getGogn(), recordToValidate.getGotrnr()));
-				model.addAttribute("hfLoggerList", this.godsnoLoggerService.getLogHfList(appUser, this.getGodshrDao(recordToValidate)));
+				model.addAttribute("merknadList", this.getListMerknf(appUser, auxDao.getGogn(), auxDao.getGotrnr()));
+				model.addAttribute("hfLoggerList", this.godsnoLoggerService.getLogHfList(appUser, this.getGodshrDao(auxDao)));
+				if(this.releaseRecordExist(appUser, auxDao.getGoortn())){
+					model.addAttribute("releaseRecordExists", "1");
+				}
 			}
 			
 			if(action==null || "".equals(action)){ 
@@ -1029,6 +1041,48 @@ public class GodsnoRegistreringController {
     	}		
 	    
 		return outputList;
+	}
+	
+	/**
+	 * 
+	 * @param appUser
+	 * @param id
+	 * @return
+	 */
+	private boolean releaseRecordExist(SystemaWebUser appUser, String id){
+		boolean retval = false;
+		logger.info("GOORTN:" + id);
+		Collection<LlmrfDao> outputList = new ArrayList<LlmrfDao>();
+		//---------------
+    	//Get main list
+		//---------------
+		final String BASE_URL = GodsnoUrlDataStore.GODSNO_BASE_LLMRF_LIST_URL;
+		//add URL-parameters
+		StringBuffer urlRequestParams = new StringBuffer();
+		urlRequestParams.append("user=" + appUser.getUser());
+		
+		if(strMgr.isNotNull(id)){
+			urlRequestParams.append("&mrtrnr=" + id);
+			//
+			logger.info(Calendar.getInstance().getTime() + " CGI-start timestamp");
+	    	logger.info("URL: " + BASE_URL);
+	    	logger.info("URL PARAMS: " + urlRequestParams);
+	    	String jsonPayload = this.urlCgiProxyService.getJsonContent(BASE_URL, urlRequestParams.toString());
+	    	//Debug --> 
+	    	logger.debug(jsonDebugger.debugJsonPayloadWithLog4J(jsonPayload));
+	    	logger.info(Calendar.getInstance().getTime() +  " CGI-end timestamp");
+	    	if(jsonPayload!=null){
+	    		JsonContainerDaoLLMRF listContainer = this.godsnoService.getContainerLlmrf(jsonPayload);
+	    		outputList = listContainer.getList();
+	    		for(LlmrfDao record : outputList){
+	    			if(strMgr.isNull(record.getMrst())){
+	    				retval = true;
+	    			}
+	    		}
+	    	}
+			
+		}
+		return retval;
 	}
 	
 	

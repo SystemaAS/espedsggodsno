@@ -168,14 +168,13 @@
 						  if(jq('#gomotm').val()!=''){
 							  if(jq('#gomerk').val()!=''){
 								  if(jq('#updateMerknad_flag').val()!=''){
-									  enableButtonMerknadSubmit();
 									  flag = 0;
+									  console.log("A");
 								  }else{
 									  //with new record
 									  if(!jq('#gopos').is(".isa_error")){
-										  enableButtonMerknadSubmit();
 										  flag = 0;
-										  //console.log("A");
+										  console.log("A");
 									  }								  
 								  }
 							  }
@@ -185,14 +184,15 @@
 			  } 
 		  } 
 	  }
+	  
 	  if(flag == -1){
 		  jq('#buttonMerknadSubmit').prop('disabled', true);
 		  disableButtonMerknadSubmit();
+		  
 	  }else{
 		  jq('#buttonMerknadSubmit').prop('disabled',false);
 		  enableButtonMerknadSubmit();
 	  }
-
   }
   function enableButtonMerknadSubmit(){
 	  jq("#buttonMerknadSubmit").removeClass("inputFormSubmitGrayDisabled");
@@ -249,6 +249,8 @@
 	        		//END
 		  			jq('#gomkod').focus();
 		  			jq('#buttonMerknadSubmit').prop('disabled',false);
+		  			enableButtonMerknadSubmit();
+		  			
 		  		}
 	        },
           error: function() {
@@ -295,6 +297,7 @@
 	    })
 	    
   }
+  
   
   //SAVE merknad line
   function doUpdateMerknad() {
@@ -423,7 +426,7 @@
   		if(e.which == 13) {
 			e.preventDefault();//this is necessary in order to avoid form.action in form submit button (Save)
 			if(!jq("#buttonMerknadSubmit").is(":disabled")){
-				jq( "#buttonMerknadSubmit" ).click();
+				jq("#buttonMerknadSubmit").click();
 			}
 		}	
   }

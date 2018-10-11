@@ -77,7 +77,8 @@ public class GodsnoRegistreringCloneController {
 	private UrlRequestParameterMapper urlRequestParameterMapper = new UrlRequestParameterMapper();
 	private final String LOGGER_CODE_EDIT = "E";
 	private final String LOGGER_CODE_NEW = "N";
-	private final String DEFAULT_TPAPIR_TYPE = "T1";
+	private final String DEFAULT_TPAPIR_TYPE_T1 = "T1";
+	private final String DEFAULT_TPAPIR_TYPE_T2 = "T2";
 	
 	@Autowired
 	private GodsnoService godsnoService;
@@ -112,8 +113,11 @@ public class GodsnoRegistreringCloneController {
 		logger.info("action:" + action);
 		//Special case for gotrty
 		if(strMgr.isNull(recordToValidate.getGotrty())){
-			recordToValidate.setGotrty(this.DEFAULT_TPAPIR_TYPE);
-		}		
+			recordToValidate.setGotrty(this.DEFAULT_TPAPIR_TYPE_T1);
+		}
+		if(strMgr.isNull(recordToValidate.getGoorty())){
+			recordToValidate.setGoorty(this.DEFAULT_TPAPIR_TYPE_T2);
+		}
 		boolean isValidRecord = true;
 		
 		//check user (should be in session already)
