@@ -431,4 +431,33 @@
 		}	
   }
   
+  function executeReleaseFristill(element){
+	  //do it
+	  setBlockUI();
+	  
+	  jq.ajax({
+	  	  type: 'GET',
+	  	  url: 'releaseSpecificTrnr.do',
+	  	  data: { applicationUser : jq('#applicationUser').val(),
+	  		  	  mrn : jq('#goortn').val(),
+	  		  	  type : jq('#goorty').val() },
+	  	  dataType: 'json',
+	  	  cache: false,
+	  	  contentType: 'application/json',
+	  	  success: function(data) {
+	  		var len = data.length;
+	  		//console.log("AAAAA");
+	  		//redirect
+	  		window.location = "godsno_edit.do?updateFlag=1&gogn=" + jq('#gogn').val() + "&gotrnr=" + jq('#gotrnr').val();
+
+	  	  },
+	  	  error: function() {
+	  		jq.unblockUI();  
+	  	    alert('Error loading on Ajax callback (?) executePrintMerknadGognPgm...check js');
+	  	    jq.unblockUI();
+	  	  }
+	  	  
+	  });
+
+  }
   

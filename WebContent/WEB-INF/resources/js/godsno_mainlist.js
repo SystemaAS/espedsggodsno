@@ -278,7 +278,7 @@
 	  	  error: function() {
 	  		jq.unblockUI();  
 	  	    alert('Error loading on Ajax callback (?) executePrintMerknadGognPgm...check js');
-	  	    
+	  	    jq.unblockUI();
 	  	  }
 	  	  
 	  });

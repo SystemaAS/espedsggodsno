@@ -128,6 +128,18 @@ public class GodsnoService {
 		}
 		return container;
 	}
+	//Only to execute the payload somehow. Usually when you don't care about the return and just want to execute an AS400-service
+	//I just borrow the mapper from LLMRF... could have been another one
+	public JsonContainerDaoLLMRF getContainerPhantom(String utfPayload) {
+		JsonContainerDaoLLMRF container = null;
+		try{
+			JsonGodsnoMapper mapper = new JsonGodsnoMapper();
+			container = mapper.getContainerLlmrf(utfPayload);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return container;
+	}
 	
 
 }

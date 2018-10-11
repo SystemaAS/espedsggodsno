@@ -61,5 +61,6 @@ public final class GodsnoUrlDataStore {
 	//http://gw.systema.no/sycgip/TJTL06.PGM?user=JOVO&gogn=201801062275101&type=P
 	static public String GODSNO_BASE_PRINT_MERKNADER_SPECIFIC_GOGN_URL = AppConstants.HTTP_ROOT_CGI + "/sycgip/TJTL06.pgm";
 	
-	
+	//http://gw.systema.no/sycgip/tjxml17B2.pgm?user=JOVO&OriMrn=18SE11118978987298&OriTty=T2
+	static public String GODSNO_BASE_RELEASE_GOGN_TRNR_TOLLAGER_URL = AppConstants.HTTP_ROOT_CGI + "/sycgip/TJXML17B2.pgm";
 }

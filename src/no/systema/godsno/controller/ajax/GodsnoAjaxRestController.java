@@ -52,8 +52,8 @@ public class GodsnoAjaxRestController {
 	/**
 	 * 
 	 * @param applicationUser
-	 * @param dao
-	 * @param bindingResult
+	 * @param gogn
+	 * @param type
 	 * @return
 	 */
 	@RequestMapping(path="/printMerknaderSpecificGogn.do", method = RequestMethod.GET)
@@ -88,6 +88,46 @@ public class GodsnoAjaxRestController {
 		
 		  
 	}
+	
+	/**
+	 * 
+	 * @param applicationUser
+	 * @param mrn
+	 * @param type
+	 * @return
+	 */
+	@RequestMapping(path="/releaseSpecificTrnr.do", method = RequestMethod.GET)
+	public Collection releaseSpecificTrnr(@RequestParam String applicationUser, @RequestParam String mrn, @RequestParam String type){
+		logger.info("Inside: releaseSpecificTrnr");
+		logger.info(mrn + " " + type);
+		Collection<JsonContainerDaoPrintGogn> outputList = new ArrayList<JsonContainerDaoPrintGogn>();
+		//---------------
+    	//Get main list
+		//---------------
+		final String BASE_URL = GodsnoUrlDataStore.GODSNO_BASE_RELEASE_GOGN_TRNR_TOLLAGER_URL;
+		//add URL-parameters
+		StringBuffer urlRequestParams = new StringBuffer();
+		urlRequestParams.append("user=" + applicationUser);
+		urlRequestParams.append("&orimrn=" + mrn);
+		urlRequestParams.append("&oritty=" + type);
+		
+		logger.info(Calendar.getInstance().getTime() + " CGI-start timestamp");
+    	logger.info("URL: " + BASE_URL);
+    	logger.info("URL PARAMS: " + urlRequestParams);
+    	String jsonPayload = this.urlCgiProxyService.getJsonContent(BASE_URL, urlRequestParams.toString());
+    	//Debug --> 
+    	logger.info(jsonPayload);
+    	logger.info(Calendar.getInstance().getTime() +  " CGI-end timestamp");
+    	if(jsonPayload!=null){
+    		this.godsnoService.getContainerPhantom(jsonPayload);
+    	}		
+	    
+		return outputList;
+		
+		  
+	}
+	
+	
 	
 	
 	

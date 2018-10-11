@@ -282,7 +282,7 @@
 					 				<c:if test="${record.gotrnr != '*SLETTET' && (!fn:contains(godsnr,'ERROR') && !fn:contains(godsnr,'FEIL')) }" >
 							 			<%-- present button ONLY if the record to release exists --%>
 							 			<c:if test="${not empty releaseRecordExists}">
-								 			&nbsp;&nbsp;<span title="Fristill forpasset tollager-beholdning"><input class="inputFormSubmitStd" type="button" name="buttonRelease" id="buttonRelease" value='Fristill'></span>
+								 			&nbsp;&nbsp;<span title="Fristill forpasset tollager-beholdning"><input onClick="executeReleaseFristill(this);" class="inputFormSubmitStd" type="button" name="buttonRelease" id="buttonRelease" value='Fristill'></span>
 					 					</c:if>
 									</c:if>
 					 			</td>
@@ -542,7 +542,7 @@
 					 								<div class="text11" style="position: relative;" align="left">
 													<span style="position:absolute; top:3px; width:100px" id="buttonLM_info" class="popupWithInputText"  >
 														<font class="text11">
-										           			<b>Knappen er aktivert når alle obligatoriske felter er fylt ut</b>
+										           			<b>Knappen blir aktivert når de obligatoriske feltene er fylt ut</b>
 									           			</font>
 													</span>
 													</div>	
