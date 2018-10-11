@@ -159,18 +159,18 @@
 					 			</td>
 					 		</tr>
 					 		<tr >
-					 			<td class="text14"><span title="owngoavg_ptype">T-papirtype</span></td>
+					 			<td class="text14"><span title="gotrty">T-papirtype</span></td>
 					 			<td class="text14">
-					 				<input type="text" class="inputTextMediumBlue" name="owngoavg_ptype" id="owngoavg_ptype" size="5" maxlength="3" value="${owngoavg_ptype}">
+					 				<input type="text" class="inputTextMediumBlue" name="gotrty" id="gotrty" size="5" maxlength="5" value="${record.gotrty}">
 					 				
 					 				<font class="text12" style="font-style: italic;">Blank=T1</font>
 					 			</td>
 					 		</tr>
 					 		<tr >
-					 			<td class="text14"><span title="owngoavg_toll">Avg.tollsted</span></td>
+					 			<td class="text14"><span title="goavg">Avg.tollsted</span></td>
 					 			<td class="text14">
-					 				<input type="text" class="inputTextMediumBlue" name="owngoavg_toll" id="owngoavg_toll" size="15" maxlength="12" value="${owngoavg_toll}">
-					 				<input type="text" tabindex=-1 readonly class="inputTextReadOnly" name="xreadyOnly" id="xreadyOnly" size="4" value="${owngoavg_ptype}">
+					 				<input type="text" class="inputTextMediumBlue" name="goavg" id="goavg" size="15" maxlength="12" value="${record.goavg}">
+					 				<input type="text" tabindex=-1 readonly class="inputTextReadOnly" name="xreadyOnly" id="xreadyOnly" size="4" value="${record.gotrty}">
 					 			</td>
 					 		</tr>
 					 		

@@ -77,6 +77,7 @@ public class GodsnoRegistreringCloneController {
 	private UrlRequestParameterMapper urlRequestParameterMapper = new UrlRequestParameterMapper();
 	private final String LOGGER_CODE_EDIT = "E";
 	private final String LOGGER_CODE_NEW = "N";
+	private final String DEFAULT_TPAPIR_TYPE = "T1";
 	
 	@Autowired
 	private GodsnoService godsnoService;
@@ -90,7 +91,6 @@ public class GodsnoRegistreringCloneController {
 			logger.setLevel(Level.DEBUG);
 		}
 	}
-	
 	
 		  
 	/**
@@ -110,10 +110,10 @@ public class GodsnoRegistreringCloneController {
 		
 		String action = request.getParameter("action");
 		logger.info("action:" + action);
-		//logger.info("goavg:" + recordToValidate.getGoavg());
-		//Special case for goavg
-		recordToValidate.setGoavg(this.constructGoavg(request, model));
-				
+		//Special case for gotrty
+		if(strMgr.isNull(recordToValidate.getGotrty())){
+			recordToValidate.setGotrty(this.DEFAULT_TPAPIR_TYPE);
+		}		
 		boolean isValidRecord = true;
 		
 		//check user (should be in session already)
@@ -201,145 +201,6 @@ public class GodsnoRegistreringCloneController {
 		}
 	}
 	
-	
-	
-	/**
-	 * Goavg is 15(VARCHAR) long. The last 3-positions are reserved for the T-papirtype. The first 12-chars are the Avg.sted
-	 * @param request
-	 * @return
-	 */
-	private String constructGoavg(HttpServletRequest request, ModelMap model){
-		String DEFAULT_TPAPIR_TYPE = "T1";
-		int FILLER_LIMIT = 12;
-		String FILLER_CHAR = " ";
-		String retval = "";
-		
-		String owngoavg_ptype = request.getParameter("owngoavg_ptype");
-		String owngoavg_toll = request.getParameter("owngoavg_toll");
-		if(strMgr.isNull(owngoavg_ptype)){
-			owngoavg_ptype = DEFAULT_TPAPIR_TYPE;
-		}
-		if(strMgr.isNull(owngoavg_toll)){
-			owngoavg_toll = ""; //important for trailing function below
-		}
-	
-		owngoavg_toll = strMgr.trailingStringWithFiller(owngoavg_toll, FILLER_LIMIT, FILLER_CHAR);
-		//set value
-		retval = owngoavg_toll + owngoavg_ptype;
-		//
-		model.addAttribute("owngoavg_ptype", owngoavg_ptype);
-		model.addAttribute("owngoavg_toll", owngoavg_toll.trim());
-		
-				
-		return retval;
-	}
-	/**
-	 * Construct the godsNr from user input
-	 * @param request
-	 * @return
-	 */
-	private String constructGodsNrManually(HttpServletRequest request){
-		
-		String godsnrYear = request.getParameter("owngogn_1");
-		String godsnrBevKodeRaw = request.getParameter("owngogn_2");
-		String godsnrDayOfYear = request.getParameter("owngogn_3");
-		//process the raw godsnr in order to separate enhetskode
-		String[] tmpRecord = godsnrBevKodeRaw.split("_"); 
-		String godsnrBevKode = tmpRecord[0];
-		String godsnrEnhetsKod = "0";
-		if(tmpRecord.length>1){
-			godsnrEnhetsKod = tmpRecord[1];
-		}
-		StringBuffer godsNr = new StringBuffer();
-		godsNr.append(godsnrYear);
-		godsNr.append(godsnrBevKode);
-		godsNr.append(godsnrDayOfYear);
-		godsNr.append(godsnrEnhetsKod);
-		
-		return godsNr.toString();
-		
-	}
-	/**
-	 * Check it the godsnr was input by the end-user
-	 * @param request
-	 * @return
-	 */
-	private boolean godsNrInputManually(HttpServletRequest request){
-		boolean retval = false;
-		if(strMgr.isNotNull(request.getParameter("owngogn_1")) ){
-			retval = true;
-		}
-		return retval;
-	}
-	
-	/**
-	 * 
-	 * @param gggn1
-	 * @param gggn2
-	 * @return
-	 */
-	private GodsgfDao increaseCounter(String gggn1, String gggn2){
-		GodsgfDao dao = new GodsgfDao();
-		dao.setGggn1(gggn1);
-		//next value for counter
-		try{
-			int gggn2Int = Integer.parseInt(gggn2);
-			gggn2Int++;
-			dao.setGggn2(strMgr.leadingStringWithNumericFiller((String.valueOf(gggn2Int)), 2, "0"));		
-		}catch(Exception e){
-			logger.info("CATCH EXCEPTION:" + e.toString());
-		}
-		return dao;		
-	}
-	
-	/**
-	 * 
-	 * @param applicationUser
-	 * @param gotrnrOrig
-	 * @param recordToValidate
-	 * @param mode
-	 * @param errMsg
-	 * @return
-	 */
-	private int updateRecordSpecialTransittnrCase(String applicationUser, String gotrnrOrig, GodsjfDao recordToValidate, String mode, StringBuffer errMsg ){
-		int retval = 0;
-		//---------------
-    	//Get main list
-		//---------------
-		final String BASE_URL = GodsnoUrlDataStore.GODSNO_BASE_GODSJF_DML_UPDATE_URL;
-		//add URL-parameters
-		String urlRequestParamsKeys = "user=" + applicationUser + "&mode=" + mode + "&gotrnrOrig=" + gotrnrOrig;
-		String urlRequestParams = this.urlRequestParameterMapper.getUrlParameterValidString((recordToValidate));
-		//add params
-		urlRequestParams = urlRequestParamsKeys + urlRequestParams;
-		
-		//session.setAttribute(TransportDispConstants.ACTIVE_URL_RPG_TRANSPORT_DISP, BASE_URL + "==>params: " + urlRequestParams.toString()); 
-    	logger.info(Calendar.getInstance().getTime() + " CGI-start timestamp");
-    	logger.info("URL: " + BASE_URL);
-    	logger.info("URL PARAMS: " + urlRequestParams);
-    	
-    	String jsonPayload = this.urlCgiProxyService.getJsonContent(BASE_URL, urlRequestParams.toString());
-    	//Debug --> 
-    	logger.debug(jsonDebugger.debugJsonPayloadWithLog4J(jsonPayload));
-    	logger.info(Calendar.getInstance().getTime() +  " CGI-end timestamp");
-    	if(jsonPayload!=null){
-    		//TODO
-    		JsonContainerDaoGODSJF container = this.godsnoService.getContainerGodsjf(jsonPayload);
-    		if(container!=null){
-    			if(strMgr.isNotNull(container.getErrMsg())){
-    				errMsg.append(container.getErrMsg());
-    				//Update successfully done!
-		    		logger.info("[ERROR] Record update - Error: " + errMsg.toString());
-		    		retval = -1;
-    			}else{
-    				//Update successfully done!
-		    		logger.info("[INFO] Record successfully updated, OK ");
-    			}
-    		}
-    	}		
-
-		return retval;
-	}
 	/**
 	 * 
 	 * @param applicationUser
@@ -388,105 +249,7 @@ public class GodsnoRegistreringCloneController {
 		return retval;
 	}
 	
-	/**
-	 * 
-	 * @param applicationUser
-	 * @param recordToValidate
-	 * @param mode
-	 * @param errMsg
-	 * @return
-	 */
-	private int updateRecordGodsnrCounter(String applicationUser, GodsgfDao recordToValidate, String mode, StringBuffer errMsg ){
-		int retval = 0;
-		//---------------
-    	//Get main list
-		//---------------
-		final String BASE_URL = GodsnoUrlDataStore.GODSNO_BASE_GODSGF_DML_UPDATE_URL;
-		//add URL-parameters
-		String urlRequestParamsKeys = "user=" + applicationUser + "&mode=" + mode;
-		String urlRequestParams = this.urlRequestParameterMapper.getUrlParameterValidString((recordToValidate));
-		//add params
-		urlRequestParams = urlRequestParamsKeys + urlRequestParams;
-		
-		//session.setAttribute(TransportDispConstants.ACTIVE_URL_RPG_TRANSPORT_DISP, BASE_URL + "==>params: " + urlRequestParams.toString()); 
-    	logger.info(Calendar.getInstance().getTime() + " CGI-start timestamp");
-    	logger.info("URL: " + BASE_URL);
-    	logger.info("URL PARAMS: " + urlRequestParams);
-    	
-    	String jsonPayload = this.urlCgiProxyService.getJsonContent(BASE_URL, urlRequestParams.toString());
-    	//Debug --> 
-    	logger.debug(jsonDebugger.debugJsonPayloadWithLog4J(jsonPayload));
-    	logger.info(Calendar.getInstance().getTime() +  " CGI-end timestamp");
-    	if(jsonPayload!=null){
-    		//TODO
-    		JsonContainerDaoGODSGF container = this.godsnoService.getContainerGodsgf(jsonPayload);
-    		if(container!=null){
-    			if(strMgr.isNotNull(container.getErrMsg())){
-    				errMsg.append(container.getErrMsg());
-    				//Update successfully done!
-		    		logger.info("[ERROR] Record update - Error: " + errMsg.toString());
-		    		retval = -1;
-    			}else{
-    				//Update successfully done!
-		    		logger.info("[INFO] Record successfully updated, OK ");
-    			}
-    		}
-    	}		
-
-		return retval;
-	}
 	
-	/**
-	 * There are several STEPs involved in the calculation of the GodsNr
-	 * The returning godsnr (to the end-user) will be without the final counter. 
-	 * The counter (2 last numbers) will be first calculated when the final record is saved
-	 * 
-	 * @param avd
-	 * @param appUser
-	 * @param model
-	 */
-	private String calculateGodsNrAutomatically_withoutCounter(String avd, SystemaWebUser appUser, ModelMap model, GodsjfDao recordToValidate){
-		String retval = "";
-		String ALERT_CODE_BEVKODE_MISSING = "XXXXX";
-		GodsnrManager godsnrMgr = new GodsnrManager();
-		//get Godsnr bev.kode since we will be creating a new record...
-		Collection<GodsafDao> list = this.getBeviljningsKodeList(appUser);
-		//save this list for information purposes on GUI
-		model.addAttribute("bevKodeList", list);
-		
-		//-------
-		//STEP 1: Calculate the godsNr bev.kode
-		//-------
-		godsnrMgr.getGodsnrBevKode_PatternA(avd, list);
-		logger.info("bev.kode (PATTERN A):" + godsnrMgr.getGodsNrBevKode());
-		if(godsnrMgr.getGodsNrBevKode()==null){
-			godsnrMgr.getGodsnrBevKode_PatternB(avd, list);
-			logger.info("bev.kode (PATTERN B):" + godsnrMgr.getGodsNrBevKode());
-			if(godsnrMgr.getGodsNrBevKode()==null){
-				godsnrMgr.setGodsNrBevKode(ALERT_CODE_BEVKODE_MISSING);
-			}
-		}
-		if(ALERT_CODE_BEVKODE_MISSING.equals(godsnrMgr.getGodsNrBevKode())){
-			godsnrMgr.setGodsNr(dateMgr.getYear());
-			retval = godsnrMgr.getGodsNr();
-		}else{
-			//-------
-			//STEP 2: Calculate the godsNr with: Year + bev.kode + daynr: yyyy12345ddd
-			//-------
-			godsnrMgr.setGodsNrWithBevKode(godsnrMgr.getGodsNrBevKode());
-			//put the 1-character (default = 0). If std-enhets-kode exists: put it there, otherwise = default = 0
-			String enhetsKode = "0";
-			if(strMgr.isNotNull(godsnrMgr.getStdEnhetsKode())){
-				enhetsKode = godsnrMgr.getStdEnhetsKode();
-			}
-			godsnrMgr.setGodsNr(godsnrMgr.getGodsNr() + enhetsKode);
-			logger.info("STEP 2(godsnr):" + godsnrMgr.getGodsNr());
-		}
-		//Now send the proposed GodsNr
-		model.addAttribute("godsnr", godsnrMgr.getGodsNr());
-		//
-		return retval;
-	}
 	
 	/**
 	 * Check for duplicate 
@@ -504,21 +267,6 @@ public class GodsnoRegistreringCloneController {
 			errMsg.append("Godsnr:" + newRecord.getGogn() + " Transittnr:" + newRecord.getGotrnr());
 			errMsg.append(" finnes allerede... ? ");
 			logger.info(errMsg.toString());
-			retval = true;
-		}
-		return retval;
-	}
-	/**
-	 * 
-	 * @param appUser
-	 * @param godsNrHelperMap
-	 * @return
-	 */
-	private boolean recordExistsGodsgf(SystemaWebUser appUser, GodsjfDao recordToValidate){
-		boolean retval = false;
-		
-		GodsgfDao newRecord = this.getRecordGodsgf(appUser, recordToValidate.getGogn());
-		if(newRecord!=null && strMgr.isNotNull(newRecord.getGggn1())){
 			retval = true;
 		}
 		return retval;
@@ -706,71 +454,6 @@ public class GodsnoRegistreringCloneController {
 		return outputList;
 	}
 	
-	/**
-	 * 
-	 * @param appUser
-	 * @return
-	 */
-	private Collection<GodsfiDao> getListGodsfi(SystemaWebUser appUser){
-		Collection<GodsfiDao> outputList = new ArrayList<GodsfiDao>();
-		//---------------
-    	//Get main list
-		//---------------
-		final String BASE_URL = GodsnoUrlDataStore.GODSNO_BASE_GODSFI_LIST_URL;
-		//add URL-parameters
-		StringBuffer urlRequestParams = new StringBuffer();
-		urlRequestParams.append("user=" + appUser.getUser());
-		
-		//session.setAttribute(TransportDispConstants.ACTIVE_URL_RPG_TRANSPORT_DISP, BASE_URL + "==>params: " + urlRequestParams.toString()); 
-    	logger.info(Calendar.getInstance().getTime() + " CGI-start timestamp");
-    	logger.info("URL: " + BASE_URL);
-    	logger.info("URL PARAMS: " + urlRequestParams);
-    	String jsonPayload = this.urlCgiProxyService.getJsonContent(BASE_URL, urlRequestParams.toString());
-    	//Debug --> 
-    	logger.debug(jsonDebugger.debugJsonPayloadWithLog4J(jsonPayload));
-    	logger.info(Calendar.getInstance().getTime() +  " CGI-end timestamp");
-    	if(jsonPayload!=null){
-    		JsonContainerDaoGODSFI listContainer = this.godsnoService.getContainerGodsfi(jsonPayload);
-    		outputList = listContainer.getList();	
-    	}		
-	    
-		return outputList;
-	}
-	
-	/**
-	 * 
-	 * @param appUser
-	 * @param gogn
-	 * @param gotrnr
-	 * @return
-	 */
-	private Collection<MerknfDao> getListMerknf(SystemaWebUser appUser, String gogn, String gotrnr){
-		Collection<MerknfDao> outputList = new ArrayList<MerknfDao>();
-		//---------------
-    	//Get main list
-		//---------------
-		final String BASE_URL = GodsnoUrlDataStore.GODSNO_BASE_MERKNF_LIST_URL;
-		//add URL-parameters
-		StringBuffer urlRequestParams = new StringBuffer();
-		urlRequestParams.append("user=" + appUser.getUser());
-		urlRequestParams.append("&gogn=" + gogn);
-		urlRequestParams.append("&gotrnr=" + gotrnr);
-		
-		//session.setAttribute(TransportDispConstants.ACTIVE_URL_RPG_TRANSPORT_DISP, BASE_URL + "==>params: " + urlRequestParams.toString()); 
-    	logger.info(Calendar.getInstance().getTime() + " CGI-start timestamp");
-    	logger.info("URL: " + BASE_URL);
-    	logger.info("URL PARAMS: " + urlRequestParams);
-    	String jsonPayload = this.urlCgiProxyService.getJsonContent(BASE_URL, urlRequestParams.toString());
-    	//Debug --> 
-    	logger.debug(jsonDebugger.debugJsonPayloadWithLog4J(jsonPayload));
-    	logger.info(Calendar.getInstance().getTime() +  " CGI-end timestamp");
-    	if(jsonPayload!=null){
-    		JsonContainerDaoMERKNF listContainer = this.godsnoService.getContainerMerknf(jsonPayload);
-    		outputList = listContainer.getList();	
-    	}		
-	    
-		return outputList;
-	}
 	
 	
 	//SERVICES

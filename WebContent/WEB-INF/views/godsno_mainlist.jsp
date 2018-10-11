@@ -149,16 +149,7 @@
 			               		${record.gogn}
 			               	</td>
 			               	<td width="2%" class="tableCell" >${record.gotrnr}</td>
-			               	<td width="2%" align="center" class="tableCell" >
-				               	<c:choose>		
-					               	<c:when test="${not empty record.goavg && fn:length(record.goavg)>12}">
-					               			${fn:substring(record.goavg, 12, fn:length(record.goavg))}
-				               		</c:when>
-				               		<c:otherwise>
-				               				${record.goavg}
-				               		</c:otherwise>
-			               		</c:choose>
-		               	   	</td>
+			               	<td width="2%" align="center" class="tableCell" >${record.gotrty}</td>
 			               	<td width="2%" align="center" class="tableCell" >
 			               		<c:set var = "key" value = "${record.gogn}${record.gotrnr}"/>
 			               		<c:if test="${not empty model[key]}">
@@ -194,18 +185,7 @@
 			               
 			               <td class="tableCell" >${record.goturn}</td>
 			               <td width="2%" class="tableCell" >${record.gobiln}</td>
-			               <td width="2%" class="tableCell" >
-				               	<c:choose>		
-					               	<c:when test="${not empty record.goavg && fn:length(record.goavg)>12}">
-					               		${fn:substring(record.goavg, 0, 12)}
-				               		</c:when>
-				               		<c:otherwise>
-				               			<c:if test="${not empty record.goavg && fn:length(record.goavg)>3}">
-					               			${fn:substring(record.goavg, 0, fn:length(record.goavg))}
-				               			</c:if>
-				               		</c:otherwise>
-			               		</c:choose>
-			               	</td>
+			               <td width="2%" class="tableCell" >${record.goavg}</td>
 			               <td width="2%" class="tableCell" >${record.gotrdt}</td>
 			               <td align="center" width="2%" class="tableCell" >
 			               		<a style="cursor:pointer;display:block;" id="alinkClone_${counter.count}" style="display:block;" href="godsno_clone.do?action=doFetch&gogn=${record.gogn}&gotrnr=${record.gotrnr}" onClick="setBlockUI()" >

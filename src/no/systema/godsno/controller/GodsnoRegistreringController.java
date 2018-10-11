@@ -77,6 +77,7 @@ public class GodsnoRegistreringController {
 	private UrlRequestParameterMapper urlRequestParameterMapper = new UrlRequestParameterMapper();
 	private final String LOGGER_CODE_EDIT = "E";
 	private final String LOGGER_CODE_NEW = "N";
+	private final String DEFAULT_TPAPIR_TYPE = "T1";
 	
 	@Autowired
 	private GodsnoService godsnoService;
@@ -91,8 +92,6 @@ public class GodsnoRegistreringController {
 		}
 	}
 	
-	
-		  
 	/**
 	 * 
 	 * @param recordToValidate
@@ -114,12 +113,13 @@ public class GodsnoRegistreringController {
 		String updateFlag = request.getParameter("updateFlag");
 		String gognManualCounter = strMgr.leadingStringWithNumericFiller(request.getParameter("gognManualCounter"), 2, "0");
 		String gotrnrOrig = request.getParameter("gotrnrOrig");
-		//Special case for goavg
-		recordToValidate.setGoavg(this.constructGoavg(request, model));
+		//Special case for gotrty
+		if(strMgr.isNull(recordToValidate.getGotrty())){
+			recordToValidate.setGotrty(this.DEFAULT_TPAPIR_TYPE);
+		}
+		
 		
 		logger.info("action:" + action);
-		logger.info("gognManualCounter:" + gognManualCounter);
-		logger.info("goavg:" + recordToValidate.getGoavg());
 		
 		if(strMgr.isNotNull(updateFlag)){
 			model.addAttribute("updateFlag", "1");
@@ -464,6 +464,7 @@ public class GodsnoRegistreringController {
 	 * @param request
 	 * @return
 	 */
+	/*
 	private String constructGoavg(HttpServletRequest request, ModelMap model){
 		String DEFAULT_TPAPIR_TYPE = "T1";
 		int FILLER_LIMIT = 12;
@@ -489,6 +490,7 @@ public class GodsnoRegistreringController {
 				
 		return retval;
 	}
+	*/
 	/**
 	 * Construct the godsNr from user input
 	 * @param request
