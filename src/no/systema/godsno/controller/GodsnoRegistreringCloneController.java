@@ -116,7 +116,9 @@ public class GodsnoRegistreringCloneController {
 			recordToValidate.setGotrty(this.DEFAULT_TPAPIR_TYPE_T1);
 		}
 		if(strMgr.isNull(recordToValidate.getGoorty())){
-			recordToValidate.setGoorty(this.DEFAULT_TPAPIR_TYPE_T2);
+			if(strMgr.isNotNull(recordToValidate.getGoortn())){
+				recordToValidate.setGoorty(this.DEFAULT_TPAPIR_TYPE_T2);
+			}
 		}
 		boolean isValidRecord = true;
 		
@@ -300,6 +302,12 @@ public class GodsnoRegistreringCloneController {
 		}
 		if(strMgr.isNotNull(recordToValidate.getGobiln())){
 			recordToValidate.setGobiln(recordToValidate.getGobiln().toUpperCase());
+		}
+		if(strMgr.isNotNull(recordToValidate.getGotrty())){
+			recordToValidate.setGotrty(recordToValidate.getGotrty().toUpperCase());
+		}
+		if(strMgr.isNotNull(recordToValidate.getGoorty())){
+			recordToValidate.setGoorty(recordToValidate.getGoorty().toUpperCase());
 		}
 	}
 	/**

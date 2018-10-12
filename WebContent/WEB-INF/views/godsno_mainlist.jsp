@@ -61,6 +61,7 @@
 				<table id="containerdatatableTable" width="100%" cellspacing="2" align="left">
 				<tr>
 					<td class="text14" title="gogn">&nbsp;Godsnr</td>
+					<td class="text14" title="ownDaysBack">&nbsp;Ant.dager bak</td>
 					<td class="text14" title="gotrnr">&nbsp;Transittnr.</td>
 					<td class="text14" title="gomott">&nbsp;Varemottaker</td>
 					<td class="text14" title="goturn">&nbsp;Turnr.</td>
@@ -68,6 +69,17 @@
 				</tr>
 				<tr>	
 					<td class="text14"><input type="text" class="inputText" name="gogn" id="gogn" size="16" maxlength="15" value='${searchFilter.gogn}'></td>
+		        	<td class="text14">
+				 		<select class="inputTextMediumBlue" name="fromDay" id="fromDay" >
+				 			<option value="null" <c:if test="${searchFilter.fromDay == ''}"> selected </c:if> >-Velg-</option>
+	 						<option value="0" <c:if test="${searchFilter.fromDay == '0'}"> selected </c:if> >Idag</option>
+	 						<option value="1" <c:if test="${searchFilter.fromDay == '1'}"> selected </c:if> >1 dag bak</option>
+	 						<option value="3" <c:if test="${searchFilter.fromDay == '3'}"> selected </c:if> >3 dager bak</option>
+	 						<option value="5" <c:if test="${searchFilter.fromDay == '5'}"> selected </c:if> >5 dager bak</option>
+	 						<option value="10" <c:if test="${searchFilter.fromDay == '10'}"> selected </c:if> >10 dager bak</option>
+	 						<option value="20" <c:if test="${searchFilter.fromDay == '20'}"> selected </c:if> >20 dager bak</option>
+						</select>									 		
+				 	</td>
 		        	<td class="text14"><input type="text" class="inputText" name="gotrnr" id="gotrnr" size="21" maxlength="20" value='${searchFilter.gotrnr}'></td>
 		        	<td class="text14"><input type="text" class="inputText" name="gomott" id="gomott" size="16" maxlength="15" value='${searchFilter.gomott}'></td>
 		        	<td class="text14"><input type="text" class="inputText" name="goturn" id="goturn" size="18" maxlength="17" value='${searchFilter.goturn}'></td>

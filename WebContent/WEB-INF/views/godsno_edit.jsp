@@ -243,7 +243,7 @@
 					 		<tr >
 					 			<td class="text14"><span title="gotrty">T-papirtype</span></td>
 					 			<td class="text14">
-					 				<input type="text" class="inputTextMediumBlue" name="gotrty" id="gotrty" size="5" maxlength="5" value="${record.gotrty}">
+					 				<input type="text" class="inputTextMediumBlueUPPERCASEMandatoryField" name="gotrty" id="gotrty" size="5" maxlength="5" value="${record.gotrty}">
 					 				
 					 				<font class="text12" style="font-style: italic;">Blank=T1</font>
 					 			</td>
@@ -251,7 +251,7 @@
 					 		<tr >
 					 			<td class="text14"><span title="goavg">Avg.tollsted</span></td>
 					 			<td class="text14">
-					 				<input type="text" class="inputTextMediumBlue" name="goavg" id="goavg" size="15" maxlength="12" value="${record.goavg}">
+					 				<input type="text" class="inputTextMediumBlue" name="goavg" id="goavg" size="15" maxlength="15" value="${record.goavg}">
 					 				<%--<input type="text" tabindex=-1 readonly class="inputTextReadOnly" name="xreadyOnly" id="xreadyOnly" size="4" value="${record.gotrty}"> --%>
 					 				
 					 			</td>
@@ -277,7 +277,7 @@
 					 			</td>
 					 			<td class="text14" colspan="3">
 					 				<span title="goorty">Type</span>
-					 				<input type="text" class="inputTextMediumBlue" name="goorty" id="goorty" size="5" maxlength="5" value="${record.goorty}">
+					 				<input type="text" class="inputTextMediumBlueUPPERCASEMandatoryField" name="goorty" id="goorty" size="5" maxlength="5" value="${record.goorty}">
 					 				<font class="text12" style="font-style: italic;">Blank=T2</font>
 					 				<c:if test="${record.gotrnr != '*SLETTET' && (!fn:contains(godsnr,'ERROR') && !fn:contains(godsnr,'FEIL')) }" >
 							 			<%-- present button ONLY if the record to release exists --%>

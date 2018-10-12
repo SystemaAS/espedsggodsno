@@ -121,10 +121,11 @@ public class GodsnoRegistreringController {
 			recordToValidate.setGotrty(this.DEFAULT_TPAPIR_TYPE_T1	);
 		}
 		if(strMgr.isNull(recordToValidate.getGoorty())){
-			recordToValidate.setGoorty(this.DEFAULT_TPAPIR_TYPE_T2);
+			if(strMgr.isNotNull(recordToValidate.getGoortn())){
+				recordToValidate.setGoorty(this.DEFAULT_TPAPIR_TYPE_T2);
+			}
 		}
-		
-		
+
 		logger.info("action:" + action);
 		
 		if(strMgr.isNotNull(updateFlag)){
@@ -337,28 +338,6 @@ public class GodsnoRegistreringController {
 		}
 	}
 	
-	/**
-	 * 
-	 * Cleans the Main db-table to keep only those matching the sourceList for GUI purposes
-	 * @param sourceList
-	 * @param targetList
-	 * @return
-	 */
-	private List<GodsfiDao> getMatchedBevKodeList(List<GodsafDao> sourceList, List<GodsfiDao> targetList ){
-		List<GodsfiDao> resultList = new ArrayList<GodsfiDao>();
-		
-		for (GodsfiDao record : targetList){
-			for (GodsafDao record2 : sourceList){
-				//must be the same
-				if(record.getGflbko().equals(record2.getGflbko())){
-					if(record.getGfenh().equals(record2.getGfenh())){
-						resultList.add(record);
-					}
-				}
-			}
-		}
-		return resultList;
-	}
 	/**
 	 * 
 	 * @param recordToValidate
@@ -819,7 +798,12 @@ public class GodsnoRegistreringController {
 		if(strMgr.isNotNull(recordToValidate.getGobiln())){
 			recordToValidate.setGobiln(recordToValidate.getGobiln().toUpperCase());
 		}
-		
+		if(strMgr.isNotNull(recordToValidate.getGotrty())){
+			recordToValidate.setGotrty(recordToValidate.getGotrty().toUpperCase());
+		}
+		if(strMgr.isNotNull(recordToValidate.getGoorty())){
+			recordToValidate.setGoorty(recordToValidate.getGoorty().toUpperCase());
+		}
 		
 	}
 	/**

@@ -460,4 +460,39 @@
 	  });
 
   }
+  //Some auto-fill values from TURER 
+  jq(function() {
+	  jq('#goturn').blur(function(){
+		  if(jq('#goturn').val() != ''){
+			  //Only if the value is empty
+			  if(jq('#gobiln').val() == ''){
+				  getRecordTurer();
+			  }
+		  }
+	  });
+  });
+	  
+  //Get record - Turer (to auto-fill some values in the form) 
+  function getRecordTurer(){
+	  jq.ajax({
+	        type        : 'GET',
+	        url         : 'getSpecificRecord_turer.do',
+	        data		: { applicationUser : jq('#applicationUser').val(), 
+	        				id : jq('#goturn').val() },
+	        dataType    : 'json',
+	        cache: false,
+	        contentType : 'application/json',
+	        success     : function(data){
+	        	var len = data.length;
+	        	for ( var i = 0; i < len; i++) {
+	        		jq('#gobiln').val(data[i].tubiln);
+		  			jq('#gobiln').focus();
+		  		}
+	        },
+          error: function() {
+		  	  //alert('Error loading ...');
+        	  console.log('Error loading');
+			  }
+	    })
+  }
   

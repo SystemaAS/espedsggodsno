@@ -119,14 +119,14 @@ public class GodsnoMainListController {
 				return successView;
 	    		
 		    }else{
-				
+				logger.info("TRNR:" + recordToValidate.getGotrnr());
 	    		Map maxWarningMap = new HashMap<String,String>();
 	    		SearchFilterGodsnoMainList searchFilter = (SearchFilterGodsnoMainList)session.getAttribute(GodsnoConstants.SESSION_SEARCH_FILTER);
     			if(redirect!=null && !"".equals(redirect)){
 	    			recordToValidate = searchFilter;
 	    		}
     			//get list
-    			mainList = this.getList(appUser, recordToValidate, maxWarningMap, model);
+    			mainList = this.getList(appUser, recordToValidate, model);
     			
     			//--------------------------------------
 	    		//Final successView with domain objects
@@ -220,12 +220,13 @@ public class GodsnoMainListController {
 	 * 
 	 * @param appUser
 	 * @param recordToValidate
-	 * @param maxWarningMap
+	 * @param fromDay
+	 * @param model
 	 * @return
 	 */
-	private Collection<GodsjfDao> getList(SystemaWebUser appUser, SearchFilterGodsnoMainList recordToValidate, Map<String,String> maxWarningMap, Map model){
+	private Collection<GodsjfDao> getList(SystemaWebUser appUser, SearchFilterGodsnoMainList recordToValidate, Map model){
 		Collection<GodsjfDao> outputList = new ArrayList();
-		String defaultDaysBack = "10";
+		String defaultDaysBack = "0";
 		//---------------
     	//Get main list
 		//---------------
@@ -236,27 +237,29 @@ public class GodsnoMainListController {
 		
 		if(strMgr.isNotNull(recordToValidate.getGogn()) ){
 			urlRequestParams.append("&gogn=" + recordToValidate.getGogn());
-		}else{
-			if(strMgr.isNotNull(appUser.getDftdg()) ){
-				urlRequestParams.append("&dftdg=" + appUser.getDftdg());
-			}else{
-				urlRequestParams.append("&dftdg=" + defaultDaysBack);
-			}
-			//
-			if(strMgr.isNotNull(recordToValidate.getGomott()) ){
-				urlRequestParams.append("&gomott=" + recordToValidate.getGomott());
-			}
-			if(strMgr.isNotNull(recordToValidate.getGotrnr()) ){
-				urlRequestParams.append("&gotrnr=" + recordToValidate.getGotrnr());
-			}
-			if(strMgr.isNotNull(recordToValidate.getGoturn()) ){
-				urlRequestParams.append("&goturn=" + recordToValidate.getGoturn());
-			}
-			if(strMgr.isNotNull(recordToValidate.getGobiln()) ){
-				urlRequestParams.append("&gobiln=" + recordToValidate.getGobiln());
-			}
 		}
-		
+		if(strMgr.isNotNull(recordToValidate.getFromDay()) ){
+			if(!"null".equals(recordToValidate.getFromDay())){
+			  urlRequestParams.append("&dftdg=" + recordToValidate.getFromDay());
+			}
+		}else{
+			urlRequestParams.append("&dftdg=" + defaultDaysBack);
+			recordToValidate.setFromDay(defaultDaysBack);
+		}
+		//
+		if(strMgr.isNotNull(recordToValidate.getGomott()) ){
+			urlRequestParams.append("&gomott=" + recordToValidate.getGomott());
+		}
+		if(strMgr.isNotNull(recordToValidate.getGotrnr()) ){
+			urlRequestParams.append("&gotrnr=" + recordToValidate.getGotrnr());
+		}
+		if(strMgr.isNotNull(recordToValidate.getGoturn()) ){
+			urlRequestParams.append("&goturn=" + recordToValidate.getGoturn());
+		}
+		if(strMgr.isNotNull(recordToValidate.getGobiln()) ){
+			urlRequestParams.append("&gobiln=" + recordToValidate.getGobiln());
+		}
+	
 		//session.setAttribute(TransportDispConstants.ACTIVE_URL_RPG_TRANSPORT_DISP, BASE_URL + "==>params: " + urlRequestParams.toString()); 
     	logger.info(Calendar.getInstance().getTime() + " CGI-start timestamp");
     	logger.info("URL: " + BASE_URL);

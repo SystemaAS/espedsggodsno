@@ -47,9 +47,9 @@ public class SearchFilterGodsnoMainList {
 	public void setGobiln(String value) {  this.gobiln = value; }
 	public String getGobiln() { return this.gobiln;}
 	
-	private String fromDate = null;
-	public void setFromDate(String value) {  this.fromDate = value; }
-	public String getFromDate() { return this.fromDate;}
+	private String fromDay = null;
+	public void setFromDay(String value) {  this.fromDay = value; }
+	public String getFromDay() { return this.fromDay;}
 	
 	
 	

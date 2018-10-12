@@ -23,9 +23,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import no.systema.godsno.mapper.url.request.UrlRequestParameterMapper;
+import no.systema.godsno.model.JsonContainerDaoTURER;
 import no.systema.godsno.model.JsonContainerDaoPrintGogn;
 import no.systema.godsno.service.GodsnoService;
 import no.systema.godsno.url.store.GodsnoUrlDataStore;
+import no.systema.jservices.common.dao.TurerDao;
 import no.systema.main.model.SystemaWebUser;
 import no.systema.main.service.UrlCgiProxyService;
 import no.systema.main.util.StringManager;
@@ -126,8 +128,53 @@ public class GodsnoAjaxRestController {
 		
 		  
 	}
+	/**
+	 * Get a record match from TURER
+	 * @param applicationUser
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping(path="/getSpecificRecord_turer.do",method = RequestMethod.GET)
+	public Collection getRecord(@RequestParam String applicationUser, @RequestParam String id){
+		logger.info("Inside: getRecord");
+		return this.getRecordTurer(applicationUser, id);
+		  
+	}
 	
-	
+	/**
+	 * Gets a specific record from TURER (db table)
+	 * 
+	 * @param applicationUser
+	 * @param id
+	 * @return
+	 */
+	private Collection<TurerDao> getRecordTurer(String applicationUser, String id){
+		Collection<TurerDao> outputList = new ArrayList<TurerDao>();
+		//---------------
+    	//Get main list
+		//---------------
+		final String BASE_URL = GodsnoUrlDataStore.GODSNO_BASE_TURER_LIST_EXACT_MATCH_URL;
+		//add URL-parameters
+		StringBuffer urlRequestParams = new StringBuffer();
+		urlRequestParams.append("user=" + applicationUser);
+		urlRequestParams.append("&tupro=" + id);
+		
+		//session.setAttribute(TransportDispConstants.ACTIVE_URL_RPG_TRANSPORT_DISP, BASE_URL + "==>params: " + urlRequestParams.toString()); 
+    	logger.info(Calendar.getInstance().getTime() + " CGI-start timestamp");
+    	logger.info("URL: " + BASE_URL);
+    	logger.info("URL PARAMS: " + urlRequestParams);
+    	String jsonPayload = this.urlCgiProxyService.getJsonContent(BASE_URL, urlRequestParams.toString());
+    	//Debug --> 
+    	logger.info(jsonPayload);
+    	logger.info(Calendar.getInstance().getTime() +  " CGI-end timestamp");
+    	if(jsonPayload!=null){
+    		JsonContainerDaoTURER listContainer = this.godsnoService.getContainerTurer(jsonPayload);
+    		outputList = listContainer.getList();
+    			
+    	}		
+	    
+		return outputList;
+	}
 	
 	
 	
