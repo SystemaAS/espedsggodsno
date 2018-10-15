@@ -238,6 +238,10 @@ public class GodsnoMainListController {
 		if(strMgr.isNotNull(recordToValidate.getGogn()) ){
 			urlRequestParams.append("&gogn=" + recordToValidate.getGogn());
 		}
+		if(strMgr.isNotNull(recordToValidate.getGogn2()) ){
+			urlRequestParams.append("&gogn2=" + recordToValidate.getGogn2());
+		}
+		
 		if(strMgr.isNotNull(recordToValidate.getFromDay()) ){
 			if(!"null".equals(recordToValidate.getFromDay())){
 			  urlRequestParams.append("&dftdg=" + recordToValidate.getFromDay());

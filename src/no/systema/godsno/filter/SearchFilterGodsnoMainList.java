@@ -31,6 +31,10 @@ public class SearchFilterGodsnoMainList {
 	public void setGogn(String value) {  this.gogn = value; }
 	public String getGogn() { return this.gogn;}
 	
+	private String gogn2 = null;
+	public void setGogn2(String value) {  this.gogn2 = value; }
+	public String getGogn2() { return this.gogn2;}
+	
 	private String gomott = null;
 	public void setGomott(String value) {  this.gomott = value; }
 	public String getGomott() { return this.gomott;}
