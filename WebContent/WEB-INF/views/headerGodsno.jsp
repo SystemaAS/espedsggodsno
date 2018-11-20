@@ -164,17 +164,14 @@
 				    			<font color="#FFFFFF"; style="font-weight: bold;">&nbsp;&nbsp;|&nbsp;</font>
 				    			<font class="text12LightGreen" style="cursor:pointer;" onClick="showPop('versionInfo');">${user.versionSpring}&nbsp;</font>
 		    				    <div class="text11" style="position: relative; display:inline;" align="left">
-									<span style="position:absolute; left:5px; top:30px; width:250px" id="versionInfo" class="popupWithInputText"  >	
-				           	
-					           			&nbsp;<b>${user.versionEspedsg}</b>
+									<span style="position:absolute; left:-200px; top:5px;" id="versionInfo" class="popupWithInputText"  >	
+				           				&nbsp;<b>${user.versionEspedsg}</b>
 					           			<br/><br/>
 					           			&nbsp;<a href="renderLocalLog4j.do" target="_blank">log4j</a>
 					           			<br/><br/><br/>
 					           			<button name="versionInformationButtonClose" class="buttonGrayInsideDivPopup" type="button" onClick="hidePop('versionInfo');">Close</button> 
 					           		</span>
 								</div>  
-
-						        
 				    		</td>
 	      				
 			        </tr>
