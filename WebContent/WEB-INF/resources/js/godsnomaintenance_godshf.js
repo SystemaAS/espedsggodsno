@@ -40,6 +40,7 @@
 	
 	jq('#mainList').dataTable( {
 	  "jQueryUI": false,
+	  "searchHighlight": true,
 	  "dom": '<"top"f>t<"bottom"ip><"clear">', //look at mainListFilter on JSP SCRIPT-tag
 	  "scrollY":     "500px",
   	  "scrollCollapse":  true,

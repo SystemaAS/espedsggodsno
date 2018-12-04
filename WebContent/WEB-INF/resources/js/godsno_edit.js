@@ -126,6 +126,7 @@
   jq(document).ready(function() {
 	jq('#merknadList').dataTable( {
 	  "jQueryUI": false,
+	  "searchHighlight": true,
 	  "dom": '<"top">t<"bottom"ip><"clear">', //look at mainListFilter on JSP SCRIPT-tag
 	  "scrollY":  "300px",
   	  "scrollCollapse":  true,
