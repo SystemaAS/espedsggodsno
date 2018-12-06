@@ -62,6 +62,7 @@
 				<input type="hidden" name="action" id="action" value='${action}'>
 				<input type="hidden" name="avd" id="avd" value='${avd}'>
 				<input type="hidden" name="gogn" id="gogn" value="${record.gogn}">
+				<input type="hidden" name="pos1TargetString" id="pos1TargetString" size="21" maxlength="200" value="${pos1TargetString}">
 				
 				<table style="width:90%" align="left" border="0" cellspacing="0" cellpadding="0">
 				 	<tr >
@@ -143,6 +144,8 @@
 					 			<td class="text14">
 					 				<input type="text" required oninvalid="this.setCustomValidity('Obligatorisk')" oninput="setCustomValidity('')" class="inputTextMediumBlueMandatoryField" name="gotrnr" id="gotrnr" size="21" maxlength="20" value="${record.gotrnr}">
 					 				<font class="text16RedBold" >*</font>
+					 				&nbsp;
+					 				<button name="godsnoPosButton" id="godsnoPosButton" class="inputFormSubmitStd" type="button">Hent Posisjon</button>
 					 			</td>
 					 			<td class="text14">
 					 				<img style="vertical-align:middle;" src="resources/images/calendar.gif" width="12px" height="12px" border="0" alt="dato">

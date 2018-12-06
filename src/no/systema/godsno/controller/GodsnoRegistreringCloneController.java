@@ -110,7 +110,13 @@ public class GodsnoRegistreringCloneController {
 		SystemaWebUser appUser = this.loginValidator.getValidUser(session);
 		
 		String action = request.getParameter("action");
+		String pos1TargetString = request.getParameter("pos1TargetString");
+		//TEST
+		action = "doFetch";
+		
 		logger.info("action:" + action);
+		logger.info("pos1TargetString:" + pos1TargetString);
+		
 		//Special case for gotrty
 		if(strMgr.isNull(recordToValidate.getGotrty())){
 			recordToValidate.setGotrty(this.DEFAULT_TPAPIR_TYPE_T1);
@@ -197,8 +203,8 @@ public class GodsnoRegistreringCloneController {
 			
 			
 			model.addAttribute("action", action);
-			logger.info("action:" + action);
-		    
+			model.addAttribute("pos1TargetString", pos1TargetString);
+			
 			//set some other model values
 			this.populateUI_ModelMap(model);
 			
