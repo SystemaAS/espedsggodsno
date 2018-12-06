@@ -28,7 +28,7 @@
 			  var id = record[2].replace("id", "");
 			 
 			  if(jq('#godsno' + godsno + '_' + 'pos1' + pos1 + '_' + 'id' + id ).is(':checked')){
-				  var str = godsno +  "_" + pos1;
+				  var str = pos1;
 				  //start
 				  requestParams += str + RECORD_SEPARATOR;
 				  
@@ -36,7 +36,6 @@
     	  });
     	  //alert(requestParams);
     	  opener.jq('#pos1TargetString').val(requestParams);
-    	 
     	  //
     	  window.close();
       });

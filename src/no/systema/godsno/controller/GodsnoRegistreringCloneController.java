@@ -38,6 +38,7 @@ import no.systema.main.util.DateTimeManager;
 import no.systema.jservices.common.dao.GodsafDao;
 import no.systema.jservices.common.dao.GodsfiDao;
 import no.systema.jservices.common.dao.GodsjfDao;
+import no.systema.jservices.common.dao.GodsjtDao;
 import no.systema.jservices.common.dao.GodsgfDao;
 import no.systema.jservices.common.dao.GodshfDao;
 import no.systema.jservices.common.dao.MerknfDao;
@@ -53,6 +54,7 @@ import no.systema.godsno.util.manager.GodsnrManager;
 import no.systema.godsno.model.JsonContainerDaoGODSAF;
 import no.systema.godsno.model.JsonContainerDaoGODSFI;
 import no.systema.godsno.model.JsonContainerDaoGODSJF;
+import no.systema.godsno.model.JsonContainerDaoGODSJT;
 import no.systema.godsno.model.JsonContainerDaoGODSGF;
 import no.systema.godsno.model.JsonContainerDaoMERKNF;
 import no.systema.godsno.filter.SearchFilterGodsnoMainList;
@@ -111,8 +113,6 @@ public class GodsnoRegistreringCloneController {
 		
 		String action = request.getParameter("action");
 		String pos1TargetString = request.getParameter("pos1TargetString");
-		//TEST
-		action = "doFetch";
 		
 		logger.info("action:" + action);
 		logger.info("pos1TargetString:" + pos1TargetString);
@@ -166,10 +166,18 @@ public class GodsnoRegistreringCloneController {
 							dmlRetval = -1;
 						}else{
 							logger.info("doIt(save)");
-							dmlRetval = this.updateRecord(appUser.getUser(), recordToValidate, GodsnoConstants.MODE_ADD, errMsg);
+							//REAK
+							//dmlRetval = this.updateRecord(appUser.getUser(), recordToValidate, GodsnoConstants.MODE_ADD, errMsg);
+							
+							//FAKED ... to test create on GODSJT
+							dmlRetval = 1;
+							
 							if(dmlRetval>=0){
 								//Gods-logger (footprint after each DML-success operation)
 								this.godsnoLoggerService.logIt(appUser.getUser(), recordToValidate.getGogn(), recordToValidate.getGotrnr(), this.LOGGER_CODE_NEW, errMsg);
+								//create a record in GODSJT
+								this.updateRecordGodsjt(appUser.getUser(), recordToValidate, GodsnoConstants.MODE_ADD, errMsg, pos1TargetString);
+								
 							}
 						}
 						logger.info(Calendar.getInstance().getTime() + " CONTROLLER end - timestamp");
@@ -258,6 +266,68 @@ public class GodsnoRegistreringCloneController {
     		}
     	}		
 
+		return retval;
+	}
+	
+	/**
+	 * 
+	 * @param applicationUser
+	 * @param recordToValidate
+	 * @param mode
+	 * @param errMsg
+	 * @param pos1TargetString
+	 * @return
+	 */
+	private int updateRecordGodsjt(String applicationUser, GodsjfDao recordToValidate, String mode, StringBuffer errMsg, String pos1TargetString ){
+		int retval = 0;
+		if(strMgr.isNotNull(pos1TargetString)){
+			String [] fields = pos1TargetString.split(";");
+			List<String> fieldList = Arrays.asList(fields);
+			//Iterate on updates
+			for(String recordPos1: fieldList){
+				logger.info("Pos1:" + recordPos1);
+			
+				//---------------
+		    	//Get main list
+				//---------------
+				final String BASE_URL = GodsnoUrlDataStore.GODSNO_BASE_GODSJT_DML_UPDATE_URL;
+				//add URL-parameters
+				String urlRequestParamsKeys = "user=" + applicationUser + "&mode=" + mode;
+				StringBuffer urlRequestParams = new StringBuffer();
+				urlRequestParams.append("&gtgn=" + recordToValidate.getGogn());
+				urlRequestParams.append("&gttrnr=" + recordToValidate.getGotrnr());
+				urlRequestParams.append("&gtpos1=" + recordPos1);
+				
+				
+				//add params
+				String urlRequestString= urlRequestParamsKeys + urlRequestParams.toString();
+				
+				//session.setAttribute(TransportDispConstants.ACTIVE_URL_RPG_TRANSPORT_DISP, BASE_URL + "==>params: " + urlRequestParams.toString()); 
+		    	logger.info(Calendar.getInstance().getTime() + " CGI-start timestamp");
+		    	logger.info("URL: " + BASE_URL);
+		    	logger.info("URL PARAMS: " + urlRequestString);
+		    	
+		    	String jsonPayload = this.urlCgiProxyService.getJsonContent(BASE_URL, urlRequestString);
+		    	//Debug --> 
+		    	logger.debug(jsonDebugger.debugJsonPayloadWithLog4J(jsonPayload));
+		    	logger.info(Calendar.getInstance().getTime() +  " CGI-end timestamp");
+		    	if(jsonPayload!=null){
+		    		//TODO
+		    		JsonContainerDaoGODSJT container = this.godsnoService.getContainerGodsjt(jsonPayload);
+		    		if(container!=null){
+		    			if(strMgr.isNotNull(container.getErrMsg())){
+		    				errMsg.append(container.getErrMsg());
+		    				//Update successfully done!
+				    		logger.info("[ERROR] Record update - Error: " + errMsg.toString());
+				    		retval = -1;
+		    			}else{
+		    				//Update successfully done!
+				    		logger.info("[INFO] Record successfully updated, OK ");
+		    			}
+		    		}
+		    	}
+	    	}		
+		}
 		return retval;
 	}
 	
