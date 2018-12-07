@@ -145,7 +145,7 @@
 					 				<input type="text" required oninvalid="this.setCustomValidity('Obligatorisk')" oninput="setCustomValidity('')" class="inputTextMediumBlueMandatoryField" name="gotrnr" id="gotrnr" size="21" maxlength="20" value="${record.gotrnr}">
 					 				<font class="text16RedBold" >*</font>
 					 				&nbsp;
-					 				<button name="godsnoPosButton" id="godsnoPosButton" class="inputFormSubmitStd" type="button">Hent Posisjon</button>
+					 				<button title="Hente Posisjon" name="godsnoPosButton" id="godsnoPosButton" class="inputFormSubmitStd" type="button">Pos.</button>
 					 			</td>
 					 			<td class="text14">
 					 				<img style="vertical-align:middle;" src="resources/images/calendar.gif" width="12px" height="12px" border="0" alt="dato">
