@@ -15,6 +15,21 @@
   });
   
   jq(function() {
+	  //since the transittnr IS NOT mandatory in update mode we must block the button if the value is missing
+	  if(jq("#gotrnr").val()!=''){
+	  	jq('#godsnoPosButton').click(function() {
+			jq('#godsnoPosButton').attr('target','_blank');
+			window.open('godsno_childwindow_uppdragslist.do?action=doFind&hegn=' + jq('#gogn').val(), "oppWin", "top=100px,left=400px,height=500px,width=600px,scrollbars=no,status=no,location=no");
+	    });
+	    jq('#godsnoPosButton').keypress(function(e){ //extra feature for the end user
+			if(e.which == 13) {
+				jq('#godsnoPosButton').click();
+			}
+	    });
+	  }
+	});
+  
+  jq(function() {
 	  jq("#gogrdt").datepicker({ 
 		  dateFormat: 'ddmmy'
 	  });

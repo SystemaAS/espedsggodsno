@@ -173,7 +173,7 @@ public class GodsnoRegistreringCloneController {
 								//Gods-logger (footprint after each DML-success operation)
 								this.godsnoLoggerService.logIt(appUser.getUser(), recordToValidate.getGogn(), recordToValidate.getGotrnr(), this.LOGGER_CODE_NEW, errMsg);
 								
-								//CREATRE a record in GODSJT (if applicable)
+								//CREATE a record in GODSJT (if applicable)
 								//only create new since the GUI will present ONLY the ones valid for creation
 								if(strMgr.isNotNull(pos1TargetString)){
 									this.updateRecordGodsjt(appUser.getUser(), recordToValidate, GodsnoConstants.MODE_ADD, errMsg, pos1TargetString);

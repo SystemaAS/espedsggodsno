@@ -75,6 +75,8 @@
 					<%-- this is for an update of the key gortrnr --%>
 					<input type="hidden" name="gotrnrOrig" id="gotrnrOrig" value='${record.gotrnr}'>
 					<input type="hidden" name="updateFlag" id="updateFlag" value="${updateFlag}">
+					<input type="hidden" name="pos1TargetString" id="pos1TargetString" value="${pos1TargetString}">
+				
 				</c:if>
 				<table style="width:90%" align="left" border="0" cellspacing="0" cellpadding="0">
 				 	<tr >
@@ -225,6 +227,8 @@
 					 			<td class="text14"><span title="gotrnr">Transittnr.</span></td>
 					 			<td class="text14">
 					 				<input type="text" class="inputTextMediumBlue" name="gotrnr" id="gotrnr" size="21" maxlength="20" value="${record.gotrnr}">
+					 				&nbsp;
+					 				<button title="Hente Posisjon" name="godsnoPosButton" id="godsnoPosButton" class="inputFormSubmitStd" type="button">Pos.</button>
 					 			</td>
 					 			<td class="text14">
 					 				<img style="vertical-align:middle;" src="resources/images/calendar.gif" width="12px" height="12px" border="0" alt="dato">

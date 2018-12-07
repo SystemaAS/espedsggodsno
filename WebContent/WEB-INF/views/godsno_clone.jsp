@@ -62,7 +62,7 @@
 				<input type="hidden" name="action" id="action" value='${action}'>
 				<input type="hidden" name="avd" id="avd" value='${avd}'>
 				<input type="hidden" name="gogn" id="gogn" value="${record.gogn}">
-				<input type="hidden" name="pos1TargetString" id="pos1TargetString" size="21" maxlength="200" value="${pos1TargetString}">
+				<input type="hidden" name="pos1TargetString" id="pos1TargetString" value="${pos1TargetString}">
 				
 				<table style="width:90%" align="left" border="0" cellspacing="0" cellpadding="0">
 				 	<tr >

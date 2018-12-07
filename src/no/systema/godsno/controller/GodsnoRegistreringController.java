@@ -118,6 +118,8 @@ public class GodsnoRegistreringController {
 		String updateFlag = request.getParameter("updateFlag");
 		String gognManualCounter = strMgr.leadingStringWithNumericFiller(request.getParameter("gognManualCounter"), 2, "0");
 		String gotrnrOrig = request.getParameter("gotrnrOrig");
+		String pos1TargetString = request.getParameter("pos1TargetString");
+		
 		//Special case for gotrty
 		if(strMgr.isNull(recordToValidate.getGotrty())){
 			recordToValidate.setGotrty(this.DEFAULT_TPAPIR_TYPE_T1	);
@@ -129,6 +131,7 @@ public class GodsnoRegistreringController {
 		}
 
 		logger.info("action:" + action);
+		logger.info("pos1TargetString:" + pos1TargetString);
 		
 		if(strMgr.isNotNull(updateFlag)){
 			model.addAttribute("updateFlag", "1");
@@ -179,6 +182,11 @@ public class GodsnoRegistreringController {
 								if(dmlRetval>=0){
 									//Gods-logger (footprint after each DML-success operation)
 									this.godsnoLoggerService.logIt(appUser.getUser(), recordToValidate.getGogn(), recordToValidate.getGotrnr(), this.LOGGER_CODE_EDIT, errMsg);
+									//CREATE a record in GODSJT (if applicable)
+									//only create new since the GUI will present ONLY the ones valid for creation
+									if(strMgr.isNotNull(pos1TargetString)){
+										this.updateRecordGodsjt(appUser.getUser(), recordToValidate, GodsnoConstants.MODE_ADD, errMsg, pos1TargetString);
+									}
 								}
 							}else{
 								//duplicate check
@@ -193,6 +201,11 @@ public class GodsnoRegistreringController {
 									if(dmlRetval>=0){
 										//Gods-logger (footprint after each DML-success operation)
 										this.godsnoLoggerService.logIt(appUser.getUser(), recordToValidate.getGogn(), recordToValidate.getGotrnr(), this.LOGGER_CODE_EDIT, errMsg);
+										//CREATE a record in GODSJT (if applicable)
+										//only create new since the GUI will present ONLY the ones valid for creation
+										if(strMgr.isNotNull(pos1TargetString)){
+											this.updateRecordGodsjt(appUser.getUser(), recordToValidate, GodsnoConstants.MODE_ADD, errMsg, pos1TargetString);
+										}
 									}
 								}
 							}
@@ -1108,6 +1121,70 @@ public class GodsnoRegistreringController {
 		}
 		return retval;
 	}
+	
+	/**
+	 * 
+	 * @param applicationUser
+	 * @param recordToValidate
+	 * @param mode
+	 * @param errMsg
+	 * @param pos1TargetString
+	 * @return
+	 */
+	private int updateRecordGodsjt(String applicationUser, GodsjfDao recordToValidate, String mode, StringBuffer errMsg, String pos1TargetString ){
+		int retval = 0;
+		if(strMgr.isNotNull(pos1TargetString)){
+			String [] fields = pos1TargetString.split(";");
+			
+			if(fields != null && fields.length>0){
+				List<String> fieldList = Arrays.asList(fields);
+				//Iterate on updates
+				for(String recordPos1: fieldList){
+					logger.info("Pos1:" + recordPos1);
+					//---------------
+			    	//Get main list
+					//---------------
+					final String BASE_URL = GodsnoUrlDataStore.GODSNO_BASE_GODSJT_DML_UPDATE_URL;
+					//add URL-parameters
+					String urlRequestParamsKeys = "user=" + applicationUser + "&mode=" + mode;
+					StringBuffer urlRequestParams = new StringBuffer();
+					urlRequestParams.append("&gtgn=" + recordToValidate.getGogn());
+					urlRequestParams.append("&gttrnr=" + recordToValidate.getGotrnr());
+					urlRequestParams.append("&gtpos1=" + recordPos1);
+					
+					//add params
+					String urlRequestString= urlRequestParamsKeys + urlRequestParams.toString();
+					
+					//session.setAttribute(TransportDispConstants.ACTIVE_URL_RPG_TRANSPORT_DISP, BASE_URL + "==>params: " + urlRequestParams.toString()); 
+			    	logger.info(Calendar.getInstance().getTime() + " CGI-start timestamp");
+			    	logger.info("URL: " + BASE_URL);
+			    	logger.info("URL PARAMS: " + urlRequestString);
+			    	
+			    	String jsonPayload = this.urlCgiProxyService.getJsonContent(BASE_URL, urlRequestString);
+			    	//Debug --> 
+			    	logger.debug(jsonDebugger.debugJsonPayloadWithLog4J(jsonPayload));
+			    	logger.info(Calendar.getInstance().getTime() +  " CGI-end timestamp");
+			    	if(jsonPayload!=null){
+			    		//TODO
+			    		JsonContainerDaoGODSJT container = this.godsnoService.getContainerGodsjt(jsonPayload);
+			    		if(container!=null){
+			    			if(strMgr.isNotNull(container.getErrMsg())){
+			    				errMsg.append(container.getErrMsg());
+			    				//Error ... do something!
+					    		logger.info("[ERROR] Record update - Error: " + errMsg.toString());
+					    		retval = -1;
+			    			}else{
+			    				//Update successfully done!
+					    		logger.info("[INFO] GODSJT-Record (Pos1) successfully updated, OK ");
+			    			}
+			    		}
+			    	}
+		    	}
+			}
+		}
+		return retval;
+	}
+	
 	
 	
 	//SERVICES
