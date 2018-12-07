@@ -142,7 +142,8 @@
 							<th width="2%" class="tableHeaderFieldFirst">Endre</th>
 							<th width="2%" align="left" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.godsnr"/></th> 
 							<th width="2%" align="left" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.transittnr"/></th>
-		                    <th width="2%" align="center" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.type"/></th>
+		                    <th width="2%" align="center" class="tableHeaderField" title="Pos1" >&nbsp;<spring:message code="systema.godsno.mainlist.label.pos"/>1</th> 
+							<th width="2%" align="center" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.type"/></th>
 		                    <th width="2%" align="center" class="tableHeaderField" title="Merknadsjournal" >&nbsp;<spring:message code="systema.godsno.mjournallist.label.merknadsjournal"/></th> 
 							<th align="left" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.godsmottaker"/></th> 
 							<th align="left" class="tableHeaderField">&nbsp;<spring:message code="systema.godsno.mainlist.label.turnr"/></th>
@@ -167,7 +168,14 @@
 			               		${record.gogn}
 			               	</td>
 			               	<td width="2%" class="tableCell" >${record.gotrnr}</td>
+			               	<td width="2%" align="center" class="tableCell" >
+			               		<c:set var = "keyPos" value = "${record.gogn}${record.gotrnr}pos"/>
+			               		<c:if test="${not empty model[keyPos]}">
+			               			<img title="Pos" src="resources/images/bulletGreen.gif" border="0" alt="Posisjon finnes">
+			               		</c:if>
+			               	</td>
 			               	<td width="2%" align="center" class="tableCell" >${record.gotrty}</td>
+			               	
 			               	<td width="2%" align="center" class="tableCell" >
 			               		<c:set var = "key" value = "${record.gogn}${record.gotrnr}"/>
 			               		<c:if test="${not empty model[key]}">

@@ -125,16 +125,14 @@
   //-------------------
   jq(document).ready(function() {
 	jq('#merknadList').dataTable( {
-	  "jQueryUI": false,
-	  "searchHighlight": true,
-	  "dom": '<"top">t<"bottom"ip><"clear">', //look at mainListFilter on JSP SCRIPT-tag
+	  //"jQueryUI": false,
+	  "dom": '<"top">t<"bottom"ip><"clear">', 
 	  "scrollY":  "300px",
   	  "scrollCollapse":  true,
   	  "tabIndex": -1,
   	  "order": [[ 1, "asc" ]],
 	  
 	} );
-
     //event on input field for search
     jq('input.merknadList_filter').on( 'keyup click', function () {
 		jq('#merknadList').DataTable().search(
@@ -143,8 +141,8 @@
     } );
     
     jq('#hfLoggerList').dataTable( {
-  	  "jQueryUI": false,
-  	  "dom": '<"top">t<"bottom"ip><"clear">', //look at mainListFilter on JSP SCRIPT-tag
+  	  //"jQueryUI": false,
+  	  "dom": '<"top">t<"bottom"ip><"clear">', 
   	  "scrollY":  "250px",
     	  "scrollCollapse":  true,
     	  "tabIndex": -1,
@@ -157,6 +155,23 @@
 			jq('#hfLoggerList_filter').val()
 		   ).draw();
       } );
+      
+      //Posisjons-list
+      jq('#posList').dataTable( {
+      	  "dom": '<"top">t<"bottom"><"clear">', 
+      	  //"scrollY":  "250px",
+    	  "scrollCollapse":  true,
+    	  "tabIndex": -1,
+    	  "order": [[ 0, "asc" ],[1, "asc" ]]
+      	} );
+
+          //event on input field for search
+          jq('input.posList_filter').on( 'keyup click', function () {
+        	  jq('#posList').DataTable().search(
+    			jq('#posList_filter').val()
+    		   ).draw();
+          } );
+      
   } );
   //Check mandatory
   function checkMandatoryFields(){
@@ -305,7 +320,7 @@
 	  	var form = new FormData(document.getElementById('editMerknadForm'));
 	  	//add values to form since we do not combine form data and other data in the same ajax call.
 	  	//all fields in the form MUST exists in the DTO or DAO in the rest-Controller
-	  	form.append("applicationUserMerknf", jq('#applicationUser').val());
+	  	form.append("applicationUser", jq('#applicationUser').val());
 	  	form.append("gogn", jq('#gogn').val());
 	  	form.append("gotrnr", jq('#gotrnr').val());
 	  	var payload = jq('editMerknadForm').serialize();
@@ -495,5 +510,46 @@
         	  console.log('Error loading');
 			  }
 	    })
+  }
+  
+  
+  //Delete Posisjon
+  function doDeletePosisjon(record){
+	  var id = record.id;
+	  var fields = id.split('@');
+	  var gtgn = fields[0];
+	  var gttrnr = fields[1];
+	  var gtpos1 = fields[2];
+	  var gtpos2 = fields[3];
+	  gtgn = gtgn.replace("gtgn_","");
+	  gttrnr = gttrnr.replace("gttrnr_","");
+	  gtpos1 = gtpos1.replace("gtpos1_","");
+	  gtpos2 = gtpos2.replace("gtpos2_","");
+	  	
+	  jq.ajax({
+	        type        : 'GET',
+	        url         : 'deleteSpecificRecord_godsjt.do',
+	        data		: { applicationUser : jq('#applicationUser').val(), 
+	        				gtgn : gtgn,
+	        				gttrnr : gttrnr,
+	        				gtpos1 : gtpos1,
+	        				gtpos2 : gtpos2 },
+	        dataType    : 'json',
+	        cache: false,
+	        contentType : 'application/json',
+	        success     : function(data){
+	        	var len = data.length;
+	        	for ( var i = 0; i < len; i++) {
+	        		//console.log("B");
+	        		window.location.href = 'godsno_edit.do?updateFlag=1&gogn=' + jq("#gogn").val() + '&gotrnr=' + jq("#gotrnr").val();
+		  		}
+	        },
+          error: function() {
+		  		  //alert('Error loading ...');
+        	  console.log('Error loading');
+        	  
+			  }
+	    })
+	    
   }
   

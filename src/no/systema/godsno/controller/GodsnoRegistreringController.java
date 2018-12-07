@@ -38,6 +38,7 @@ import no.systema.main.util.DateTimeManager;
 import no.systema.jservices.common.dao.GodsafDao;
 import no.systema.jservices.common.dao.GodsfiDao;
 import no.systema.jservices.common.dao.GodsjfDao;
+import no.systema.jservices.common.dao.GodsjtDao;
 import no.systema.jservices.common.dao.GodsgfDao;
 import no.systema.jservices.common.dao.GodshfDao;
 import no.systema.jservices.common.dao.MerknfDao;
@@ -53,6 +54,7 @@ import no.systema.godsno.util.manager.GodsnrManager;
 import no.systema.godsno.model.JsonContainerDaoGODSAF;
 import no.systema.godsno.model.JsonContainerDaoGODSFI;
 import no.systema.godsno.model.JsonContainerDaoGODSJF;
+import no.systema.godsno.model.JsonContainerDaoGODSJT;
 import no.systema.godsno.model.JsonContainerDaoGODSGF;
 import no.systema.godsno.model.JsonContainerDaoMERKNF;
 import no.systema.godsno.model.JsonContainerDaoLLMRF;
@@ -294,12 +296,15 @@ public class GodsnoRegistreringController {
 					model.addAttribute(GodsnoConstants.DOMAIN_RECORD, recordToValidate);
 					auxDao = recordToValidate;
 				}
-				//Fetch all merkned item lines
+				//Fetch all children item lines
 				model.addAttribute("merknadList", this.getListMerknf(appUser, auxDao.getGogn(), auxDao.getGotrnr()));
 				model.addAttribute("hfLoggerList", this.godsnoLoggerService.getLogHfList(appUser, this.getGodshrDao(auxDao)));
+				model.addAttribute("jtPosList", this.getListGodsjtPosisjon(appUser, auxDao.getGogn(), auxDao.getGotrnr()));
+				
 				if(this.releaseRecordExist(appUser, auxDao.getGoortn())){
 					model.addAttribute("releaseRecordExists", "1");
 				}
+				
 			}
 			
 			if(action==null || "".equals(action)){ 
@@ -1021,6 +1026,41 @@ public class GodsnoRegistreringController {
     	logger.info(Calendar.getInstance().getTime() +  " CGI-end timestamp");
     	if(jsonPayload!=null){
     		JsonContainerDaoMERKNF listContainer = this.godsnoService.getContainerMerknf(jsonPayload);
+    		outputList = listContainer.getList();	
+    	}		
+	    
+		return outputList;
+	}
+	/**
+	 * Posisjon payload
+	 * 
+	 * @param appUser
+	 * @param gtgn
+	 * @param gttrnr
+	 * @return
+	 */
+	private Collection<GodsjtDao> getListGodsjtPosisjon(SystemaWebUser appUser, String gtgn, String gttrnr){
+		Collection<GodsjtDao> outputList = new ArrayList<GodsjtDao>();
+		//---------------
+    	//Get main list
+		//---------------
+		final String BASE_URL = GodsnoUrlDataStore.GODSNO_BASE_GODSJT_LIST_URL;
+		//add URL-parameters
+		StringBuffer urlRequestParams = new StringBuffer();
+		urlRequestParams.append("user=" + appUser.getUser());
+		urlRequestParams.append("&gtgn=" + gtgn);
+		urlRequestParams.append("&gttrnr=" + gttrnr);
+		
+		//session.setAttribute(TransportDispConstants.ACTIVE_URL_RPG_TRANSPORT_DISP, BASE_URL + "==>params: " + urlRequestParams.toString()); 
+    	logger.info(Calendar.getInstance().getTime() + " CGI-start timestamp");
+    	logger.info("URL: " + BASE_URL);
+    	logger.info("URL PARAMS: " + urlRequestParams);
+    	String jsonPayload = this.urlCgiProxyService.getJsonContent(BASE_URL, urlRequestParams.toString());
+    	//Debug --> 
+    	logger.debug(jsonDebugger.debugJsonPayloadWithLog4J(jsonPayload));
+    	logger.info(Calendar.getInstance().getTime() +  " CGI-end timestamp");
+    	if(jsonPayload!=null){
+    		JsonContainerDaoGODSJT listContainer = this.godsnoService.getContainerGodsjt(jsonPayload);
     		outputList = listContainer.getList();	
     	}		
 	    

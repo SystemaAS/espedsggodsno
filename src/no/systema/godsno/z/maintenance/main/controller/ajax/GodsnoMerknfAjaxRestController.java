@@ -28,11 +28,15 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import no.systema.godsno.mapper.url.request.UrlRequestParameterMapper;
 import no.systema.godsno.model.JsonContainerDaoGODSAF;
 import no.systema.godsno.model.JsonContainerDaoMERKNF;
+import no.systema.godsno.model.JsonContainerDaoGODSJT;
 import no.systema.godsno.model.MerknfDto;
+import no.systema.godsno.model.GodsjtDto;
+
 import no.systema.godsno.service.GodsnoService;
 import no.systema.godsno.url.store.GodsnoUrlDataStore;
 import no.systema.jservices.common.dao.GodsafDao;
 import no.systema.jservices.common.dao.GodsjfDao;
+import no.systema.jservices.common.dao.GodsjtDao;
 import no.systema.jservices.common.dao.MerknfDao;
 import no.systema.jservices.common.dao.services.BridfDaoService;
 import no.systema.jservices.common.dao.services.GodsafDaoService;
@@ -89,7 +93,7 @@ public class GodsnoMerknfAjaxRestController {
 		logger.info("Inside: deleteMerknf");
 		MerknfDto dto = new MerknfDto();
 		dto.setGogn(gogn);
-		dto.setApplicationUserMerknf(applicationUser);
+		dto.setApplicationUser(applicationUser);
 		dto.setGotrnr(gotrnr);
 		dto.setGopos(Integer.valueOf(gopos));
 		String mode ="D";
@@ -140,6 +144,23 @@ public class GodsnoMerknfAjaxRestController {
 		  
 	}
 	
+	@RequestMapping(path="/deleteSpecificRecord_godsjt.do", method = RequestMethod.GET)
+	public Collection deleteGodsjt(@RequestParam String applicationUser, @RequestParam String gtgn, @RequestParam String gttrnr,
+									@RequestParam String gtpos1, @RequestParam String gtpos2 ){
+		logger.info("Inside: deleteMerknf");
+		GodsjtDto dto = new GodsjtDto();
+		dto.setApplicationUser(applicationUser);
+		dto.setGtgn(gtgn);
+		dto.setGttrnr(gttrnr);
+		dto.setGtpos1(gtpos1);
+		dto.setGtpos2(Integer.valueOf(gtpos2));
+		String mode ="D";
+		//
+		return this.updateRecordGodsjt( dto, mode);
+				
+		  
+	}
+	
 	/**
 	 * 
 	 * @param dto
@@ -154,7 +175,7 @@ public class GodsnoMerknfAjaxRestController {
 		final String BASE_URL = GodsnoUrlDataStore.GODSNO_BASE_MERKNF_DML_UPDATE_URL;
 		//add URL-parameters
 		StringBuffer urlRequestParamsKeys = new StringBuffer();
-		urlRequestParamsKeys.append("user=" + dto.getApplicationUserMerknf());
+		urlRequestParamsKeys.append("user=" + dto.getApplicationUser());
 		urlRequestParamsKeys.append("&mode=" + mode);
 		//adjust this particular field. There are reasons on why it is not Integer...
 		if(strMgr.isNull(dto.getGopos2())){ dto.setGopos2("0"); }
@@ -174,6 +195,47 @@ public class GodsnoMerknfAjaxRestController {
     		if(strMgr.isNull(listContainer.getErrMsg())){
     			MerknfDao tmpDao = new MerknfDao();
     			tmpDao.setGogn("OK");
+    			outputList.add(tmpDao);
+    		}
+    	}		
+	    
+		return outputList;
+	}
+	
+	/**
+	 * 
+	 * @param dto
+	 * @param mode
+	 * @return
+	 */
+	private Collection<GodsjtDao> updateRecordGodsjt(GodsjtDto dto, String mode){
+		Collection<GodsjtDao> outputList = new ArrayList<GodsjtDao>();
+		//---------------
+    	//Get main list
+		//---------------
+		final String BASE_URL = GodsnoUrlDataStore.GODSNO_BASE_GODSJT_DML_UPDATE_URL;
+		//add URL-parameters
+		StringBuffer urlRequestParamsKeys = new StringBuffer();
+		urlRequestParamsKeys.append("user=" + dto.getApplicationUser());
+		urlRequestParamsKeys.append("&mode=" + mode);
+		//adjust this particular field. There are reasons on why it is not Integer...
+		if(strMgr.isNull(dto.getGtpos1())){ dto.setGtpos1("0"); }
+		String urlRequestParams = this.urlRequestParameterMapper.getUrlParameterValidString((dto));
+		//add params
+		urlRequestParams = urlRequestParamsKeys + urlRequestParams;
+		
+		logger.info(Calendar.getInstance().getTime() + " CGI-start timestamp");
+    	logger.info("URL: " + BASE_URL);
+    	logger.info("URL PARAMS: " + urlRequestParams);
+    	String jsonPayload = this.urlCgiProxyService.getJsonContent(BASE_URL, urlRequestParams.toString());
+    	//Debug --> 
+    	logger.info(jsonPayload);
+    	logger.info(Calendar.getInstance().getTime() +  " CGI-end timestamp");
+    	if(jsonPayload!=null){
+    		JsonContainerDaoGODSJT listContainer = this.godsnoService.getContainerGodsjt(jsonPayload);
+    		if(strMgr.isNull(listContainer.getErrMsg())){
+    			GodsjtDao tmpDao = new GodsjtDao();
+    			tmpDao.setGtgn("OK");
     			outputList.add(tmpDao);
     		}
     	}		

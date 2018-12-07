@@ -240,6 +240,10 @@
 					 				</c:choose>
 					 			</td>
 					 		</tr>
+					 		
+					 		
+					 		
+					 		
 					 		<tr >
 					 			<td class="text14"><span title="gotrty">T-papirtype</span></td>
 					 			<td class="text14">
@@ -288,6 +292,45 @@
 					 			</td>
 					 			
 					 		</tr>
+					 		
+					 		<c:if test="${not empty jtPosList}">
+					 		<tr>
+					 		<td>&nbsp;</td>
+						 	<td >
+								<table style="width:50%;" id="containerdatatableTable" border="0" cellspacing="0" cellpadding="0">	
+						 		<tr >
+						 			<td >
+									<table id="posList" class="display compact cell-border" >
+										<thead>
+										<tr class="tableHeaderField">
+											<th align="left" class="text12">&nbsp;<spring:message code="systema.godsno.maintenance.godsjt.gtpos1"/></th>
+											<th align="left" class="text12">&nbsp;<spring:message code="systema.godsno.maintenance.godsjt.gtpos2"/></th>
+											<th align="center" class="text12">&nbsp;<spring:message code="systema.godsno.mainlist.label.delete"/></th>
+										</tr>
+										</thead>
+						                
+						                <tbody>
+							            <c:forEach items="${jtPosList}" var="record" varStatus="counter">    
+							             <tr class="tableRow" >  
+							               <td width="2%" class="text12" style="background-color: lightyellow" >${record.gtpos1}</td>
+							               <td width="2%" class="text12" style="background-color: lightyellow" >${record.gtpos2}</td>
+							               <td align="center" width="2%" class="text12" style="background-color: lightyellow" >
+							               		<a style="cursor:pointer;display:block;" id="gtgn_${record.gtgn}@gttrnr_${record.gttrnr}@gtpos1_${record.gtpos1}@gtpos2_${record.gtpos2}" onClick="setBlockUI();doDeletePosisjon(this)" >
+							               			<img title="Slett post" style="vertical-align:bottom;" src="resources/images/delete.gif" width="12px" height="12px" border="0" alt="edit">
+							               		</a>	
+							               </td>
+							               
+						                 </tr>
+						               	</c:forEach>
+						            	</tbody>
+									</table>
+									</td>
+								</tr>
+								</table>
+							</td>
+							</tr>		
+					 		</c:if>
+					 		
 							
 					 		<tr height="2"><td></td></tr>
 			 				<tr><td colspan="10"><hr size="1" width="100%" 	/></td></tr>
@@ -372,8 +415,8 @@
             <%-- ONLY with UPDATE --%>
             <c:choose>
             <c:when test="${not empty updateFlag}">
-	            <td align="center" style="width:50%" valign="top" >
-	            	<table style="width:95%" class="greenContainerFrameE2" align="center" id="containerdatatableTable" border="0" cellspacing="0" cellpadding="0">
+	            <td style="width:50%" valign="top" >
+	            	<table align="left" style="width:95%" class="greenContainerFrameE2" id="containerdatatableTable" border="0" cellspacing="0" cellpadding="0">
 						<tr >
 				 			<td class="text14">
 				 			<img style="vertical-align: bottom" src="resources/images/app.png" width="16" hight="16" border="0" alt="journal">
@@ -570,13 +613,14 @@
 		<c:if test="${not empty updateFlag}">
 			<tr height="20"><td colspan="2">&nbsp;</td></tr>
 			<tr >
-				<td colspan="2" class="text14">&nbsp;
-				<img style="vertical-align: bottom" src="resources/images/log-icon.gif" width="16" hight="16" border="0" alt="show log">
-				<b>Hendelseslogg</b>
+				<td class="text14">&nbsp;
+					<img style="vertical-align: bottom" src="resources/images/log-icon.gif" width="16" hight="16" border="0" alt="show log">
+					<b>Hendelseslogg</b>
 				</td>
+				
 			</tr>
 			<tr>
-				<td style="width:50%" >
+				<td valign="top" style="width:50%" >
 				<table style="width:90%" id="containerdatatableTable" border="0" cellspacing="0" cellpadding="0">
 				<tr>
 					<td>
@@ -612,6 +656,8 @@
 				</tr>
 				</table>
 				</td>	
+				
+				
 			</tr>
 		</c:if>
 		<tr height="20"><td colspan="2">&nbsp;</td></tr>

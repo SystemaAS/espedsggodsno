@@ -9,7 +9,7 @@ import lombok.Data;
 
 @Data
 public class MerknfDto   {
-	private String applicationUserMerknf;
+	private String applicationUser;
 	private String updateMerknad_flag;
 	
 	private String gogn; 		//15 VARCHAR
