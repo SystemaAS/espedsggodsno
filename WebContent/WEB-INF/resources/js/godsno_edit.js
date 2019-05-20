@@ -19,8 +19,21 @@
 	  if(jq("#gotrnr").val()!=''){
 	  	jq('#godsnoPosButton').click(function() {
 	  		
+	  		//We must send a list of positions that already exists in order to filter the childwindow list
+	  		var filterPos1 = "";
+	  		var RECORD_SEPARATOR = ';';
+	  		jq( ".clazzPlaceHolderAware" ).each(function( i ) {
+				  var id = this.id;
+				  var record = id.split('_');
+				  var dummy0 = record[0];
+				  var dummy1 = record[1];
+				  var pos1 = record[2];
+				  //append to filter
+				  filterPos1 += pos1 + RECORD_SEPARATOR;
+	    	});
+	  		
 	  		jq('#godsnoPosButton').attr('target','_blank');
-			window.open('godsno_childwindow_uppdragslist.do?action=doFind&hegn=' + jq('#gogn').val() + '&gotrnr=' + jq('#gotrnr').val(), "oppWin", "top=300px,left=500px,height=500px,width=700px,scrollbars=no,status=no,location=no");
+			window.open('godsno_childwindow_uppdragslist.do?action=doFind&hegn=' + jq('#gogn').val() + '&gotrnr=' + jq('#gotrnr').val() + "&pos1_lst=" + filterPos1, "oppWin", "top=300px,left=500px,height=500px,width=700px,scrollbars=no,status=no,location=no");
 			
 	    });
 	    jq('#godsnoPosButton').keypress(function(e){ //extra feature for the end user

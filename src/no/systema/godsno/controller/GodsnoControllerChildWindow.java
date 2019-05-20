@@ -91,6 +91,7 @@ public class GodsnoControllerChildWindow {
 		String redirect = request.getParameter("rd");
 		String hegn = request.getParameter("hegn");
 		String gotrnr = request.getParameter("gotrnr");
+		String pos1_lst = request.getParameter("pos1_lst");
 		model.put("hegn", hegn);
 		model.put("gotrnr", gotrnr);
 		//check user (should be in session already)
@@ -101,7 +102,7 @@ public class GodsnoControllerChildWindow {
 			
 			appUser.setActiveMenu(SystemaWebUser.ACTIVE_MENU_GODSREGNO);
 			//get list
-			mainList = this.getList(appUser, hegn, model);
+			mainList = this.getList(appUser, hegn, model, pos1_lst);
 			
 			//--------------------------------------
     		//Final successView with domain objects
@@ -124,7 +125,7 @@ public class GodsnoControllerChildWindow {
 	 * @param model
 	 * @return
 	 */
-	private Collection getList(SystemaWebUser appUser, String godsno, Map model){
+	private Collection getList(SystemaWebUser appUser, String godsno, Map model, String pos1_lst){
 		Collection outputListOfOrders = new ArrayList();
 		
 		final String BASE_URL = GodsnoUrlDataStore.GODSNO_BASE_MAIN_ORDER_LIST_URL;
@@ -166,13 +167,17 @@ public class GodsnoControllerChildWindow {
     	if(jsonPayload!=null){
     		JsonTrorOrderListContainer orderListContainer = this.trorMainOrderListService.getMainListContainer(jsonPayload);
     		if(orderListContainer!=null){
-    			outputListOfOrders = orderListContainer.getDtoList();
-    			for(JsonTrorOrderListRecord record: orderListContainer.getDtoList()){
-    				//remove invalid cases for this UCase
-    				/*if(record.getHeavd()>0){
-    					outputListOpenOrders.add(record);
-    				}*/
-    				//logger.info("HENAS:" + record.getHenas());
+    			if(strMgr.isNull(pos1_lst)){
+    				outputListOfOrders = orderListContainer.getDtoList();
+    			}else{
+    				for(JsonTrorOrderListRecord record: orderListContainer.getDtoList()){
+	    				//remove invalid cases for this UCase
+	    				if(pos1_lst.contains(record.getHepos1())){
+	    					//already picked hence, do not include
+	    				}else{
+	    					outputListOfOrders.add(record);
+	    				}
+	    			}
     			}
 	    		
     		}

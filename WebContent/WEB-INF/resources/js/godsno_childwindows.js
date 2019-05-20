@@ -39,9 +39,8 @@
     	  if(requestParams!=''){
     		  opener.jq('#xxx').text(requestParams);
     		  opener.jq('#xxx').css('display','inline');
+    		  opener.jq('#submit').click();
     	  }
-    	  
-    		  
     	  //
     	  window.close();
       });

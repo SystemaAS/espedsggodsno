@@ -229,12 +229,14 @@
 					 				<input type="text" class="inputTextMediumBlue" name="gotrnr" id="gotrnr" size="22" maxlength="20" value="${record.gotrnr}">
 					 				<%-- only with Update mode --%>
 					 				<c:if test="${not empty updateFlag}">
-					 					<%-- only when the list does not exist in order to avoid a lot of UCases at this moment --%>
+					 					<%-- only when the list does not exist in order to avoid a lot of UCases at this moment 
 						 				<c:if test="${empty jtPosList}">
 							 				&nbsp;
 							 				<button title="Hente Posisjon" name="godsnoPosButton" id="godsnoPosButton" class="inputFormSubmitStd" type="button">Pos. <span id="xxx" class="text11" style="display:none; background-color: #DFF2BF;color: #4F8A10;"></span></button>
-							 				
 						 				</c:if>
+						 				--%>
+						 				&nbsp;
+						 				<button title="Hente Posisjon" name="godsnoPosButton" id="godsnoPosButton" class="inputFormSubmitStd" type="button">Pos. <span id="xxx" class="text11" style="display:none; background-color: #DFF2BF;color: #4F8A10;"></span></button>
 					 				</c:if>
 					 			</td>
 					 			
@@ -321,7 +323,7 @@
 						                
 						                <tbody>
 							            <c:forEach items="${jtPosList}" var="record" varStatus="counter">    
-							             <tr class="tableRow" >  
+							             <tr class="tableRow clazzPlaceHolderAware" id="trPlaceHolder_${counter.count}_${record.gtpos1}" >  
 							               <td width="2%" class="text12" style="background-color: lightyellow" >${record.gtpos1}</td>
 							               <td width="2%" class="text12" style="background-color: lightyellow" >${record.gtpos2}</td>
 							               <td align="center" width="2%" class="text12" style="background-color: lightyellow" >
