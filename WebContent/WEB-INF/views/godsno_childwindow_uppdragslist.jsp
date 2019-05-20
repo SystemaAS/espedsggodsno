@@ -16,9 +16,22 @@
 		.dataTables_wrapper .oppdragsListFilter .dataTables_info{float:right}
 	</style>
 	
-	<table class="tableBorderWithRoundCorners3D_RoundOnlyOnBottom" cellspacing="0" border="0" cellpadding="0">
+	<table class="tableBorderWithRoundCorners3D" cellspacing="0" border="0" cellpadding="0">
 		<tr>
-			<td colspan="3" class="text14">&nbsp;Godsnr&nbsp;<b>${model.hegn}</b></td>
+			<td>
+				<table>
+				<tr>
+					<td class="text14">&nbsp;Godsnr.</td>
+					<td class="text14" style="color:navy;"><b>${model.hegn}</b></td>
+					<td class="text14">&nbsp;Transittnr.</td>
+					<td class="text14" style="color:navy;"><b>${model.gotrnr}</b></td>
+				</tr>
+				
+				<tr>
+					<td colspan="5" class="text12" style="color:navy;"><i>&nbsp;Koble posisjoner til (avvikende) transitnr.</i></td>
+				</tr>
+				</table>
+			</td>
 		</tr>
 		<tr>
 		<td valign="top">

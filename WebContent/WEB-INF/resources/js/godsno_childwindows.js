@@ -36,6 +36,12 @@
     	  });
     	  //alert(requestParams);
     	  opener.jq('#pos1TargetString').val(requestParams);
+    	  if(requestParams!=''){
+    		  opener.jq('#xxx').text(requestParams);
+    		  opener.jq('#xxx').css('display','inline');
+    	  }
+    	  
+    		  
     	  //
     	  window.close();
       });

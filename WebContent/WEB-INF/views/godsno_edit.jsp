@@ -226,16 +226,18 @@
 					 		<tr >
 					 			<td class="text14"><span title="gotrnr">Transittnr.</span></td>
 					 			<td class="text14">
-					 				<input type="text" class="inputTextMediumBlue" name="gotrnr" id="gotrnr" size="21" maxlength="20" value="${record.gotrnr}">
+					 				<input type="text" class="inputTextMediumBlue" name="gotrnr" id="gotrnr" size="22" maxlength="20" value="${record.gotrnr}">
 					 				<%-- only with Update mode --%>
 					 				<c:if test="${not empty updateFlag}">
 					 					<%-- only when the list does not exist in order to avoid a lot of UCases at this moment --%>
 						 				<c:if test="${empty jtPosList}">
 							 				&nbsp;
-							 				<button title="Hente Posisjon" name="godsnoPosButton" id="godsnoPosButton" class="inputFormSubmitStd" type="button">Pos.</button>
+							 				<button title="Hente Posisjon" name="godsnoPosButton" id="godsnoPosButton" class="inputFormSubmitStd" type="button">Pos. <span id="xxx" class="text11" style="display:none; background-color: #DFF2BF;color: #4F8A10;"></span></button>
+							 				
 						 				</c:if>
-						 				</c:if>
+					 				</c:if>
 					 			</td>
+					 			
 					 			<td class="text14">
 					 				<img style="vertical-align:middle;" src="resources/images/calendar.gif" width="12px" height="12px" border="0" alt="dato">
 					 				<span title="gotrdt">Transittdato</span>
@@ -250,8 +252,6 @@
 					 				</c:choose>
 					 			</td>
 					 		</tr>
-					 		
-					 		
 					 		
 					 		
 					 		<tr >

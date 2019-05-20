@@ -90,7 +90,9 @@ public class GodsnoControllerChildWindow {
 		
 		String redirect = request.getParameter("rd");
 		String hegn = request.getParameter("hegn");
+		String gotrnr = request.getParameter("gotrnr");
 		model.put("hegn", hegn);
+		model.put("gotrnr", gotrnr);
 		//check user (should be in session already)
 		if(appUser==null){
 			return loginView;

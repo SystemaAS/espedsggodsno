@@ -17,8 +17,10 @@
   
   jq(function() {
 	  	jq('#godsnoPosButton').click(function() {
-  			jq('#godsnoPosButton').attr('target','_blank');
-  			window.open('godsno_childwindow_uppdragslist.do?action=doFind&hegn=' + jq('#gogn').val(), "oppWin", "top=100px,left=400px,height=500px,width=600px,scrollbars=no,status=no,location=no");
+	  		if(jq('#gotrnr').val()!=''){
+	  			jq('#godsnoPosButton').attr('target','_blank');
+	  			window.open('godsno_childwindow_uppdragslist.do?action=doFind&hegn=' + jq('#gogn').val() + '&gotrnr=' + jq('#gotrnr').val(), "oppWin", "top=300px,left=500px,height=500px,width=700px,scrollbars=no,status=no,location=no");
+	  		}
 	    });
 	    jq('#godsnoPosButton').keypress(function(e){ //extra feature for the end user
 			if(e.which == 13) {
