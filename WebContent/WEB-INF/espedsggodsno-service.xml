@@ -18,6 +18,7 @@ http://www.springframework.org/schema/context/spring-context-4.0.xsd">
 	<bean id="ediFtpLogService" class="no.systema.main.service.general.EdiFtpLogServiceImpl"/>
 	<bean id="firmLoginService" class="no.systema.main.service.FirmLoginServiceImpl"/>
 	<bean id="uploadFileToArchiveService" class="no.systema.main.service.general.UploadFileToArchiveServiceImpl"/>
+	<bean id="cundfService" class="no.systema.main.service.CundfServiceImpl"/>
 	
 	<!-- for html general drop down lists: avd, sign -->
 	<bean id="maintMainKodtsfSyparfService" class="no.systema.z.main.maintenance.service.MaintMainKodtsfSyparfServiceImpl"/>

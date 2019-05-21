@@ -34,12 +34,15 @@ import no.systema.jservices.common.dao.GodsjtDao;
 
 //GODSNO
 import no.systema.godsno.service.GodsnoService;
+import no.systema.godsno.service.TrorMainOrderListService;
 import no.systema.godsno.filter.SearchFilterGodsnoMainList;
 import no.systema.godsno.url.store.GodsnoUrlDataStore;
 import no.systema.godsno.util.GodsnoConstants;
 import no.systema.godsno.model.JsonContainerDaoGODSJF;
 import no.systema.godsno.model.JsonContainerDaoGODSJT;
 import no.systema.godsno.model.JsonContainerDaoMERKNF;
+import no.systema.godsno.model.JsonTrorOrderListContainer;
+import no.systema.godsno.model.JsonTrorOrderListRecord;
 import no.systema.godsno.util.manager.CodeDropDownMgr;
 
 /**
@@ -68,6 +71,8 @@ public class GodsnoMainListController {
 	@Autowired
 	private GodsnoService godsnoService;
 	
+	@Autowired
+	private TrorMainOrderListService trorMainOrderListService;
 
 	@PostConstruct
 	public void initIt() throws Exception {
@@ -277,20 +282,41 @@ public class GodsnoMainListController {
     	if(jsonPayload!=null){
     		JsonContainerDaoGODSJF listContainer = this.godsnoService.getContainerGodsjf(jsonPayload);
     		outputList = listContainer.getList();
-
+    		Map<String, String> mapGreenPosisjoner = new HashMap<String,String>();
+    		//(1) Main list
     		for(GodsjfDao record : outputList){
     			this.adjustFieldsForFetch(record);
     			//limit ... just in case
     			if(outputList.size()<150){
     				this.getListOfExistingMerknf(appUser, record.getGogn(), record.getGotrnr(), model);
     				this.getListOfExistingPosisjoner(appUser, record.getGogn(), record.getGotrnr(), model);
+    				//Check if there is already a posisjon in used and if so: mark it in a map (the map is at a godsnr-level)
+    				String tmp = (String)model.get(record.getGogn() + record.getGotrnr() + "pos");
+    				if(strMgr.isNotNull(tmp)){
+    					mapGreenPosisjoner.put(record.getGogn(), record.getGogn());
+    				}	
     			}
     		}
+    		//(2) This loop is ONLY to catch a warning regarding posisjoner:
+    		//    Check if there are posisjoner that MUST be used/chosen and have not been yet. If so: mark them
+    		for(GodsjfDao record : outputList){
+    			if(!mapGreenPosisjoner.containsKey(record.getGogn())){
+    				//At this point we know now that no posisjon is present at a godsnr-level. Check if it should be present.
+    				if(this.posExists(appUser, record.getGogn())){
+    					this.getListOfExistingPosisjonerPerGodsnr(appUser, record.getGogn(), model);
+    				}
+    			}
+    		}
+    		
     	}		
 	    
 		return outputList;
 	}
 	
+	/**
+	 * 
+	 * @param recordToValidate
+	 */
 	private void adjustFieldsForFetch(GodsjfDao recordToValidate){
 		recordToValidate.setGogrdt(this.convertToDate_NO(recordToValidate.getGogrdt()));
 		recordToValidate.setGolsdt(this.convertToDate_NO(recordToValidate.getGolsdt()));
@@ -338,7 +364,6 @@ public class GodsnoMainListController {
     		JsonContainerDaoGODSJT listContainer = this.godsnoService.getContainerGodsjt(jsonPayload);
     		outputList = listContainer.getList();
     		if(outputList!=null && !outputList.isEmpty()){
-    			
     			String key = gtgn + gttrnr + "pos";
     			model.put(key, gtgn);//will be used in the JSP
     		}
@@ -347,6 +372,54 @@ public class GodsnoMainListController {
 		return outputList;
 	}
 	
+	/**
+	 * 
+	 * @param appUser
+	 * @param gtgn
+	 * @param model
+	 * @return
+	 */
+	private Collection<GodsjtDao> getListOfExistingPosisjonerPerGodsnr(SystemaWebUser appUser, String gtgn, Map model){
+		Collection<GodsjtDao> outputList = new ArrayList<GodsjtDao>();
+		//---------------
+    	//Get main list
+		//---------------
+		final String BASE_URL = GodsnoUrlDataStore.GODSNO_BASE_GODSJT_LIST_URL;
+		//add URL-parameters
+		StringBuffer urlRequestParams = new StringBuffer();
+		urlRequestParams.append("user=" + appUser.getUser());
+		urlRequestParams.append("&gtgn=" + gtgn);
+		
+		//session.setAttribute(TransportDispConstants.ACTIVE_URL_RPG_TRANSPORT_DISP, BASE_URL + "==>params: " + urlRequestParams.toString()); 
+    	logger.info(Calendar.getInstance().getTime() + " CGI-start timestamp");
+    	logger.info("URL: " + BASE_URL);
+    	//logger.info("URL PARAMS: " + urlRequestParams);
+    	String jsonPayload = this.urlCgiProxyService.getJsonContent(BASE_URL, urlRequestParams.toString());
+    	//Debug --> 
+    	//logger.debug(jsonDebugger.debugJsonPayloadWithLog4J(jsonPayload));
+    	logger.info(Calendar.getInstance().getTime() +  " CGI-end timestamp");
+    	if(jsonPayload!=null){
+    		JsonContainerDaoGODSJT listContainer = this.godsnoService.getContainerGodsjt(jsonPayload);
+    		outputList = listContainer.getList();
+    		if(outputList!=null && !outputList.isEmpty()){
+    			//OK
+    		}else{
+    			//Meaning that no Pos. have been chosen for this Godsnr. 
+    			String key = gtgn + "posg";
+    			model.put(key, gtgn);//will be used in the JSP
+    		}
+    	}		
+	    
+		return outputList;
+	}
+	/**
+	 * 
+	 * @param appUser
+	 * @param gogn
+	 * @param gotrnr
+	 * @param model
+	 * @return
+	 */
 	private Collection<MerknfDao> getListOfExistingMerknf(SystemaWebUser appUser, String gogn, String gotrnr, Map model){
 		Collection<MerknfDao> outputList = new ArrayList<MerknfDao>();
 		//---------------
@@ -390,6 +463,46 @@ public class GodsnoMainListController {
 		model.put("signatureList", this.codeDropDownMgr.getSignatures(appUser.getUser()) );
 		model.put("avdList", this.codeDropDownMgr.getAvdList(appUser.getUser()) );
 		
+	}
+	/**
+	 * 
+	 * @param appUser
+	 * @param godsno
+	 * @param model
+	 * @return
+	 */
+	private boolean posExists(SystemaWebUser appUser, String godsno){
+		boolean retval = false;
+		
+		final String BASE_URL = GodsnoUrlDataStore.GODSNO_BASE_MAIN_ORDER_LIST_URL;
+		//add URL-parameters
+		StringBuffer urlRequestParams = new StringBuffer();
+		urlRequestParams.append("user=" + appUser.getUser() + "&hegn=" + godsno);
+		//user parameter dftdg (go esped-->8 (parameters).
+		//if(strMgr.isNotNull(appUser.getDftdg())){
+			//urlRequestParams.append("&dftdg=" + appUser.getDftdg());
+		//}
+		logger.info(Calendar.getInstance().getTime() + " CGI-start timestamp");
+    	logger.info("URL: " + BASE_URL);
+    	logger.info("URL PARAMS: " + urlRequestParams);
+    	String jsonPayload = this.urlCgiProxyService.getJsonContent(BASE_URL, urlRequestParams.toString());
+    	//Debug --> 
+    	logger.debug(jsonDebugger.debugJsonPayloadWithLog4J(jsonPayload));
+    	logger.info(Calendar.getInstance().getTime() +  " CGI-end timestamp");
+    	if(jsonPayload!=null){
+    		JsonTrorOrderListContainer orderListContainer = this.trorMainOrderListService.getMainListContainer(jsonPayload);
+    		if(orderListContainer!=null && orderListContainer.getDtoList()!=null){
+    			for(JsonTrorOrderListRecord record: orderListContainer.getDtoList()){
+					if(strMgr.isNotNull(record.getHepos1())){
+						retval = true;
+						logger.info("Posisjon 1 exists in this godsno:" + godsno);
+						break;
+					}
+				}
+    		}
+    	}		
+
+    	return retval;
 	}
 	
 }

@@ -20,6 +20,10 @@ import javax.servlet.http.HttpSession;
 //application imports
 import no.systema.main.service.UrlCgiProxyService;
 import no.systema.main.validator.LoginValidator;
+import no.systema.z.main.maintenance.model.jsonjackson.dbtable.JsonMaintMainCundfContainer;
+import no.systema.z.main.maintenance.model.jsonjackson.dbtable.JsonMaintMainCundfRecord;
+import no.systema.main.service.CundfService;
+import no.systema.z.main.maintenance.url.store.MaintenanceMainUrlDataStore;
 import no.systema.main.util.AppConstants;
 import no.systema.main.util.JsonDebugger;
 import no.systema.main.util.io.PayloadContentFlusher;
@@ -34,6 +38,7 @@ import no.systema.godsno.util.GodsnoConstants;
 import no.systema.godsno.model.JsonTrorOrderListContainer;
 import no.systema.godsno.model.JsonTrorOrderListRecord;
 import no.systema.godsno.util.manager.CodeDropDownMgr;
+import no.systema.jservices.common.dao.services.CundfDaoService;
 
 /**
  * Godsregistrering-NO Childwindow Controller 
@@ -63,7 +68,10 @@ public class GodsnoControllerChildWindow {
 	
 	@Autowired
 	private TrorMainOrderListService trorMainOrderListService;
-
+	
+	@Autowired
+	CundfService cundfService;
+	
 	@PostConstruct
 	public void initIt() throws Exception {
 		if("DEBUG".equals(AppConstants.LOG4J_LOGGER_LEVEL)){
@@ -136,28 +144,7 @@ public class GodsnoControllerChildWindow {
 		//if(strMgr.isNotNull(appUser.getDftdg())){
 			//urlRequestParams.append("&dftdg=" + appUser.getDftdg());
 		//}
-		
-		/*
-		if(strMgr.isNotNull(recordToValidate.getAvd())){ urlRequestParams.append("&heavd=" + recordToValidate.getAvd()); }
-		if(strMgr.isNotNull(recordToValidate.getOrderNr())){ urlRequestParams.append("&heopd=" + recordToValidate.getOrderNr()); }
-		if(strMgr.isNotNull(recordToValidate.getSign())){ urlRequestParams.append("&hesg=" + recordToValidate.getSign()); }
-		if(strMgr.isNotNull(recordToValidate.getDate())){ urlRequestParams.append("&hedtop=" + recordToValidate.getDate()); }
-		if(strMgr.isNotNull(recordToValidate.getFromDate())){ urlRequestParams.append("&todoFromDate=" + recordToValidate.getFromDate()); }
-		if(strMgr.isNotNull(recordToValidate.getToDate())){ urlRequestParams.append("&todoToDate=" + recordToValidate.getToDate()); }
-		//From and dates
-		if(strMgr.isNotNull(recordToValidate.getSender())){ urlRequestParams.append("&henas=" + recordToValidate.getSender()); }
-		if(strMgr.isNotNull(recordToValidate.getReceiver())){ urlRequestParams.append("&henak=" + recordToValidate.getReceiver()); }
-		if(strMgr.isNotNull(recordToValidate.getFrom())){ urlRequestParams.append("&hesdf=" + recordToValidate.getFrom()); }
-		//To and dates
-		if(strMgr.isNotNull(recordToValidate.getTo())){ urlRequestParams.append("&hesdt=" + recordToValidate.getTo()); }
-		//other
-		if(strMgr.isNotNull(recordToValidate.getStatus())){ urlRequestParams.append("&hest=" + recordToValidate.getStatus()); }
-		if(strMgr.isNotNull(recordToValidate.getTtype())){ urlRequestParams.append("&heur=" + recordToValidate.getTtype()); }
-		if(strMgr.isNotNull(recordToValidate.getGodsNr())){ urlRequestParams.append("&hegn=" + recordToValidate.getGodsNr()); }
-		*/
-		
-		//session.setAttribute(TransportDispConstants.ACTIVE_URL_RPG_TRANSPORT_DISP, BASE_URL + "==>params: " + urlRequestParams.toString()); 
-    	logger.info(Calendar.getInstance().getTime() + " CGI-start timestamp");
+		logger.info(Calendar.getInstance().getTime() + " CGI-start timestamp");
     	logger.info("URL: " + BASE_URL);
     	logger.info("URL PARAMS: " + urlRequestParams);
     	String jsonPayload = this.urlCgiProxyService.getJsonContent(BASE_URL, urlRequestParams.toString());
@@ -168,13 +155,18 @@ public class GodsnoControllerChildWindow {
     		JsonTrorOrderListContainer orderListContainer = this.trorMainOrderListService.getMainListContainer(jsonPayload);
     		if(orderListContainer!=null){
     			if(strMgr.isNull(pos1_lst)){
-    				outputListOfOrders = orderListContainer.getDtoList();
+    				//outputListOfOrders = orderListContainer.getDtoList();
+    				for(JsonTrorOrderListRecord record: orderListContainer.getDtoList()){
+    					this.getHeknaName(appUser, record);
+    					outputListOfOrders.add(record);
+    				}
     			}else{
     				for(JsonTrorOrderListRecord record: orderListContainer.getDtoList()){
 	    				//remove invalid cases for this UCase
 	    				if(pos1_lst.contains(record.getHepos1())){
 	    					//already picked hence, do not include
 	    				}else{
+	    					this.getHeknaName(appUser, record);
 	    					outputListOfOrders.add(record);
 	    				}
 	    			}
@@ -186,8 +178,39 @@ public class GodsnoControllerChildWindow {
     	logger.info("List size:" + outputListOfOrders.size());
 		return outputListOfOrders;
 	}
-	
-	
+	/**
+	 * 
+	 * @param appUser
+	 * @param orderListrecord
+	 */
+	private void getHeknaName(SystemaWebUser appUser, JsonTrorOrderListRecord orderListrecord){
+		String BASE_URL = MaintenanceMainUrlDataStore.MAINTENANCE_MAIN_BASE_SYCUNDFR_GET_LIST_URL;
+		String firm = appUser.getCompanyCode();
+		if(strMgr.isNull(firm)){
+			firm = appUser.getFallbackCompanyCode();
+		}
+		String urlRequestParamsKeys = "user=" + appUser.getUser() + "&kundnr=" + orderListrecord.getHekna() + "&firma=" + firm;
+		//this.getRequestUrlKeyParametersForSearchCustomer(appUser.getUser(), customerName, customerNr, firma, syrg);
+		logger.info("URL: " + BASE_URL);
+		logger.info("PARAMS: " + urlRequestParamsKeys);
+		logger.info(Calendar.getInstance().getTime() +  " CGI-start timestamp");
+		String jsonPayload = this.urlCgiProxyService.getJsonContent(BASE_URL, urlRequestParamsKeys);
+		//debugger
+		logger.debug(jsonDebugger.debugJsonPayloadWithLog4J(jsonPayload));
+		logger.info(Calendar.getInstance().getTime() +  " CGI-end timestamp");
+    	if(jsonPayload!=null){
+    		jsonPayload = jsonPayload.replaceFirst("Customerlist", "customerlist");
+    		JsonMaintMainCundfContainer container = this.cundfService.getList(jsonPayload);
+    		if(container!=null){
+    			if (container.getList()!=null && container.getList().size()>0){
+    				for(JsonMaintMainCundfRecord  record : container.getList()){
+    					orderListrecord.setHeknaName(record.getKnavn());
+    				}
+    			}
+    		}
+    	}
+		
+	}
 	
 	
 }

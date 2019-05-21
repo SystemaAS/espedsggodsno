@@ -47,6 +47,8 @@ public class JsonTrorOrderListRecord extends JsonAbstractGrandFatherRecord {
 	private String hepk4;
 	private String hepos1;
 	private String hepos2;
+	private String hekna;
+	private String heknaName;
 	
 	
 	/**

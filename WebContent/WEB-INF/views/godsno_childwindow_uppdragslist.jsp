@@ -53,11 +53,12 @@
 						<thead>
 						<tr class="tableHeaderField" >
 							<th width="2%" class="text14">&nbsp;Velg&nbsp;</th>
-							<th width="2%" class="text14" title="todo">&nbsp;Pos1&nbsp;</th>
-		                    <th width="2%" class="text14" title="todo">&nbsp;Pos2&nbsp;</th>
-		                    <th width="2%" class="text14" title="todo">&nbsp;Selger&nbsp;</th>
-		                    <th width="2%" class="text14" title="todo">&nbsp;Kjøper&nbsp;</th>
-		                    <th width="2%" class="text14" title="todo">&nbsp;Type&nbsp;</th>
+							<th width="2%" class="text14" title="Pos1">&nbsp;Pos1&nbsp;</th>
+		                    <th width="2%" class="text14" title="Pos2">&nbsp;Pos2&nbsp;</th>
+		                    <th width="2%" class="text14" title="Selger">&nbsp;Selger&nbsp;</th>
+		                    <th width="2%" class="text14" title="Kjøper">&nbsp;Kjøper&nbsp;</th>
+		                    <th width="2%" class="text14" title="Agentnr.">&nbsp;Anr.&nbsp;</th>
+		                    <th width="2%" class="text14" title="Agentnavn">&nbsp;Anavn&nbsp;</th>
 		                </tr> 
 		                </thead>
 		                
@@ -74,12 +75,12 @@
 				               		</c:otherwise>
 			               		</c:choose>
 			               	</td>
-			               <td width="2%" class="text14NoneColor">&nbsp;${record.hepos1}</td>
-			               <td width="2%" class="text14NoneColor">&nbsp;${record.hepos2}</td>
-			               <td width="10%" class="text14NoneColor">&nbsp;${record.henas}</td>
-		               	   <td width="10%" class="text14NoneColor">&nbsp;${record.henak}</td>
-		               	   <td width="2%" class="text14NoneColor">&nbsp;${record.heur}</td>
-		               	   
+			               <td width="2%" align="center" class="text14NoneColor">&nbsp;${record.hepos1}</td>
+			               <td width="2%" align="center" class="text14NoneColor">&nbsp;${record.hepos2}</td>
+			               <td width="2%" class="text14NoneColor">&nbsp;${record.henas}</td>
+		               	   <td width="2%" class="text14NoneColor">&nbsp;${record.henak}</td>
+		               	   <td width="2%" align="center" class="text14NoneColor">&nbsp;${record.hekna}</td>
+		               	   <td width="2%" class="text14NoneColor">&nbsp;${record.heknaName}</td>
 			            </tr> 
 			            </c:forEach>
 			            </tbody>

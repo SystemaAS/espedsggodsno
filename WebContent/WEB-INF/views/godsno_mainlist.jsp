@@ -170,9 +170,19 @@
 			               	<td width="2%" class="tableCell" >${record.gotrnr}</td>
 			               	<td width="2%" align="center" class="tableCell" >
 			               		<c:set var = "keyPos" value = "${record.gogn}${record.gotrnr}pos"/>
-			               		<c:if test="${not empty model[keyPos]}">
+			               		<c:set var = "keyPosg" value = "${record.gogn}posg"/>
+			               		<%-- if we have at least ONE keyPos then ignore the rest of the records with the same Godsnr --%>
+			               		<c:choose>
+			               		<c:when test="${not empty model[keyPos]}">
 			               			<img title="Pos" src="resources/images/bulletGreen.gif" border="0" alt="Posisjon finnes">
-			               		</c:if>
+			               		</c:when>
+			               		<c:otherwise>
+			               			<%-- if we have don't have at least ONE keyPosg BUT there are Pos. in this Gordsnr that have not been chosen: show the red light --%>
+			               			<c:if test="${not empty model[keyPosg]}">
+			               				<img title="Pos.exists...need to be chosen" src="resources/images/bulletRed.gif" border="0" alt="Pos.exists...need to be chosen">
+			               			</c:if>
+			               		</c:otherwise>
+			               		</c:choose>
 			               	</td>
 			               	<td width="2%" align="center" class="tableCell" >${record.gotrty}</td>
 			               	
