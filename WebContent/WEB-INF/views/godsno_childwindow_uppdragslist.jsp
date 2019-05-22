@@ -55,10 +55,10 @@
 							<th width="2%" class="text14">&nbsp;Velg&nbsp;</th>
 							<th width="2%" class="text14" title="Pos1">&nbsp;Pos1&nbsp;</th>
 		                    <th width="2%" class="text14" title="Pos2">&nbsp;Pos2&nbsp;</th>
-		                    <th width="2%" class="text14" title="Selger">&nbsp;Selger&nbsp;</th>
-		                    <th width="2%" class="text14" title="Kjøper">&nbsp;Kjøper&nbsp;</th>
-		                    <th width="2%" class="text14" title="Agentnr.">&nbsp;Anr.&nbsp;</th>
-		                    <th width="2%" class="text14" title="Agentnavn">&nbsp;Anavn&nbsp;</th>
+		                    <th class="text14" title="Selger">&nbsp;Selger&nbsp;</th>
+		                    <th class="text14" title="Kjøper">&nbsp;Kjøper&nbsp;</th>
+		                    <th width="2%" class="text14" title="Agentnr.">&nbsp;Ag.nr.&nbsp;</th>
+		                    <th class="text14" title="Agentnavn">&nbsp;Ag.navn&nbsp;</th>
 		                </tr> 
 		                </thead>
 		                
@@ -77,10 +77,10 @@
 			               	</td>
 			               <td width="2%" align="center" class="text14NoneColor">&nbsp;${record.hepos1}</td>
 			               <td width="2%" align="center" class="text14NoneColor">&nbsp;${record.hepos2}</td>
-			               <td width="2%" class="text14NoneColor">&nbsp;${record.henas}</td>
-		               	   <td width="2%" class="text14NoneColor">&nbsp;${record.henak}</td>
+			               <td class="text14NoneColor">&nbsp;${record.henas}</td>
+		               	   <td class="text14NoneColor">&nbsp;${record.henak}</td>
 		               	   <td width="2%" align="center" class="text14NoneColor">&nbsp;${record.hekna}</td>
-		               	   <td width="2%" class="text14NoneColor">&nbsp;${record.heknaName}</td>
+		               	   <td class="text14NoneColor">&nbsp;${record.heknaName}</td>
 			            </tr> 
 			            </c:forEach>
 			            </tbody>

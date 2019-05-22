@@ -35,9 +35,11 @@ import no.systema.godsno.service.GodsnoService;
 import no.systema.godsno.service.TrorMainOrderListService;
 import no.systema.godsno.url.store.GodsnoUrlDataStore;
 import no.systema.godsno.util.GodsnoConstants;
+import no.systema.godsno.model.JsonContainerDaoGODSJT;
 import no.systema.godsno.model.JsonTrorOrderListContainer;
 import no.systema.godsno.model.JsonTrorOrderListRecord;
 import no.systema.godsno.util.manager.CodeDropDownMgr;
+import no.systema.jservices.common.dao.GodsjtDao;
 import no.systema.jservices.common.dao.services.CundfDaoService;
 
 /**
@@ -99,7 +101,7 @@ public class GodsnoControllerChildWindow {
 		String redirect = request.getParameter("rd");
 		String hegn = request.getParameter("hegn");
 		String gotrnr = request.getParameter("gotrnr");
-		String pos1_lst = request.getParameter("pos1_lst");
+		//String pos1_lst = request.getParameter("pos1_lst");
 		model.put("hegn", hegn);
 		model.put("gotrnr", gotrnr);
 		//check user (should be in session already)
@@ -110,7 +112,7 @@ public class GodsnoControllerChildWindow {
 			
 			appUser.setActiveMenu(SystemaWebUser.ACTIVE_MENU_GODSREGNO);
 			//get list
-			mainList = this.getList(appUser, hegn, model, pos1_lst);
+			mainList = this.getList(appUser, hegn, model);
 			
 			//--------------------------------------
     		//Final successView with domain objects
@@ -133,17 +135,19 @@ public class GodsnoControllerChildWindow {
 	 * @param model
 	 * @return
 	 */
-	private Collection getList(SystemaWebUser appUser, String godsno, Map model, String pos1_lst){
-		Collection outputListOfOrders = new ArrayList();
+	private Collection<JsonTrorOrderListRecord> getList(SystemaWebUser appUser, String godsno, Map model){
+		Collection<JsonTrorOrderListRecord> outputListOfOrders = new ArrayList();
 		
 		final String BASE_URL = GodsnoUrlDataStore.GODSNO_BASE_MAIN_ORDER_LIST_URL;
 		//add URL-parameters
 		StringBuffer urlRequestParams = new StringBuffer();
 		urlRequestParams.append("user=" + appUser.getUser() + "&hegn=" + godsno);
+		
 		//user parameter dftdg (go esped-->8 (parameters).
 		//if(strMgr.isNotNull(appUser.getDftdg())){
 			//urlRequestParams.append("&dftdg=" + appUser.getDftdg());
 		//}
+		
 		logger.info(Calendar.getInstance().getTime() + " CGI-start timestamp");
     	logger.info("URL: " + BASE_URL);
     	logger.info("URL PARAMS: " + urlRequestParams);
@@ -153,29 +157,22 @@ public class GodsnoControllerChildWindow {
     	logger.info(Calendar.getInstance().getTime() +  " CGI-end timestamp");
     	if(jsonPayload!=null){
     		JsonTrorOrderListContainer orderListContainer = this.trorMainOrderListService.getMainListContainer(jsonPayload);
-    		if(orderListContainer!=null){
-    			if(strMgr.isNull(pos1_lst)){
-    				//outputListOfOrders = orderListContainer.getDtoList();
-    				for(JsonTrorOrderListRecord record: orderListContainer.getDtoList()){
+    		if(orderListContainer!=null && (orderListContainer.getDtoList()!=null && orderListContainer.getDtoList().size()>0) ){
+    			String strPos = this.getGodsnrPosString(appUser, godsno);
+    			//this.getGodsnrPosString(appUser, godsno);
+    			for(JsonTrorOrderListRecord record: orderListContainer.getDtoList()){
+    				if(strMgr.isNotNull(strPos) && strPos.contains(record.getHepos1())){
+    					//exclude this record
+    				}else{
+    					//include
     					this.getHeknaName(appUser, record);
     					outputListOfOrders.add(record);
     				}
-    			}else{
-    				for(JsonTrorOrderListRecord record: orderListContainer.getDtoList()){
-	    				//remove invalid cases for this UCase
-	    				if(pos1_lst.contains(record.getHepos1())){
-	    					//already picked hence, do not include
-	    				}else{
-	    					this.getHeknaName(appUser, record);
-	    					outputListOfOrders.add(record);
-	    				}
-	    			}
     			}
-	    		
     		}
     	}		
 
-    	logger.info("List size:" + outputListOfOrders.size());
+    	logger.info("Godsnr/Posisjoner list size:" + outputListOfOrders.size());
 		return outputListOfOrders;
 	}
 	/**
@@ -212,6 +209,47 @@ public class GodsnoControllerChildWindow {
 		
 	}
 	
+	/**
+	 * 
+	 * @param appUser
+	 * @param godsno
+	 * @return
+	 */
+	private String getGodsnrPosString(SystemaWebUser appUser, String godsno){
+		StringBuffer sbPos = new StringBuffer();
+		String RECORD_SEPARATOR = ";";
+		
+		Collection<GodsjtDao> outputList = new ArrayList<GodsjtDao>();
+		//---------------
+    	//Get main list
+		//---------------
+		final String BASE_URL = GodsnoUrlDataStore.GODSNO_BASE_GODSJT_LIST_URL;
+		//add URL-parameters
+		StringBuffer urlRequestParams = new StringBuffer();
+		urlRequestParams.append("user=" + appUser.getUser());
+		urlRequestParams.append("&gtgn=" + godsno);
+		
+		//session.setAttribute(TransportDispConstants.ACTIVE_URL_RPG_TRANSPORT_DISP, BASE_URL + "==>params: " + urlRequestParams.toString()); 
+    	logger.info(Calendar.getInstance().getTime() + " CGI-start timestamp");
+    	logger.info("URL: " + BASE_URL);
+    	logger.info("URL PARAMS: " + urlRequestParams);
+    	String jsonPayload = this.urlCgiProxyService.getJsonContent(BASE_URL, urlRequestParams.toString());
+    	//Debug --> 
+    	//logger.debug(jsonDebugger.debugJsonPayloadWithLog4J(jsonPayload));
+    	logger.info(Calendar.getInstance().getTime() +  " CGI-end timestamp");
+    	if(jsonPayload!=null){
+    		JsonContainerDaoGODSJT listContainer = this.godsnoService.getContainerGodsjt(jsonPayload);
+    		outputList = listContainer.getList();
+    		if(outputList!=null && !outputList.isEmpty()){
+    			logger.info("TRUE");
+    			for(GodsjtDao rec : outputList){
+    				sbPos.append(rec.getGtpos1() + RECORD_SEPARATOR);
+    			}
+    		}
+    	}		
+	    
+		return sbPos.toString();
+	}
 	
 }
 

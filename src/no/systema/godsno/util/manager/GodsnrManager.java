@@ -1,9 +1,19 @@
 package no.systema.godsno.util.manager;
 
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Map;
 import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
+
+import no.systema.godsno.model.JsonContainerDaoGODSJT;
+import no.systema.godsno.service.GodsnoService;
+import no.systema.godsno.url.store.GodsnoUrlDataStore;
 import no.systema.jservices.common.dao.GodsafDao;
+import no.systema.jservices.common.dao.GodsjtDao;
+import no.systema.main.model.SystemaWebUser;
+import no.systema.main.service.UrlCgiProxyService;
 import no.systema.main.util.DateTimeManager;
 import no.systema.main.util.JsonDebugger;
 import no.systema.main.util.StringManager;
@@ -294,6 +304,5 @@ public class GodsnrManager {
 		}
 		return adjustedValue;		
 	}
-	
 	
 }

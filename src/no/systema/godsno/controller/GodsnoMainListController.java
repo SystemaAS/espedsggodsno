@@ -393,7 +393,7 @@ public class GodsnoMainListController {
 		//session.setAttribute(TransportDispConstants.ACTIVE_URL_RPG_TRANSPORT_DISP, BASE_URL + "==>params: " + urlRequestParams.toString()); 
     	logger.info(Calendar.getInstance().getTime() + " CGI-start timestamp");
     	logger.info("URL: " + BASE_URL);
-    	//logger.info("URL PARAMS: " + urlRequestParams);
+    	logger.info("URL PARAMS: " + urlRequestParams);
     	String jsonPayload = this.urlCgiProxyService.getJsonContent(BASE_URL, urlRequestParams.toString());
     	//Debug --> 
     	//logger.debug(jsonDebugger.debugJsonPayloadWithLog4J(jsonPayload));
