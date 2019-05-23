@@ -138,7 +138,7 @@ public class GodsnoControllerChildWindow {
 	private Collection<JsonTrorOrderListRecord> getList(SystemaWebUser appUser, String godsno, Map model){
 		Collection<JsonTrorOrderListRecord> outputListOfOrders = new ArrayList();
 		
-		final String BASE_URL = GodsnoUrlDataStore.GODSNO_BASE_MAIN_ORDER_LIST_URL;
+		final String BASE_URL = GodsnoUrlDataStore.GODSNO_BASE_MAIN_ORDER_LIST_HEADF_URL;
 		//add URL-parameters
 		StringBuffer urlRequestParams = new StringBuffer();
 		urlRequestParams.append("user=" + appUser.getUser() + "&hegn=" + godsno);
@@ -159,13 +159,21 @@ public class GodsnoControllerChildWindow {
     		JsonTrorOrderListContainer orderListContainer = this.trorMainOrderListService.getMainListContainer(jsonPayload);
     		if(orderListContainer!=null && (orderListContainer.getDtoList()!=null && orderListContainer.getDtoList().size()>0) ){
     			String strPos = this.getGodsnrPosString(appUser, godsno);
-    			//this.getGodsnrPosString(appUser, godsno);
+    			//
+    			String previousHekna = "";
+    			String previousHeknaName = "";
     			for(JsonTrorOrderListRecord record: orderListContainer.getDtoList()){
     				if(strMgr.isNotNull(strPos) && strPos.contains(record.getHepos1())){
     					//exclude this record
     				}else{
-    					//include
-    					this.getHeknaName(appUser, record);
+    					//this is only to avoid an extra round-trip to the SQL-back-end
+    					if(!previousHekna.equals(record.getHekna())){
+    						this.getHeknaName(appUser, record);
+    						previousHekna = record.getHekna();
+    						previousHeknaName = record.getHeknaName();
+    					}else{
+    						record.setHeknaName(previousHeknaName);
+    					}
     					outputListOfOrders.add(record);
     				}
     			}
@@ -241,7 +249,7 @@ public class GodsnoControllerChildWindow {
     		JsonContainerDaoGODSJT listContainer = this.godsnoService.getContainerGodsjt(jsonPayload);
     		outputList = listContainer.getList();
     		if(outputList!=null && !outputList.isEmpty()){
-    			logger.info("TRUE");
+    			logger.info("TRUE - Godsnr-Pos1");
     			for(GodsjtDao rec : outputList){
     				sbPos.append(rec.getGtpos1() + RECORD_SEPARATOR);
     			}

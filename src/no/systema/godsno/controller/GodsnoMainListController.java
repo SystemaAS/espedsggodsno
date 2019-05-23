@@ -291,19 +291,25 @@ public class GodsnoMainListController {
     				this.getListOfExistingMerknf(appUser, record.getGogn(), record.getGotrnr(), model);
     				this.getListOfExistingPosisjoner(appUser, record.getGogn(), record.getGotrnr(), model);
     				//Check if there is already a posisjon in used and if so: mark it in a map (the map is at a godsnr-level)
-    				String tmp = (String)model.get(record.getGogn() + record.getGotrnr() + "pos");
-    				if(strMgr.isNotNull(tmp)){
+    				String tmpPosFlag = (String)model.get(record.getGogn() + record.getGotrnr() + "pos");
+    				if(strMgr.isNotNull(tmpPosFlag)){
     					mapGreenPosisjoner.put(record.getGogn(), record.getGogn());
     				}	
     			}
     		}
-    		//(2) This loop is ONLY to catch a warning regarding posisjoner:
-    		//    Check if there are posisjoner that MUST be used/chosen and have not been yet. If so: mark them
+    		//(2) This loop is ONLY to catch a warning regarding posisjoner. These will be marked in the GUI as "warnings"
+    		//    Check if there are posisjoner (use the mapGreenPosisjoner-above as help) that MUST be used/chosen and have not been yet. If so: mark them
+    		String previousGodsnr = "";
     		for(GodsjfDao record : outputList){
     			if(!mapGreenPosisjoner.containsKey(record.getGogn())){
-    				//At this point we know now that no posisjon is present at a godsnr-level. Check if it should be present.
-    				if(this.posExists(appUser, record.getGogn())){
-    					this.getListOfExistingPosisjonerPerGodsnr(appUser, record.getGogn(), model);
+    				//this check is done to avoid redundant check (SQL) since the godsnr has previously been checked... 
+    				if(!previousGodsnr.equals(record.getGogn())){
+	    				//At this point we know now that no posisjon is present at a godsnr-level. Check if it should be at least one.
+	    				if(this.posExists(appUser, record.getGogn())){
+	    					//DEBUG logger.info("########--->Red marks on godsnr:" + record.getGogn());
+	    					this.getListOfExistingPosisjonerPerGodsnr(appUser, record.getGogn(), model);
+	    					previousGodsnr = record.getGogn();
+	    				}
     				}
     			}
     		}
@@ -474,7 +480,7 @@ public class GodsnoMainListController {
 	private boolean posExists(SystemaWebUser appUser, String godsno){
 		boolean retval = false;
 		
-		final String BASE_URL = GodsnoUrlDataStore.GODSNO_BASE_MAIN_ORDER_LIST_URL;
+		final String BASE_URL = GodsnoUrlDataStore.GODSNO_BASE_MAIN_ORDER_LIST_HEADF_URL;
 		//add URL-parameters
 		StringBuffer urlRequestParams = new StringBuffer();
 		urlRequestParams.append("user=" + appUser.getUser() + "&hegn=" + godsno);

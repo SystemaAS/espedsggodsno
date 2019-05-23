@@ -64,7 +64,7 @@ public final class GodsnoUrlDataStore {
 	static public String GODSNO_BASE_TURER_LIST_EXACT_MATCH_URL = AppConstants.HTTP_ROOT_SERVLET_JSERVICES + "/syjservicesgodsno/syjsSYTURER.do";
 		
 	//http://localhost:8080/syjservicestror/syjsHEADF_LITE.do?user=OSCAR&limit=100 (dftdg)
-	static public String GODSNO_BASE_MAIN_ORDER_LIST_URL = AppConstants.HTTP_ROOT_SERVLET_JSERVICES + "/syjservicestror/syjsHEADF_LITE.do";
+	static public String GODSNO_BASE_MAIN_ORDER_LIST_HEADF_URL = AppConstants.HTTP_ROOT_SERVLET_JSERVICES + "/syjservicestror/syjsHEADF_LITE.do";
 		
 	
 	//AS400 services
