@@ -309,9 +309,10 @@
 					 		<tr>
 					 		<td>&nbsp;</td>
 						 	<td >
-								<table style="width:50%;" id="containerdatatableTable" border="0" cellspacing="0" cellpadding="0">	
-						 		<tr >
-						 			<td >
+								
+								<table style="width:50%;" id="containerdatatableTable" border="0" cellspacing="0" cellpadding="0">
+								<tr >
+						 			<td class="inputTextMediumBlueMandatoryField">
 									<table id="posList" class="display compact cell-border" >
 										<thead>
 										<tr class="tableHeaderField">
