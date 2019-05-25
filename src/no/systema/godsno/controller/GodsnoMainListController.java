@@ -283,42 +283,138 @@ public class GodsnoMainListController {
     		JsonContainerDaoGODSJF listContainer = this.godsnoService.getContainerGodsjf(jsonPayload);
     		outputList = listContainer.getList();
     		Map<String, String> mapGreenPosisjoner = new HashMap<String,String>();
+    		Map<String, String> mapRedPosisjoner = new HashMap<String,String>();
+    		//aux
+    		List<GodsjfDao> auxRawListPerGodsnr = new ArrayList<GodsjfDao>();
+    		Map<String, List<GodsjfDao>> auxMapPerGodsnr = new HashMap<String, List<GodsjfDao>>();
+    		int mainListCounter = 0;
+    		
     		//(1) Main list
+    		String previousRecord = "";
     		for(GodsjfDao record : outputList){
+    			mainListCounter ++;
     			this.adjustFieldsForFetch(record);
     			//limit ... just in case
     			if(outputList.size()<150){
+    				
     				this.getListOfExistingMerknf(appUser, record.getGogn(), record.getGotrnr(), model);
     				this.getListOfExistingPosisjoner(appUser, record.getGogn(), record.getGotrnr(), model);
     				//Check if there is already a posisjon in used and if so: mark it in a map (the map is at a godsnr-level)
-    				String tmpPosFlag = (String)model.get(record.getGogn() + record.getGotrnr() + "pos");
+    				String mapKey = record.getGogn() + record.getGotrnr() + "pos";
+    				String tmpPosFlag = (String)model.get(mapKey);
     				if(strMgr.isNotNull(tmpPosFlag)){
-    					mapGreenPosisjoner.put(record.getGogn(), record.getGogn());
-    				}	
+    					mapGreenPosisjoner.put(record.getGogn() + record.getGotrnr(), record.getGogn() + record.getGotrnr());
+    				}
+    				
+    				//this population of different lists per unique-godsnr is required in order to save a map-per-godsnr for future used in this same method
+	    			if(mainListCounter==1){
+	    				previousRecord = record.getGogn();
+	    				auxRawListPerGodsnr.add(record);
+    				}else{
+    					if(previousRecord.equals(record.getGogn())){
+    						auxRawListPerGodsnr.add(record);
+    					}else{
+    						//new list
+    						previousRecord = record.getGogn();
+    						//new list
+    						auxRawListPerGodsnr = new ArrayList<GodsjfDao>();
+    						auxRawListPerGodsnr.add(record);
+    					}
+    				}
+	    			auxMapPerGodsnr.put(record.getGogn(), auxRawListPerGodsnr);
+	    			
     			}
     		}
+    		//DEBUG
+    		// using for-each loop for iteration over Map.entrySet() 
+            for (Map.Entry<String,List<GodsjfDao>> entry : auxMapPerGodsnr.entrySet()){ 
+                logger.info("########Key = " + entry.getKey()); //+ "_Value = " + entry.getValue()); 
+                List<GodsjfDao> tmp = (List<GodsjfDao>)entry.getValue();
+                for(GodsjfDao rec : tmp){
+                	logger.info("-->GODSNR:" + rec.getGogn() + "  -->TRANSNR:" + rec.getGotrnr());
+                }
+            }
+            
+            for (Map.Entry<String,String> entry : mapGreenPosisjoner.entrySet()){ 
+                logger.info("########Key mapGreenPosisjoner = " + entry.getKey()); //+ "_Value = " + entry.getValue()); 
+  
+            }
+    		
     		//(2) This loop is ONLY to catch a warning regarding posisjoner. These will be marked in the GUI as "warnings"
     		//    Check if there are posisjoner (use the mapGreenPosisjoner-above as help) that MUST be used/chosen and have not been yet. If so: mark them
-    		String previousGodsnr = "";
     		for(GodsjfDao record : outputList){
-    			if(!mapGreenPosisjoner.containsKey(record.getGogn())){
+    			if(!mapGreenPosisjoner.containsKey(record.getGogn() + record.getGotrnr())){
+    				logger.info("Green posisjoner do not exist!");
     				//this check is done to avoid redundant check (SQL) since the godsnr has previously been checked... 
-    				if(!previousGodsnr.equals(record.getGogn())){
-	    				//At this point we know now that no posisjon is present at a godsnr-level. Check if it should be at least one.
-	    				if(this.posExists(appUser, record.getGogn())){
-	    					//DEBUG logger.info("########--->Red marks on godsnr:" + record.getGogn());
-	    					this.getListOfExistingPosisjonerPerGodsnr(appUser, record.getGogn(), model);
-	    					previousGodsnr = record.getGogn();
-	    				}
+					//At this point we know now that no posisjon is present at a godsnr-level. Check if it should be at least one.
+    				if(this.posExists(appUser, record.getGogn())){
+    					//DEBUG logger.info("########--->Red marks on godsnr:" + record.getGogn());
+    					this.getListOfExistingPosisjonerPerGodsnr(appUser, record.getGogn(), model);
+    				}
+    				
+    			}else{
+    				logger.info("Green posisjoner exist already!");
+    				if(this.posExists(appUser, record.getGogn())){
+    					if(this.isValidForRedMark(record, mapGreenPosisjoner, auxMapPerGodsnr, mapRedPosisjoner)){
+    						//DEBUG
+    						for (Map.Entry<String,String> entry : mapRedPosisjoner.entrySet()){ 
+    			                logger.info("########Key mapRedPosisjoner (valid for mark) = " + entry.getKey());  
+    			                model.put(entry.getKey()  + "posMissing", record.getGogn() + record.getGotrnr());//will be used in the JSP
+    			            }
+    					}
     				}
     			}
     		}
-    		
     	}		
 	    
 		return outputList;
 	}
 	
+	/**
+	 * 
+	 * @param godsjfDao
+	 * @param mapGreenPosisjoner
+	 * @param auxMapPerGodsnr
+	 * @return
+	 */
+	private boolean isValidForRedMark( GodsjfDao godsjfDao, Map<String, String> mapGreenPosisjoner, Map<String, List<GodsjfDao>> auxMapPerGodsnr, Map mapRedPosisjoner ){
+		boolean retval = false;
+		logger.info("Inside: isValidForRedMark");
+		// using for-each loop for iteration over Map.entrySet() 
+        outerLoop: for (Map.Entry<String,List<GodsjfDao>> entry : auxMapPerGodsnr.entrySet()){ 
+            if(entry.getKey().equals(godsjfDao.getGogn())){
+            	logger.info("########Key (godsnr) = " + entry.getKey());
+                //at this point we are now in the specific list of godsnr-gotrnr
+            	List<GodsjfDao> listSpecificGodsnr = (List<GodsjfDao>)entry.getValue();
+            	int greenRecords = 0;
+                for(GodsjfDao rec : listSpecificGodsnr){
+                	//logger.info("##### CHASING RED MARK #####");
+	            	//logger.info("GODSNR:" + rec.getGogn() + "  TRANSNR:" + rec.getGotrnr());
+	            	String mapKey = rec.getGogn() + rec.getGotrnr();
+            		if(mapGreenPosisjoner.containsKey(mapKey)){
+            			//green marked records
+            			greenRecords ++;
+            			
+            		}else{
+            			
+            			String key = rec.getGogn() + rec.getGotrnr();
+            			logger.info("##### MATCH mapRedPosisjoner: " + key );
+            			mapRedPosisjoner.put(key, rec.getGogn());//will be used in the JSP
+            		}
+
+                }
+                if(listSpecificGodsnr!=null && listSpecificGodsnr.size()>0){
+                	if(listSpecificGodsnr.size() - greenRecords > 1){
+                		logger.info("Valid for red mark (list-greenRecords > 1)");
+                		retval = true;
+                	}
+                }
+                break outerLoop;
+            }
+        }
+        
+		return retval;
+	}
 	/**
 	 * 
 	 * @param recordToValidate
@@ -497,19 +593,65 @@ public class GodsnoMainListController {
     	logger.info(Calendar.getInstance().getTime() +  " CGI-end timestamp");
     	if(jsonPayload!=null){
     		JsonTrorOrderListContainer orderListContainer = this.trorMainOrderListService.getMainListContainer(jsonPayload);
-    		if(orderListContainer!=null && orderListContainer.getDtoList()!=null){
+    		if(orderListContainer!=null && (orderListContainer.getDtoList()!=null && orderListContainer.getDtoList().size()>0) ){
+    			String strPos = this.getGodsnrPosString(appUser, godsno);
+    			//
     			for(JsonTrorOrderListRecord record: orderListContainer.getDtoList()){
-					if(strMgr.isNotNull(record.getHepos1())){
-						retval = true;
-						logger.info("Posisjon 1 exists in this godsno:" + godsno);
-						break;
-					}
-				}
+    				if(strMgr.isNotNull(strPos) && strPos.contains(record.getHepos1())){
+    					//exclude this record
+    				}else{
+    					
+    					retval = true;
+    					break;
+    				}
+    			}
     		}
     	}		
 
     	return retval;
 	}
+	/**
+	 * 
+	 * @param appUser
+	 * @param godsno
+	 * @return
+	 */
+	private String getGodsnrPosString(SystemaWebUser appUser, String godsno){
+		StringBuffer sbPos = new StringBuffer();
+		String RECORD_SEPARATOR = ";";
+		
+		Collection<GodsjtDao> outputList = new ArrayList<GodsjtDao>();
+		//---------------
+    	//Get main list
+		//---------------
+		final String BASE_URL = GodsnoUrlDataStore.GODSNO_BASE_GODSJT_LIST_URL;
+		//add URL-parameters
+		StringBuffer urlRequestParams = new StringBuffer();
+		urlRequestParams.append("user=" + appUser.getUser());
+		urlRequestParams.append("&gtgn=" + godsno);
+		
+		//session.setAttribute(TransportDispConstants.ACTIVE_URL_RPG_TRANSPORT_DISP, BASE_URL + "==>params: " + urlRequestParams.toString()); 
+    	logger.info(Calendar.getInstance().getTime() + " CGI-start timestamp");
+    	logger.info("URL: " + BASE_URL);
+    	logger.info("URL PARAMS: " + urlRequestParams);
+    	String jsonPayload = this.urlCgiProxyService.getJsonContent(BASE_URL, urlRequestParams.toString());
+    	//Debug --> 
+    	//logger.debug(jsonDebugger.debugJsonPayloadWithLog4J(jsonPayload));
+    	logger.info(Calendar.getInstance().getTime() +  " CGI-end timestamp");
+    	if(jsonPayload!=null){
+    		JsonContainerDaoGODSJT listContainer = this.godsnoService.getContainerGodsjt(jsonPayload);
+    		outputList = listContainer.getList();
+    		if(outputList!=null && !outputList.isEmpty()){
+    			logger.info("TRUE - Godsnr-Pos1");
+    			for(GodsjtDao rec : outputList){
+    				sbPos.append(rec.getGtpos1() + RECORD_SEPARATOR);
+    			}
+    		}
+    	}		
+	    
+		return sbPos.toString();
+	}
+	
 	
 }
 
