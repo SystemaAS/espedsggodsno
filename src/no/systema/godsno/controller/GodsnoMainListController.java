@@ -106,15 +106,18 @@ public class GodsnoMainListController {
 			
 			appUser.setActiveMenu(SystemaWebUser.ACTIVE_MENU_GODSREGNO);
 			logger.info(Calendar.getInstance().getTime() + " CONTROLLER start - timestamp");
-			logger.info("####!!!" + recordToValidate.getFromDay());
+			//logger.info("####!!!" + recordToValidate.getFromDay());
 			//-----------
 			//Validation
 			//-----------
-		
-			GodsnoMainListValidator validator = new GodsnoMainListValidator();
-			logger.info("Host via HttpServletRequest.getHeader('Host'): " + request.getHeader("Host"));
-		    validator.validate(recordToValidate, bindingResult);
-		   
+			if(redirect!=null && !"".equals(redirect)){
+				//no validation since we have the searchFilter in session already
+			}else{
+				GodsnoMainListValidator validator = new GodsnoMainListValidator();
+				logger.info("Host via HttpServletRequest.getHeader('Host'): " + request.getHeader("Host"));
+				validator.validate(recordToValidate, bindingResult);
+			}
+			
 		    //check for ERRORS
 			if(bindingResult.hasErrors()){
 	    		logger.info("[ERROR Validation] search-filter does not validate)");
@@ -133,7 +136,7 @@ public class GodsnoMainListController {
 	    			recordToValidate = searchFilter;
 	    		}
     			//get list
-    			//mainList = this.getList(appUser, recordToValidate, model);
+    			mainList = this.getList(appUser, recordToValidate, model);
     			
     			//--------------------------------------
 	    		//Final successView with domain objects
@@ -579,7 +582,7 @@ public class GodsnoMainListController {
 		final String BASE_URL = GodsnoUrlDataStore.GODSNO_BASE_MAIN_ORDER_LIST_HEADF_URL;
 		//add URL-parameters
 		StringBuffer urlRequestParams = new StringBuffer();
-		urlRequestParams.append("user=" + appUser.getUser() + "&hegn=" + godsno);
+		urlRequestParams.append("user=" + appUser.getUser() + "&hegn=" + godsno + "&godsreg=1");
 		//user parameter dftdg (go esped-->8 (parameters).
 		//if(strMgr.isNotNull(appUser.getDftdg())){
 			//urlRequestParams.append("&dftdg=" + appUser.getDftdg());

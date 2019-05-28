@@ -133,6 +133,7 @@ public class GodsnoControllerChildWindow {
 	 * @param appUser
 	 * @param godsno
 	 * @param model
+	 * @param godsreg
 	 * @return
 	 */
 	private Collection<JsonTrorOrderListRecord> getList(SystemaWebUser appUser, String godsno, Map model){
@@ -141,7 +142,7 @@ public class GodsnoControllerChildWindow {
 		final String BASE_URL = GodsnoUrlDataStore.GODSNO_BASE_MAIN_ORDER_LIST_HEADF_URL;
 		//add URL-parameters
 		StringBuffer urlRequestParams = new StringBuffer();
-		urlRequestParams.append("user=" + appUser.getUser() + "&hegn=" + godsno);
+		urlRequestParams.append("user=" + appUser.getUser() + "&hegn=" + godsno + "&godsreg=1");
 		
 		//user parameter dftdg (go esped-->8 (parameters).
 		//if(strMgr.isNotNull(appUser.getDftdg())){
