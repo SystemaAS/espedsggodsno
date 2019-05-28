@@ -44,7 +44,7 @@ import no.systema.godsno.model.JsonContainerDaoMERKNF;
 import no.systema.godsno.model.JsonTrorOrderListContainer;
 import no.systema.godsno.model.JsonTrorOrderListRecord;
 import no.systema.godsno.util.manager.CodeDropDownMgr;
-
+import no.systema.godsno.validator.GodsnoMainListValidator;
 /**
  * Godsregistrering-NO main list Controller 
  * 
@@ -106,15 +106,15 @@ public class GodsnoMainListController {
 			
 			appUser.setActiveMenu(SystemaWebUser.ACTIVE_MENU_GODSREGNO);
 			logger.info(Calendar.getInstance().getTime() + " CONTROLLER start - timestamp");
-			logger.info("####!!!" + recordToValidate.getSign());
+			logger.info("####!!!" + recordToValidate.getFromDay());
 			//-----------
 			//Validation
 			//-----------
-			/* TODO
-			SadImportListValidator validator = new SadImportListValidator();
+		
+			GodsnoMainListValidator validator = new GodsnoMainListValidator();
 			logger.info("Host via HttpServletRequest.getHeader('Host'): " + request.getHeader("Host"));
 		    validator.validate(recordToValidate, bindingResult);
-		    */
+		   
 		    //check for ERRORS
 			if(bindingResult.hasErrors()){
 	    		logger.info("[ERROR Validation] search-filter does not validate)");
@@ -133,7 +133,7 @@ public class GodsnoMainListController {
 	    			recordToValidate = searchFilter;
 	    		}
     			//get list
-    			mainList = this.getList(appUser, recordToValidate, model);
+    			//mainList = this.getList(appUser, recordToValidate, model);
     			
     			//--------------------------------------
 	    		//Final successView with domain objects

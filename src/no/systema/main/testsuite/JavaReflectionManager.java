@@ -7,6 +7,8 @@ import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.*;
+import java.lang.annotation.Annotation;
+import no.systema.godsno.util.MyUrlDataStoreAnnotationForField;
 
 import org.apache.log4j.Logger;
 
@@ -44,10 +46,21 @@ public class JavaReflectionManager {
 			for(Field field : list){
 				try{
 					field.setAccessible(true);
+					
 					String value = (String)field.get(urlStoreObj);
 					if(value!=null && !"".equals(value)){
-						//logger.info(field.getName() + " Value:" + value);
+						logger.info(field.getName() + " Value:" + value);
 						testersuiteObject = new TestersuiteObject();
+						
+						//annotations
+						Annotation[] annotations = field.getDeclaredAnnotations();
+						for(Annotation annotation : annotations){
+						    if(annotation instanceof MyUrlDataStoreAnnotationForField){
+						        MyUrlDataStoreAnnotationForField myAnnotation = (MyUrlDataStoreAnnotationForField) annotation;
+						        //logger.info("########MyAnnotation: " + myAnnotation.name() + myAnnotation.description());
+						        testersuiteObject.setDescription(myAnnotation.name() + myAnnotation.description());
+						    }
+						}
 						testersuiteObject.setModuleName(value);
 						testersuiteObject.setServiceUrl(value);
 						

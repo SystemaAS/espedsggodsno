@@ -93,7 +93,7 @@ public class DashboardController {
 	 */
 	@RequestMapping(value="logonDashboard.do", method= { RequestMethod.POST})
 	public ModelAndView logon(@ModelAttribute (AppConstants.SYSTEMA_WEB_USER_KEY) SystemaWebUser appUser, BindingResult bindingResult, HttpSession session, HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttr){
-		ModelAndView successView = new ModelAndView("redirect:godsno_mainlist.do?action=doFind");
+		ModelAndView successView = new ModelAndView("redirect:godsno_mainlist.do?action=doFind&fromDay=0");
 		Map model = new HashMap();
 		
 		if(appUser==null){
@@ -225,7 +225,7 @@ public class DashboardController {
 	 */
 	@RequestMapping(value="logonWRedDashboard.do", method= { RequestMethod.POST, RequestMethod.GET})
 	public ModelAndView logonRedirected(RedirectAttributes redirectAttrs, Model modelX, @ModelAttribute (AppConstants.SYSTEMA_WEB_USER_KEY) SystemaWebUser appUser, HttpSession session, HttpServletRequest request, HttpServletResponse response){
-		ModelAndView successView = new ModelAndView("redirect:godsno_mainlist.do?action=doFind");
+		ModelAndView successView = new ModelAndView("redirect:godsno_mainlist.do?action=doFind&fromDay=0");
 		Map model = new HashMap();
 		
 		String user = request.getParameter("ru");

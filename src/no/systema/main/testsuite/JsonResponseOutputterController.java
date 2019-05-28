@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import no.systema.main.url.store.MainUrlDataStore;
-//import no.systema.efaktura.url.store.EfakturaUrlDataStore;
+import no.systema.godsno.url.store.GodsnoUrlDataStore;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -45,7 +45,7 @@ public class JsonResponseOutputterController {
 	
 	/**
 	 * Test call 
-	 * http://localhost:8080/espedsgtvinnsad/sytsuite.do?user=OSCAR
+	 * http://localhost:8080/espedsggodsno/sytsuite.do?user=OSCAR
 	 * @return
 	 */
 	@RequestMapping(value="sytsuite.do", method={RequestMethod.GET, RequestMethod.POST})
@@ -83,6 +83,8 @@ public class JsonResponseOutputterController {
 				sb.append(JSON_FIELD_SEPARATOR );
 				sb.append(JSON_QUOTES + "serviceName" + JSON_QUOTES + ":" + JSON_QUOTES + jsonFixMgr.cleanRecord(record.getServiceName()) + JSON_QUOTES);
 				sb.append(JSON_FIELD_SEPARATOR );
+				sb.append(JSON_QUOTES + "description" + JSON_QUOTES + ":" + JSON_QUOTES + jsonFixMgr.cleanRecord(record.getDescription()) + JSON_QUOTES);
+				sb.append(JSON_FIELD_SEPARATOR );
 				sb.append(JSON_QUOTES + "errMsg" + JSON_QUOTES + ":" + JSON_QUOTES + jsonFixMgr.cleanRecord(record.getErrMsg()) + JSON_QUOTES);
 				sb.append(JSON_CLOSE_LIST_RECORD);
 				counter++;
@@ -110,7 +112,7 @@ public class JsonResponseOutputterController {
 		List<Object> listObj= new ArrayList<Object>();
 		Object urlStoreObj = null;
 		
-		//urlStoreObj = new EfakturaUrlDataStore();
+		urlStoreObj = new GodsnoUrlDataStore();
 		listObj.add(urlStoreObj);
 		urlStoreObj = new MainUrlDataStore();
 		listObj.add(urlStoreObj);

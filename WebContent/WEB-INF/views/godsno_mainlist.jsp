@@ -53,10 +53,11 @@
 			<input type="hidden" name="language" id="language" value='${user.usrLang}'>
 			<%-- this table wrapper is necessary to apply the css class with the thin border --%>
 			<table width="100%" class="tabThinBorderWhite" border="0" cellspacing="0" cellpadding="0">
+			<form name="searchForm" id="searchForm" action="godsno_mainlist.do?action=doFind" method="post" >
+				
 			<tr height="3"><td></td></tr> 
 			<tr>
 				<td>
-				<form name="searchForm" id="searchForm" action="godsno_mainlist.do?action=doFind" method="post" >
 				<input type="hidden" name="todo" id="todo" value=''>
 				<table id="containerdatatableTable" width="100%" cellspacing="2" align="left">
 				<tr>
@@ -64,7 +65,7 @@
 					<%--
 					<td class="text14" title="gogn2">&nbsp;Till Godsnr.</td>
 					 --%>
-					<td class="text14" title="ownDaysBack">&nbsp;Ant.dager tilbake</td>
+					<td class="text14" title="fromDay">&nbsp;Ant.dager tilbake</td>
 					<td class="text14" title="gotrnr">&nbsp;Transittnr.</td>
 					<td class="text14" title="gomott">&nbsp;Varemottaker</td>
 					<td class="text14" title="goturn">&nbsp;Turnr.</td>
@@ -95,15 +96,12 @@
 			        	<input class="inputFormSubmit" type="submit" name="submit" id="submit" value='Søk'>
 			        </td>			
 				</tr>
-				</form>
+				
 				<tr height="2"><td></td></tr>
 				</table>
 				</td>
 			</tr>
-			</table>
-		</td>
-		</tr>	
-		
+			
 			<tr height="3"><td></td></tr>
 			<%-- Validation errors --%>
 			<spring:hasBindErrors name="record"> <%-- name must equal the command object name in the Controller --%>
@@ -125,6 +123,12 @@
 				</td>
 			</tr>
 			</spring:hasBindErrors>	
+			
+			</form>
+			</table>
+		</td>
+		</tr>	
+		
 			
 			<tr>
 			<td>		
