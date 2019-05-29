@@ -32,12 +32,12 @@ import no.systema.main.util.StringManager;
 
 //GODSNO
 import no.systema.godsno.service.GodsnoService;
-import no.systema.godsno.service.TrorMainOrderListService;
+import no.systema.godsno.service.GodsnoMainOrderListService;
 import no.systema.godsno.url.store.GodsnoUrlDataStore;
 import no.systema.godsno.util.GodsnoConstants;
 import no.systema.godsno.model.JsonContainerDaoGODSJT;
-import no.systema.godsno.model.JsonTrorOrderListContainer;
-import no.systema.godsno.model.JsonTrorOrderListRecord;
+import no.systema.godsno.model.JsonContainerOrderListContainer;
+import no.systema.godsno.model.JsonContainerOrderListRecord;
 import no.systema.godsno.util.manager.CodeDropDownMgr;
 import no.systema.jservices.common.dao.GodsjtDao;
 import no.systema.jservices.common.dao.services.CundfDaoService;
@@ -69,7 +69,7 @@ public class GodsnoControllerChildWindow {
 	private GodsnoService godsnoService;
 	
 	@Autowired
-	private TrorMainOrderListService trorMainOrderListService;
+	private GodsnoMainOrderListService godsnoMainOrderListService;
 	
 	@Autowired
 	CundfService cundfService;
@@ -136,13 +136,13 @@ public class GodsnoControllerChildWindow {
 	 * @param godsreg
 	 * @return
 	 */
-	private Collection<JsonTrorOrderListRecord> getList(SystemaWebUser appUser, String godsno, Map model){
-		Collection<JsonTrorOrderListRecord> outputListOfOrders = new ArrayList();
+	private Collection<JsonContainerOrderListRecord> getList(SystemaWebUser appUser, String godsno, Map model){
+		Collection<JsonContainerOrderListRecord> outputListOfOrders = new ArrayList();
 		
 		final String BASE_URL = GodsnoUrlDataStore.GODSNO_BASE_MAIN_ORDER_LIST_HEADF_URL;
 		//add URL-parameters
 		StringBuffer urlRequestParams = new StringBuffer();
-		urlRequestParams.append("user=" + appUser.getUser() + "&hegn=" + godsno + "&godsreg=1");
+		urlRequestParams.append("user=" + appUser.getUser() + "&hegn=" + godsno);
 		
 		//user parameter dftdg (go esped-->8 (parameters).
 		//if(strMgr.isNotNull(appUser.getDftdg())){
@@ -157,13 +157,13 @@ public class GodsnoControllerChildWindow {
     	logger.debug(jsonDebugger.debugJsonPayloadWithLog4J(jsonPayload));
     	logger.info(Calendar.getInstance().getTime() +  " CGI-end timestamp");
     	if(jsonPayload!=null){
-    		JsonTrorOrderListContainer orderListContainer = this.trorMainOrderListService.getMainListContainer(jsonPayload);
+    		JsonContainerOrderListContainer orderListContainer = this.godsnoMainOrderListService.getMainListContainer(jsonPayload);
     		if(orderListContainer!=null && (orderListContainer.getDtoList()!=null && orderListContainer.getDtoList().size()>0) ){
     			String strPos = this.getGodsnrPosString(appUser, godsno);
     			//
     			String previousHekna = "";
     			String previousHeknaName = "";
-    			for(JsonTrorOrderListRecord record: orderListContainer.getDtoList()){
+    			for(JsonContainerOrderListRecord record: orderListContainer.getDtoList()){
     				if(strMgr.isNotNull(strPos) && strPos.contains(record.getHepos1())){
     					//exclude this record
     				}else{
@@ -189,7 +189,7 @@ public class GodsnoControllerChildWindow {
 	 * @param appUser
 	 * @param orderListrecord
 	 */
-	private void getHeknaName(SystemaWebUser appUser, JsonTrorOrderListRecord orderListrecord){
+	private void getHeknaName(SystemaWebUser appUser, JsonContainerOrderListRecord orderListrecord){
 		String BASE_URL = MaintenanceMainUrlDataStore.MAINTENANCE_MAIN_BASE_SYCUNDFR_GET_LIST_URL;
 		String firm = appUser.getCompanyCode();
 		if(strMgr.isNull(firm)){

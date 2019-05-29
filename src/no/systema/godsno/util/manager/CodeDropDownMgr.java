@@ -41,8 +41,8 @@ public class CodeDropDownMgr {
 	 * @return
 	 */
 	public  List <JsonMaintMainKodtsfSyparfRecord>getSignatures (String applicationUser ) {
-		final String METHOD = "[DEBUG] getSyfa60 ";
-		logger.info(METHOD + " Inside...");
+		final String METHOD = "[DEBUG] getSignatures ";
+		logger.info(" Inside..." + METHOD );
 		List<JsonMaintMainKodtsfSyparfRecord> result = new ArrayList();
 	 	//get table
 		String BASE_URL = MaintenanceMainUrlDataStore.MAINTENANCE_MAIN_BASE_SYFA60R_GET_LIST_URL;
@@ -74,7 +74,7 @@ public class CodeDropDownMgr {
 	 */
 	public  List <JsonMaintMainKodtaRecord>getAvdList (String applicationUser ) {
 		final String METHOD = "[DEBUG] getAvdList ";
-		logger.info(METHOD + " Inside...");
+		logger.info(" Inside..." + METHOD );
 		//get table
 		String BASE_URL = MaintenanceMainUrlDataStore.MAINTENANCE_MAIN_BASE_SYFA14R_GET_LIST_URL;
 		String urlRequestParams = "user=" + applicationUser;
@@ -83,7 +83,7 @@ public class CodeDropDownMgr {
     	logger.info("URL PARAMS: " + urlRequestParams);
     	String jsonPayload = this.urlCgiProxyService.getJsonContent(BASE_URL, urlRequestParams);
     	//DEBUG
-    	this.jsonDebugger.debugJsonPayload(jsonPayload, 1000);
+    	//this.jsonDebugger.debugJsonPayload(jsonPayload, 1000);
     	//extract
     	List<JsonMaintMainKodtaRecord> list = new ArrayList<JsonMaintMainKodtaRecord>();
     	if(jsonPayload!=null){

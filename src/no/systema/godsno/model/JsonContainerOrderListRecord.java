@@ -10,7 +10,7 @@ import lombok.Data;
 import no.systema.main.model.jsonjackson.general.JsonAbstractGrandFatherRecord;
 
 @Data
-public class JsonTrorOrderListRecord extends JsonAbstractGrandFatherRecord {
+public class JsonContainerOrderListRecord extends JsonAbstractGrandFatherRecord {
 
 	/* Avdeling */
 	private int heavd; 

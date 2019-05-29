@@ -13,7 +13,7 @@ import java.util.List;
  * @date Jul 04, 2017
  *
  */
-public class JsonTrorOrderListContainer {
+public class JsonContainerOrderListContainer {
 	private String user = null;
 	public void setUser(String value) {  this.user = value; }
 	public String getUser() { return this.user;}
@@ -22,9 +22,9 @@ public class JsonTrorOrderListContainer {
 	public void setErrMsg(String value) {  this.errMsg = value; }
 	public String getErrMsg() { return this.errMsg;}
 	
-	private Collection<JsonTrorOrderListRecord> dtoList;
-	public void setDtoList(Collection<JsonTrorOrderListRecord> value){ this.dtoList = value; }
-	public Collection<JsonTrorOrderListRecord> getDtoList(){ return dtoList; }
+	private Collection<JsonContainerOrderListRecord> dtoList;
+	public void setDtoList(Collection<JsonContainerOrderListRecord> value){ this.dtoList = value; }
+	public Collection<JsonContainerOrderListRecord> getDtoList(){ return dtoList; }
 	
 	/**
 	 * Used for java reflection in other classes

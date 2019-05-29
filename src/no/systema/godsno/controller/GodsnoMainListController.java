@@ -34,15 +34,15 @@ import no.systema.jservices.common.dao.GodsjtDao;
 
 //GODSNO
 import no.systema.godsno.service.GodsnoService;
-import no.systema.godsno.service.TrorMainOrderListService;
+import no.systema.godsno.service.GodsnoMainOrderListService;
 import no.systema.godsno.filter.SearchFilterGodsnoMainList;
 import no.systema.godsno.url.store.GodsnoUrlDataStore;
 import no.systema.godsno.util.GodsnoConstants;
 import no.systema.godsno.model.JsonContainerDaoGODSJF;
 import no.systema.godsno.model.JsonContainerDaoGODSJT;
 import no.systema.godsno.model.JsonContainerDaoMERKNF;
-import no.systema.godsno.model.JsonTrorOrderListContainer;
-import no.systema.godsno.model.JsonTrorOrderListRecord;
+import no.systema.godsno.model.JsonContainerOrderListContainer;
+import no.systema.godsno.model.JsonContainerOrderListRecord;
 import no.systema.godsno.util.manager.CodeDropDownMgr;
 import no.systema.godsno.validator.GodsnoMainListValidator;
 /**
@@ -72,7 +72,7 @@ public class GodsnoMainListController {
 	private GodsnoService godsnoService;
 	
 	@Autowired
-	private TrorMainOrderListService trorMainOrderListService;
+	private GodsnoMainOrderListService godsnoMainOrderListService;
 
 	@PostConstruct
 	public void initIt() throws Exception {
@@ -298,7 +298,7 @@ public class GodsnoMainListController {
     			mainListCounter ++;
     			this.adjustFieldsForFetch(record);
     			//limit ... just in case
-    			if(outputList.size()<150){
+    			if(outputList.size()<=150){
     				
     				this.getListOfExistingMerknf(appUser, record.getGogn(), record.getGotrnr(), model);
     				this.getListOfExistingPosisjoner(appUser, record.getGogn(), record.getGotrnr(), model);
@@ -329,34 +329,39 @@ public class GodsnoMainListController {
     			}
     		}
     		//DEBUG
-    		// using for-each loop for iteration over Map.entrySet() 
+    		// using for-each loop for iteration over Map.entrySet()
+    		/*DEBUG
             for (Map.Entry<String,List<GodsjfDao>> entry : auxMapPerGodsnr.entrySet()){ 
                 logger.info("########Key = " + entry.getKey()); //+ "_Value = " + entry.getValue()); 
                 List<GodsjfDao> tmp = (List<GodsjfDao>)entry.getValue();
                 for(GodsjfDao rec : tmp){
                 	logger.info("-->GODSNR:" + rec.getGogn() + "  -->TRANSNR:" + rec.getGotrnr());
                 }
-            }
-            
+            }*/
+            //DEBUG
             for (Map.Entry<String,String> entry : mapGreenPosisjoner.entrySet()){ 
                 logger.info("########Key mapGreenPosisjoner = " + entry.getKey()); //+ "_Value = " + entry.getValue()); 
   
             }
-    		
+            
     		//(2) This loop is ONLY to catch a warning regarding posisjoner. These will be marked in the GUI as "warnings"
-    		//    Check if there are posisjoner (use the mapGreenPosisjoner-above as help) that MUST be used/chosen and have not been yet. If so: mark them
-    		for(GodsjfDao record : outputList){
+    		//Check if there are posisjoner (use the mapGreenPosisjoner-above as help) that MUST be used/chosen and have not been yet. If so: mark them
+    		String previousGognRecord = "";
+            for(GodsjfDao record : outputList){
     			if(!mapGreenPosisjoner.containsKey(record.getGogn() + record.getGotrnr())){
-    				logger.info("Green posisjoner do not exist!");
+    				logger.info("NO GREEN !!!");
     				//this check is done to avoid redundant check (SQL) since the godsnr has previously been checked... 
 					//At this point we know now that no posisjon is present at a godsnr-level. Check if it should be at least one.
-    				if(this.posExists(appUser, record.getGogn())){
-    					//DEBUG logger.info("########--->Red marks on godsnr:" + record.getGogn());
-    					this.getListOfExistingPosisjonerPerGodsnr(appUser, record.getGogn(), model);
+    				if(!previousGognRecord.equals(record.getGogn())){
+	    				if(this.posExists(appUser, record.getGogn())){
+	    					//DEBUG 
+	    					logger.info("########--->Red marks on godsnr:" + record.getGogn());
+	    					this.getListOfExistingPosisjonerPerGodsnr(appUser, record.getGogn(), model);
+	    				}
     				}
     				
     			}else{
-    				logger.info("Green posisjoner exist already!");
+    				logger.info("GREEN !!!");
     				if(this.posExists(appUser, record.getGogn())){
     					if(this.isValidForRedMark(record, mapGreenPosisjoner, auxMapPerGodsnr, mapRedPosisjoner)){
     						//DEBUG
@@ -367,7 +372,9 @@ public class GodsnoMainListController {
     					}
     				}
     			}
+    			previousGognRecord = record.getGogn();
     		}
+    		
     	}		
 	    
 		return outputList;
@@ -582,7 +589,7 @@ public class GodsnoMainListController {
 		final String BASE_URL = GodsnoUrlDataStore.GODSNO_BASE_MAIN_ORDER_LIST_HEADF_URL;
 		//add URL-parameters
 		StringBuffer urlRequestParams = new StringBuffer();
-		urlRequestParams.append("user=" + appUser.getUser() + "&hegn=" + godsno + "&godsreg=1");
+		urlRequestParams.append("user=" + appUser.getUser() + "&hegn=" + godsno);
 		//user parameter dftdg (go esped-->8 (parameters).
 		//if(strMgr.isNotNull(appUser.getDftdg())){
 			//urlRequestParams.append("&dftdg=" + appUser.getDftdg());
@@ -595,22 +602,27 @@ public class GodsnoMainListController {
     	logger.debug(jsonDebugger.debugJsonPayloadWithLog4J(jsonPayload));
     	logger.info(Calendar.getInstance().getTime() +  " CGI-end timestamp");
     	if(jsonPayload!=null){
-    		JsonTrorOrderListContainer orderListContainer = this.trorMainOrderListService.getMainListContainer(jsonPayload);
+    		JsonContainerOrderListContainer orderListContainer = this.godsnoMainOrderListService.getMainListContainer(jsonPayload);
     		if(orderListContainer!=null && (orderListContainer.getDtoList()!=null && orderListContainer.getDtoList().size()>0) ){
+    			
     			String strPos = this.getGodsnrPosString(appUser, godsno);
-    			//
-    			for(JsonTrorOrderListRecord record: orderListContainer.getDtoList()){
-    				if(strMgr.isNotNull(strPos) && strPos.contains(record.getHepos1())){
-    					//exclude this record
-    				}else{
-    					
-    					retval = true;
-    					break;
-    				}
+    			if(strMgr.isNotNull(strPos)){
+	    			for(JsonContainerOrderListRecord record: orderListContainer.getDtoList()){
+	    				if(strMgr.isNotNull(strPos) && strPos.contains(record.getHepos1())){
+	    					//exclude this record
+	    				}else{
+	    					retval = true;
+	    					break;
+	    				}
+	    			}
+    			}else{
+    				//at this point we do have records in HEADF but none in GODSJT
+    				retval = true;
     			}
+    			
     		}
     	}		
-
+    	
     	return retval;
 	}
 	/**
@@ -620,6 +632,7 @@ public class GodsnoMainListController {
 	 * @return
 	 */
 	private String getGodsnrPosString(SystemaWebUser appUser, String godsno){
+		String retval = null;
 		StringBuffer sbPos = new StringBuffer();
 		String RECORD_SEPARATOR = ";";
 		
@@ -650,9 +663,14 @@ public class GodsnoMainListController {
     				sbPos.append(rec.getGtpos1() + RECORD_SEPARATOR);
     			}
     		}
-    	}		
-	    
-		return sbPos.toString();
+    	}
+    	
+	    if(sbPos!=null && sbPos.length()>0){
+	    	retval = sbPos.toString();
+	    }
+		return retval;
+		
+    	
 	}
 	
 	
