@@ -4,7 +4,7 @@
 package no.systema.godsno.url.store;
 
 import no.systema.main.util.AppConstants;
-import no.systema.godsno.util.MyUrlDataStoreAnnotationForField;
+import no.systema.main.model.UrlDataStoreAnnotationForField;
 
 /**
  * 
@@ -21,7 +21,7 @@ public final class GodsnoUrlDataStore {
 	//[1] FETCH MAIN LIST
 	//----------------------
 	//http://10.13.3.22:8080/syjservicesgodsno/syjsSYGODSJF.do?user=OSCAR&dftdg=10
-	@MyUrlDataStoreAnnotationForField (name="@Controller - godsno_mainlist.do", description=" -->FETCH MAIN LIST")
+	@UrlDataStoreAnnotationForField (name="@Controller - godsno_mainlist.do", description=" -->FETCH MAIN LIST")
 	static public String GODSNO_BASE_MAIN_LIST_URL = AppConstants.HTTP_ROOT_SERVLET_JSERVICES + "/syjservicesgodsno/syjsSYGODSJF.do";
 	
 	//FETCH LOG FILE
