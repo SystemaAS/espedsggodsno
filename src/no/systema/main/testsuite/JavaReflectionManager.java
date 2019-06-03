@@ -8,7 +8,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.*;
 import java.lang.annotation.Annotation;
-import no.systema.godsno.util.MyUrlDataStoreAnnotationForField;
+import no.systema.main.model.UrlDataStoreAnnotationForField;
 
 import org.apache.log4j.Logger;
 
@@ -55,8 +55,8 @@ public class JavaReflectionManager {
 						//annotations
 						Annotation[] annotations = field.getDeclaredAnnotations();
 						for(Annotation annotation : annotations){
-						    if(annotation instanceof MyUrlDataStoreAnnotationForField){
-						        MyUrlDataStoreAnnotationForField myAnnotation = (MyUrlDataStoreAnnotationForField) annotation;
+						    if(annotation instanceof UrlDataStoreAnnotationForField){
+						    	UrlDataStoreAnnotationForField myAnnotation = (UrlDataStoreAnnotationForField) annotation;
 						        //logger.info("########MyAnnotation: " + myAnnotation.name() + myAnnotation.description());
 						        testersuiteObject.setDescription(myAnnotation.name() + myAnnotation.description());
 						    }
