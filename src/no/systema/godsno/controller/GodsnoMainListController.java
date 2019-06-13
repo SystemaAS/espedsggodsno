@@ -45,6 +45,8 @@ import no.systema.godsno.model.JsonContainerOrderListContainer;
 import no.systema.godsno.model.JsonContainerOrderListRecord;
 import no.systema.godsno.util.manager.CodeDropDownMgr;
 import no.systema.godsno.validator.GodsnoMainListValidator;
+
+import java.util.function.Predicate;
 /**
  * Godsregistrering-NO main list Controller 
  * 
@@ -298,7 +300,7 @@ public class GodsnoMainListController {
     			mainListCounter ++;
     			this.adjustFieldsForFetch(record);
     			//limit ... just in case
-    			if(outputList.size()<=150){
+    			if(outputList.size()<=250){
     				
     				this.getListOfExistingMerknf(appUser, record.getGogn(), record.getGotrnr(), model);
     				this.getListOfExistingPosisjoner(appUser, record.getGogn(), record.getGotrnr(), model);
@@ -339,10 +341,10 @@ public class GodsnoMainListController {
                 }
             }*/
             //DEBUG
-            for (Map.Entry<String,String> entry : mapGreenPosisjoner.entrySet()){ 
+            /*for (Map.Entry<String,String> entry : mapGreenPosisjoner.entrySet()){ 
                 logger.info("########Key mapGreenPosisjoner = " + entry.getKey()); //+ "_Value = " + entry.getValue()); 
   
-            }
+            }*/
             
     		//(2) This loop is ONLY to catch a warning regarding posisjoner. These will be marked in the GUI as "warnings"
     		//Check if there are posisjoner (use the mapGreenPosisjoner-above as help) that MUST be used/chosen and have not been yet. If so: mark them
@@ -350,14 +352,21 @@ public class GodsnoMainListController {
             for(GodsjfDao record : outputList){
     			if(!mapGreenPosisjoner.containsKey(record.getGogn() + record.getGotrnr())){
     				logger.info("NO GREEN !!!");
+    				
     				//this check is done to avoid redundant check (SQL) since the godsnr has previously been checked... 
 					//At this point we know now that no posisjon is present at a godsnr-level. Check if it should be at least one.
     				if(!previousGognRecord.equals(record.getGogn())){
-	    				if(this.posExists(appUser, record.getGogn())){
-	    					//DEBUG 
-	    					logger.info("########--->Red marks on godsnr:" + record.getGogn());
-	    					this.getListOfExistingPosisjonerPerGodsnr(appUser, record.getGogn(), model);
-	    				}
+    					
+    					//Check if the GODSNR. has more than 1 occurrences
+    					long nrOfGodsnrOccurrences = outputList.stream().filter(c -> c.getGogn().equals(record.getGogn())).count();
+    					//logger.info("GODSNR:" + record.getGogn() + " Number of Matching Element: "+l);
+    			        if(nrOfGodsnrOccurrences > 1){
+		    				if(this.posExists(appUser, record.getGogn())){
+		    					//DEBUG 
+		    					logger.info("########--->Red marks on godsnr:" + record.getGogn());
+		    					this.getListOfExistingPosisjonerPerGodsnr(appUser, record.getGogn(), model);
+		    				}
+    			        }
     				}
     				
     			}else{
