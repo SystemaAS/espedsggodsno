@@ -109,10 +109,10 @@
 					 		<c:if test="${empty updateFlag}">
 						 		<tr >
 						 			<td class="text14"><span title="gogn">Godsnr:&nbsp;</span></td>
-						 				<td colspan="3" class="text14">
+						 				
 						 				<c:choose>
 						 				<c:when test="${fn:length(godsnr) == 4}" ><%-- Meaning there is no match. The user MUST fill up accord. to requir. mask --%>
-						 					
+						 					<td class="text14">
 						 					<input type="hidden" name="owngogn_1" id="owngogn_1" size="4"  value="${godsnr}">
 						 					<input type="hidden" name="owngogn_3" id="owngogn_3" size="3"  value="${dayOfYear}">
 						 					<select  name="owngogn_2" id="owngogn_2" required oninvalid="this.setCustomValidity('Obligatorisk')" oninput="setCustomValidity('')" class="inputTextMediumBlueMandatoryField" >
@@ -123,39 +123,62 @@
 											</select><font class="text16RedBold" >*</font>
 											<img title="search" id="divBevKodeListDialogImgReadOnly" style="vertical-align:middle; cursor:pointer;" width="12px" height="12px" src="resources/images/find.png" height="11px" width="11px" border="0" alt="bev.koder">
 											&nbsp;
-											<input tabindex=-1 readonly type="text" class="inputTextReadOnly" name="tmpGogn" id="tmpGogn" size="20"  value="${tmpGogn}">
-											<img onMouseOver="showPop('gogn_info');" onMouseOut="hidePop('gogn_info');"style="vertical-align:middle;" width="14px" height="14px" src="resources/images/info3.png" border="0" alt="info">
-											<div class="text11" style="position: relative;" align="left">
-											<span style="position:absolute; left:250px; top:3px; width:250px" id="gogn_info" class="popupWithInputText"  >
-												<font class="text11">
-								           			<b>Godsnr.</b>
-								           			<div>
-								           			<p><b>xx</b> blir erstattet med neste nr fra telleverk ved fullføring.</p>
-								           			</div>
-							           			</font>
-											</span>
+											<div id="divBevKodeList" style="display:none;position: relative;height:10em;" class="ownScrollableSubWindowDynamicWidthHeight" align="left" >
+						 						<table id="tblBevKodeList" class="inputTextMediumBlueMandatoryField">
+						 							<tr><td colspan="2" class="text12"><b>Bev.koder</b></td></tr>
+						 						
+						 							<c:forEach items="${bevKodeListMainTbl}" var="record" varStatus="counter">  
+													<tr>
+														<td id="id_${record.gflbko}@id2_${record.gfenh}" OnClick="doPickBevKode(this)" class="tableHeaderFieldFirst" style="cursor:pointer;" ><font class="text14SkyBlue">${record.gflbko}&nbsp;${record.gfenh}</font></td>
+														<td class="tableHeaderField12">${record.gflbs1}&nbsp;${record.gflbs2}&nbsp;${record.gflbs3}&nbsp;${record.gflbs4}</td>
+													</tr>
+													</c:forEach>
+												</table>	
 											</div>
+											
+											
+											</td>
+											<td class="text14">
+												<img onMouseOver="showPop('gogn_info');" onMouseOut="hidePop('gogn_info');"style="vertical-align:middle;" width="14px" height="14px" src="resources/images/info3.png" border="0" alt="info">
+												<input tabindex=-1 readonly type="text" class="inputTextReadOnly" name="tmpGogn" id="tmpGogn" size="20"  value="${tmpGogn}">
+												<input style="cursor:pointer" title="Endre manuelt" tabindex=-1 type="checkbox" id="ownTmpGognOffset" name="ownTmpGognOffset" value="1" >
+												
+												<div class="text11" style="position: relative;" align="left">
+												<span style="position:absolute; left:10px; top:3px; width:250px" id="gogn_info" class="popupWithInputText"  >
+													<font class="text11">
+									           			<b>Godsnr.</b>
+									           			<div>
+									           			<p><b>xx</b> blir erstattet med neste nr fra telleverk ved fullføring.</p>
+									           			</div>
+								           			</font>
+												</span>
+												</div>
+											</td>
 						 				</c:when>
 						 				<c:otherwise>
-						 					<input tabindex=-1 readonly type="text" class="inputTextReadOnly" name="gogn" id="gogn" size="20" value="${godsnr}">
-						 					<font class="text16RedBold" >*</font>
-						 					<img title="search" id="divBevKodeListDialogImgReadOnly" style="vertical-align:middle; cursor:pointer;" width="10px" height="10px" src="resources/images/sort_down.png" border="0" alt="bev.koder">
+						 					<td >
+							 					<input tabindex=-1 readonly type="text" class="inputTextReadOnly" name="gogn" id="gogn" size="20" value="${godsnr}">
+							 					<font class="text16RedBold" >*</font>
+							 					<img title="search" id="divBevKodeListDialogImgReadOnly" style="vertical-align:middle; cursor:pointer;" width="10px" height="10px" src="resources/images/sort_down.png" border="0" alt="bev.koder">
+							 					
+							 					<div id="divBevKodeList" style="display:none;position: relative;height:10em;" class="ownScrollableSubWindowDynamicWidthHeight" align="left" >
+						 						<table id="tblBevKodeList" class="inputTextMediumBlueMandatoryField">
+						 							<tr><td colspan="2" class="text12"><b>Bev.koder</b></td></tr>
+						 						
+						 							<c:forEach items="${bevKodeListMainTbl}" var="record" varStatus="counter">  
+													<tr>
+														<td id="id_${record.gflbko}@id2_${record.gfenh}" OnClick="doPickBevKode(this)" class="tableHeaderFieldFirst" style="cursor:pointer;" ><font class="text14SkyBlue">${record.gflbko}&nbsp;${record.gfenh}</font></td>
+														<td class="tableHeaderField12">${record.gflbs1}&nbsp;${record.gflbs2}&nbsp;${record.gflbs3}&nbsp;${record.gflbs4}</td>
+													</tr>
+													</c:forEach>
+												</table>	
+											</div>
+							 					
+						 					</td>
 						 				</c:otherwise>
 						 				</c:choose>
-						 				<div id="divBevKodeList" style="display:none;position: relative;height:10em;" class="ownScrollableSubWindowDynamicWidthHeight" align="left" >
-					 						<table id="tblBevKodeList" class="inputTextMediumBlueMandatoryField">
-					 							<tr><td colspan="2" class="text12"><b>Bev.koder</b></td></tr>
-					 						
-					 							<c:forEach items="${bevKodeListMainTbl}" var="record" varStatus="counter">  
-												<tr>
-													<td id="id_${record.gflbko}@id2_${record.gfenh}" OnClick="doPickBevKode(this)" class="tableHeaderFieldFirst" style="cursor:pointer;" ><font class="text14SkyBlue">${record.gflbko}&nbsp;${record.gfenh}</font></td>
-													<td class="tableHeaderField12">${record.gflbs1}&nbsp;${record.gflbs2}&nbsp;${record.gflbs3}&nbsp;${record.gflbs4}</td>
-												</tr>
-												</c:forEach>
-											</table>	
-										</div>	
-									</td>	
 						 		</tr>
+						 		<tr height="10"><td>&nbsp;</td></tr>
 						 		<%-- hide it temporarily according to JOVO,CB							 		
 						 		<tr >
 						 			<td class="text14"><span title="gognManualCounter">Manuelltnr</span></td>

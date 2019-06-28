@@ -77,6 +77,20 @@
 		  jq('#tmpGogn').val(tmpGogn + "xx");//The suffix xx will be known after the "Save" and calculation of the whole gogn
 		  
 	  });
+	  
+	  jq("#ownTmpGognOffset").click(function() {
+		  if(jq('#ownTmpGognOffset').prop('checked')){
+			  jq("#tmpGogn").attr("readonly", false); 
+			  jq("#tmpGogn").removeClass("inputTextReadOnly");
+			  jq("#tmpGogn").addClass("inputTextMediumBlue");
+			  
+		  }else{
+			  jq("#tmpGogn").attr("readonly", true); 
+			  jq("#tmpGogn").removeClass("inputTextMediumBlue");
+			  jq("#tmpGogn").addClass("inputTextReadOnly");
+			  
+		  }
+	  });
   });
   
   
