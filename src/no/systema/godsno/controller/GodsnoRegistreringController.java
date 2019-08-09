@@ -120,6 +120,7 @@ public class GodsnoRegistreringController {
 		String gotrnrOrig = request.getParameter("gotrnrOrig");
 		String pos1TargetString = request.getParameter("pos1TargetString");
 		String tmpGogn = request.getParameter("tmpGogn");
+		String ownTmpGognOffset = request.getParameter("ownTmpGognOffset"); //check-box
 		
 		//Special case for gotrty
 		if(strMgr.isNull(recordToValidate.getGotrty())){
@@ -238,6 +239,7 @@ public class GodsnoRegistreringController {
 									logger.info("Create new with no manual counter ...");
 									//return to the original value (without the counter suffix since this is the one we will calculate now)
 									recordToValidate.setGogn(godsNrOriginalValue);
+									logger.info("GOGN hittills:" + recordToValidate.getGogn());
 									//check if the end-user has overridden gogn_Nr totally and written his/her own gogn-Nr
 									if(this.isTotallyCompletedGognFromUser(tmpGogn)){
 										//set complete godsnr from GUI
@@ -247,6 +249,17 @@ public class GodsnoRegistreringController {
 										dmlRetval = this.updateRecord(appUser.getUser(), recordToValidate, GodsnoConstants.MODE_ADD, errMsg);
 										
 									}else{
+										
+										//Compare Gogn vs tmpGogn in order to elucidate if the user has edited the gogn (with checkbox)and leave xx left
+										//if they are not equal: use tmpGogn minus <xx> in order to respect the user entrance ...
+										if(strMgr.isNotNull(tmpGogn)){
+											tmpGogn = tmpGogn.replace("xx", "");
+											logger.info("GOGN:" + recordToValidate.getGogn() + " tmpGOGN:" + tmpGogn);
+											if(!tmpGogn.equals(recordToValidate.getGogn())){
+												recordToValidate.setGogn(tmpGogn);
+											}
+										}
+										
 										//Start process 
 										if(this.recordExistsGodsgf(appUser, recordToValidate)){
 											logger.info("Record in teller table exists...");
