@@ -55,6 +55,9 @@ public class SearchFilterGodsnoMainList {
 	public void setFromDay(String value) {  this.fromDay = value; }
 	public String getFromDay() { return this.fromDay;}
 	
+	private String fromDayUserInput = null;
+	public void setFromDayUserInput(String value) {  this.fromDayUserInput = value; }
+	public String getFromDayUserInput() { return this.fromDayUserInput;}
 	
 	
 }

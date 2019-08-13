@@ -11,6 +11,9 @@
 	  jq('#alinkGodsno').click(function() { 
 		  setBlockUI();
 	  });
+	  jq("#fromDayUserInput").datepicker({ 
+		  dateFormat: 'ddmmy'
+	  });
 	 
   });
   

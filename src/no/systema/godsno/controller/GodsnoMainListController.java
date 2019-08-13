@@ -1,5 +1,9 @@
 package no.systema.godsno.controller;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import javax.annotation.PostConstruct;
 
@@ -63,6 +67,7 @@ public class GodsnoMainListController {
 	private LoginValidator loginValidator = new LoginValidator();
 	private StringManager strMgr = new StringManager();
 	private PayloadContentFlusher payloadContentFlusher = new PayloadContentFlusher();
+	private DateTimeManager dateTimeMgr = new DateTimeManager();
 	
 	@Autowired
 	private UrlCgiProxyService urlCgiProxyService;
@@ -254,13 +259,28 @@ public class GodsnoMainListController {
 			urlRequestParams.append("&gogn2=" + recordToValidate.getGogn2());
 		}
 		
-		if(strMgr.isNotNull(recordToValidate.getFromDay()) ){
-			if(!"null".equals(recordToValidate.getFromDay())){
-			  urlRequestParams.append("&dftdg=" + recordToValidate.getFromDay());
-			}
+		//Special case with dates since there are some combinations
+		if(strMgr.isNotNull(recordToValidate.getFromDayUserInput()) ){
+			// Converting date to Java8 Local date
+			//ISO dato mask --DateTimeFormatter formatter = DateTimeFormatter.BASIC_ISO_DATE;
+	        //ISO --LocalDate startDate = LocalDate.parse("20190810", formatter);
+	        //ISO
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyy");
+	        LocalDate startDate = LocalDate.parse(recordToValidate.getFromDayUserInput(), formatter);
+	        LocalDate endtDate = LocalDate.now();
+	        // Range = End date - Start date
+	        Long range = ChronoUnit.DAYS.between(startDate, endtDate);
+	        urlRequestParams.append("&dftdg=" + String.valueOf(range));
+	        
 		}else{
-			urlRequestParams.append("&dftdg=" + defaultDaysBack);
-			recordToValidate.setFromDay(defaultDaysBack);
+			if(strMgr.isNotNull(recordToValidate.getFromDay()) ){
+				if(!"null".equals(recordToValidate.getFromDay())){
+				  urlRequestParams.append("&dftdg=" + recordToValidate.getFromDay());
+				}
+			}else{
+				urlRequestParams.append("&dftdg=" + defaultDaysBack);
+				recordToValidate.setFromDay(defaultDaysBack);
+			}
 		}
 		//
 		if(strMgr.isNotNull(recordToValidate.getGomott()) ){

@@ -66,6 +66,11 @@
 					<td class="text14" title="gogn2">&nbsp;Till Godsnr.</td>
 					 --%>
 					<td class="text14" title="fromDay">&nbsp;Ant.dager tilbake</td>
+					<td class="text14" title="fromDayUserInput">
+						<img style="vertical-align:middle;" src="resources/images/calendar.gif" width="12px" height="12px" border="0" alt="dato">
+					 	Fra dato
+					</td>
+					
 					<td class="text14" title="gotrnr">&nbsp;Transittnr.</td>
 					<td class="text14" title="gomott">&nbsp;Varemottaker</td>
 					<td class="text14" title="goturn">&nbsp;Turnr.</td>
@@ -87,6 +92,8 @@
 	 						<option value="20" <c:if test="${searchFilter.fromDay == '20'}"> selected </c:if> >20 dager tilbake</option>
 						</select>									 		
 				 	</td>
+				
+				<td class="text14"><input type="text" class="inputText" name="fromDayUserInput" id="fromDayUserInput" size="7" maxlength="6" value='${searchFilter.fromDayUserInput}'></td> 	
 		        	<td class="text14"><input type="text" class="inputText" name="gotrnr" id="gotrnr" size="21" maxlength="20" value='${searchFilter.gotrnr}'></td>
 		        	<td class="text14"><input type="text" class="inputText" name="gomott" id="gomott" size="16" maxlength="15" value='${searchFilter.gomott}'></td>
 		        	<td class="text14"><input type="text" class="inputText" name="goturn" id="goturn" size="18" maxlength="17" value='${searchFilter.goturn}'></td>
