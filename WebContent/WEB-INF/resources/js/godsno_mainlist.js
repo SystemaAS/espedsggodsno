@@ -12,10 +12,16 @@
 		  setBlockUI();
 	  });
 	  jq("#fromDayUserInput").datepicker({ 
-		  dateFormat: 'ddmmy'
+		  dateFormat: 'ddmmy',
+		  onSelect: function (selected) {
+			  jq('#imgIdFromDayUserInput').click(); 
+		     }
 	  });
 	  jq("#toDayUserInput").datepicker({ 
-		  dateFormat: 'ddmmy'
+		  dateFormat: 'ddmmy',
+		  onSelect: function (selected) {
+			  jq('#imgIdToDayUserInput').click(); 
+		     }
 	  });
 	 
   });
@@ -24,6 +30,55 @@
       jq('#searchForm').submit(function() {
     	  setBlockUI();
   	  }); 
+      
+      jq('#imgIdFromDayUserInput').click(function() {
+    	  jq('#dnrFromDate').text("");
+    	  //default
+    	  var date = new Date();
+    	  //override if applicable
+    	  if(jq('#fromDayUserInput').val()!=''){
+    		  var str = jq('#fromDayUserInput').val();
+    		  if(str.length==6){
+    			  var day = str.substring(0,2);
+    			  var month = str.substring(2,4);
+    			  var year = str.substring(4,6);
+    			  var isoDate = "20" + year + "-" + month + "-" + day;
+    			  //console.log(isoDate);
+    			  date = new Date(isoDate);
+    		  }
+    		  
+    	  }
+    	  jq('#dnrFromDate').text(getDayNrInYear(date));
+      });
+      
+      jq('#imgIdToDayUserInput').click(function() {
+    	  jq('#dnrToDate').text("");
+    	  //default
+    	  var date = new Date();
+    	  //override if applicable
+    	  if(jq('#toDayUserInput').val()!=''){
+    		  var str = jq('#toDayUserInput').val();
+    		  if(str.length==6){
+    			  var day = str.substring(0,2);
+    			  var month = str.substring(2,4);
+    			  var year = str.substring(4,6);
+    			  var isoDate = "20" + year + "-" + month + "-" + day;
+    			  //console.log(isoDate);
+    			  date = new Date(isoDate);
+    		  }
+    		  
+    	  }
+    	  jq('#dnrToDate').text(getDayNrInYear(date));
+      });
+      
+      jq('#dnrFromDate').click(function() {
+    	  jq('#dnrFromDate').text("");
+      });
+      jq('#dnrToDate').click(function() {
+    	  jq('#dnrToDate').text("");
+      });
+      
+      
   });    
   
   //-------------------
@@ -37,8 +92,17 @@
     ).draw();
   }
 
+  
+ 
+  function getDayNrInYear(date){
+	  var today = date;
+	  var dayOfYear = Math.ceil((today - new Date(today.getFullYear(),0,1)) / 86400000);
+	  return dayOfYear;
+  }
+  
   jq(document).ready(function() {
-    //init table (no ajax, no columns since the payload is already there by means of HTML produced on the back-end)
+	  
+	  //init table (no ajax, no columns since the payload is already there by means of HTML produced on the back-end)
 	var lang = jq('#language').val();
 	
 	jq('#mainList').dataTable( {

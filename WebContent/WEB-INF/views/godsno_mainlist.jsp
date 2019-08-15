@@ -62,16 +62,15 @@
 				<table id="containerdatatableTable" width="100%" cellspacing="2" align="left">
 				<tr>
 					<td class="text14" title="gogn">&nbsp;Godsnr.</td>
-					<%--
-					<td class="text14" title="gogn2">&nbsp;Till Godsnr.</td>
-					 --%>
+					<td class="text14" title="gogn2">&nbsp;Til Godsnr.</td>
+					
 					<td class="text14" title="fromDay">&nbsp;Ant.dager tilbake</td>
 					<td class="text14" title="fromDayUserInput">
-						<img style="vertical-align:middle;" src="resources/images/calendar.gif" width="12px" height="12px" border="0" alt="fra dato">
+						<img id="imgIdFromDayUserInput" style="vertical-align:middle;" src="resources/images/calendar.gif" width="12px" height="12px" border="0" alt="fra dato">
 					 	Fra dato
 					</td>
 					<td class="text14" title="toDayUserInput">
-						<img style="vertical-align:middle;" src="resources/images/calendar.gif" width="12px" height="12px" border="0" alt="til dato">
+						<img id="imgIdToDayUserInput" style="vertical-align:middle;" src="resources/images/calendar.gif" width="12px" height="12px" border="0" alt="til dato">
 					 	Til dato
 					</td>
 					<td class="text14" title="gotrnr">&nbsp;Transittnr.</td>
@@ -81,9 +80,9 @@
 				</tr>
 				<tr>	
 					<td class="text14"><input type="text" class="inputText" name="gogn" id="gogn" size="17" maxlength="15" value='${searchFilter.gogn}'></td>
-		        	<%--
-		        	<td class="text14"><input type="text" class="inputText" name="gogn2" id="gogn2" size="17" maxlength="15" value='${searchFilter.gogn2}'></td>
-		        	 --%>
+		        	
+		        		<td class="text14"><input type="text" class="inputText" name="gogn2" id="gogn2" size="17" maxlength="15" value='${searchFilter.gogn2}'></td>
+		        	 
 		        	<td class="text14">
 				 		<select class="inputTextMediumBlue" name="fromDay" id="fromDay" >
 				 			<option value="null" <c:if test="${searchFilter.fromDay == ''}"> selected </c:if> >-Velg-</option>
@@ -96,8 +95,14 @@
 						</select>									 		
 				 	</td>
 				
-				<td class="text14"><input onKeyPress="return numberKey(event)" type="text" class="inputText" name="fromDayUserInput" id="fromDayUserInput" size="7" maxlength="6" value='${searchFilter.fromDayUserInput}'></td> 	
-		        	<td class="text14"><input onKeyPress="return numberKey(event)" type="text" class="inputText" name="toDayUserInput" id="toDayUserInput" size="7" maxlength="6" value='${searchFilter.toDayUserInput}'></td> 	
+				<td class="text14">
+					<input onKeyPress="return numberKey(event)" type="text" class="inputText" name="fromDayUserInput" id="fromDayUserInput" size="7" maxlength="6" value='${searchFilter.fromDayUserInput}'>
+					<label title="day number in year" id="dnrFromDate" style="color:dodgerblue"></label>
+				</td> 	
+		        	<td class="text14">
+		        		<input onKeyPress="return numberKey(event)" type="text" class="inputText" name="toDayUserInput" id="toDayUserInput" size="7" maxlength="6" value='${searchFilter.toDayUserInput}'>
+		        		<label title="day number in year" id="dnrToDate" style="color:dodgerblue"></label>
+		        	</td> 	
 		        	<td class="text14"><input type="text" class="inputText" name="gotrnr" id="gotrnr" size="21" maxlength="20" value='${searchFilter.gotrnr}'></td>
 		        	<td class="text14"><input type="text" class="inputText" name="gomott" id="gomott" size="16" maxlength="15" value='${searchFilter.gomott}'></td>
 		        	<td class="text14"><input type="text" class="inputText" name="goturn" id="goturn" size="18" maxlength="17" value='${searchFilter.goturn}'></td>
