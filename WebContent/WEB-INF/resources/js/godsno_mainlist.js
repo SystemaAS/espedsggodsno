@@ -14,6 +14,9 @@
 	  jq("#fromDayUserInput").datepicker({ 
 		  dateFormat: 'ddmmy'
 	  });
+	  jq("#toDayUserInput").datepicker({ 
+		  dateFormat: 'ddmmy'
+	  });
 	 
   });
   

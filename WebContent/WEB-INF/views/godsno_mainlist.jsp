@@ -67,10 +67,13 @@
 					 --%>
 					<td class="text14" title="fromDay">&nbsp;Ant.dager tilbake</td>
 					<td class="text14" title="fromDayUserInput">
-						<img style="vertical-align:middle;" src="resources/images/calendar.gif" width="12px" height="12px" border="0" alt="dato">
+						<img style="vertical-align:middle;" src="resources/images/calendar.gif" width="12px" height="12px" border="0" alt="fra dato">
 					 	Fra dato
 					</td>
-					
+					<td class="text14" title="toDayUserInput">
+						<img style="vertical-align:middle;" src="resources/images/calendar.gif" width="12px" height="12px" border="0" alt="til dato">
+					 	Til dato
+					</td>
 					<td class="text14" title="gotrnr">&nbsp;Transittnr.</td>
 					<td class="text14" title="gomott">&nbsp;Varemottaker</td>
 					<td class="text14" title="goturn">&nbsp;Turnr.</td>
@@ -94,6 +97,7 @@
 				 	</td>
 				
 				<td class="text14"><input onKeyPress="return numberKey(event)" type="text" class="inputText" name="fromDayUserInput" id="fromDayUserInput" size="7" maxlength="6" value='${searchFilter.fromDayUserInput}'></td> 	
+		        	<td class="text14"><input onKeyPress="return numberKey(event)" type="text" class="inputText" name="toDayUserInput" id="toDayUserInput" size="7" maxlength="6" value='${searchFilter.toDayUserInput}'></td> 	
 		        	<td class="text14"><input type="text" class="inputText" name="gotrnr" id="gotrnr" size="21" maxlength="20" value='${searchFilter.gotrnr}'></td>
 		        	<td class="text14"><input type="text" class="inputText" name="gomott" id="gomott" size="16" maxlength="15" value='${searchFilter.gomott}'></td>
 		        	<td class="text14"><input type="text" class="inputText" name="goturn" id="goturn" size="18" maxlength="17" value='${searchFilter.goturn}'></td>

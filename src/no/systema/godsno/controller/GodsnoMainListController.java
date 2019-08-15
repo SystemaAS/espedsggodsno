@@ -261,16 +261,16 @@ public class GodsnoMainListController {
 		
 		//Special case with dates since there are some combinations
 		if(strMgr.isNotNull(recordToValidate.getFromDayUserInput()) ){
-			// Converting date to Java8 Local date
-			//ISO dato mask --DateTimeFormatter formatter = DateTimeFormatter.BASIC_ISO_DATE;
-	        //ISO --LocalDate startDate = LocalDate.parse("20190810", formatter);
-	        //ISO
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyy");
-	        LocalDate startDate = LocalDate.parse(recordToValidate.getFromDayUserInput(), formatter);
-	        LocalDate endtDate = LocalDate.now();
-	        // Range = End date - Start date
-	        Long range = ChronoUnit.DAYS.between(startDate, endtDate);
+			// Range = End date - Start date
+	        Long range = this.dateTimeMgr.getRangeOfDaysBetweenDates(recordToValidate.getFromDayUserInput(), DateTimeManager.NO_FORMAT);
 	        urlRequestParams.append("&dftdg=" + String.valueOf(range));
+	        
+	        //now check if there is a toDate in order to search between an interval of dates
+	        if(strMgr.isNotNull(recordToValidate.getToDayUserInput()) ){
+	        	// Range = End date - Start date
+		        range = this.dateTimeMgr.getRangeOfDaysBetweenDates(recordToValidate.getToDayUserInput(), DateTimeManager.NO_FORMAT);
+		        urlRequestParams.append("&dftdg2=" + String.valueOf(range));
+	        }
 	        
 		}else{
 			if(strMgr.isNotNull(recordToValidate.getFromDay()) ){

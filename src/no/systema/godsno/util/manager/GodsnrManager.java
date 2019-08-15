@@ -206,27 +206,30 @@ public class GodsnrManager {
 	 */
 	private boolean compareAvdsPatternA (String record, String avd, int index){
 		boolean retval = false;
-		if(index == 0){ 
-			int a = Integer.parseInt(record);
-			int b = Integer.parseInt(avd);
-			if(a == b){
-				retval = true;
-			}		
-		}else{
-			String tmp = record.replaceAll("X", "");
-			int tmpInt = Integer.parseInt(tmp);
-			//prepare by chopping "X"
-			String avdRebuilt = avd;
-			if(avd.length() == 4){
-				avdRebuilt = avd.substring(index);
-				
+		
+		
+			if(index == 0){ 
+				int a = Integer.parseInt(record);
+				int b = Integer.parseInt(avd);
+				if(a == b){
+					retval = true;
+				}		
+			}else{
+				String tmp = record.replaceAll("X", "");
+				int tmpInt = Integer.parseInt(tmp);
+				//prepare by chopping "X"
+				String avdRebuilt = avd;
+				if(avd.length() == 4){
+					avdRebuilt = avd.substring(index);
+					
+				}
+				int avdRebuildInt = Integer.parseInt(avdRebuilt);
+				//now compare by number comparison
+				if(tmpInt == avdRebuildInt){
+					retval = true;
+				}
 			}
-			int avdRebuildInt = Integer.parseInt(avdRebuilt);
-			//now compare by number comparison
-			if(tmpInt == avdRebuildInt){
-				retval = true;
-			}
-		}
+
 		return retval;
 	}
 	/**

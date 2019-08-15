@@ -763,15 +763,20 @@ public class GodsnoRegistreringController {
 		//-------
 		//STEP 1: Calculate the godsNr bev.kode
 		//-------
-		godsnrMgr.getGodsnrBevKode_PatternA(avd, list);
-		logger.info("bev.kode (PATTERN A):" + godsnrMgr.getGodsNrBevKode());
-		if(godsnrMgr.getGodsNrBevKode()==null){
-			godsnrMgr.getGodsnrBevKode_PatternB(avd, list);
-			logger.info("bev.kode (PATTERN B):" + godsnrMgr.getGodsNrBevKode());
+		if(strMgr.isNotNull(avd)){
+			godsnrMgr.getGodsnrBevKode_PatternA(avd, list);
+			logger.info("bev.kode (PATTERN A):" + godsnrMgr.getGodsNrBevKode());
 			if(godsnrMgr.getGodsNrBevKode()==null){
-				godsnrMgr.setGodsNrBevKode(ALERT_CODE_BEVKODE_MISSING);
+				godsnrMgr.getGodsnrBevKode_PatternB(avd, list);
+				logger.info("bev.kode (PATTERN B):" + godsnrMgr.getGodsNrBevKode());
+				if(godsnrMgr.getGodsNrBevKode()==null){
+					godsnrMgr.setGodsNrBevKode(ALERT_CODE_BEVKODE_MISSING);
+				}
 			}
+		}else{
+			godsnrMgr.setGodsNrBevKode(ALERT_CODE_BEVKODE_MISSING);
 		}
+		//
 		if(ALERT_CODE_BEVKODE_MISSING.equals(godsnrMgr.getGodsNrBevKode())){
 			godsnrMgr.setGodsNr(dateMgr.getYear());
 			retval = godsnrMgr.getGodsNr();
