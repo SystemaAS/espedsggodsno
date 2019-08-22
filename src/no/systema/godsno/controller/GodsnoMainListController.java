@@ -140,8 +140,13 @@ public class GodsnoMainListController {
 	    		Map maxWarningMap = new HashMap<String,String>();
 	    		SearchFilterGodsnoMainList searchFilter = (SearchFilterGodsnoMainList)session.getAttribute(GodsnoConstants.SESSION_SEARCH_FILTER);
     			if(redirect!=null && !"".equals(redirect)){
-	    			recordToValidate = searchFilter;
+    				recordToValidate = searchFilter;
+	    		
+    			}else{
+	    			this.populateDefaultValues(recordToValidate);
+    				logger.info(recordToValidate.getFromDayUserInput());
 	    		}
+    			
     			//get list
     			mainList = this.getList(appUser, recordToValidate, model);
     			
@@ -174,6 +179,19 @@ public class GodsnoMainListController {
 		}
 	}
 	
+	/**
+	 * 
+	 * @param searchFilter
+	 */
+	private void populateDefaultValues(SearchFilterGodsnoMainList record){
+		if(strMgr.isNotNull(record.getFromDay())){
+			if("0".equals(record.getFromDay()) && strMgr.isNull(record.getFromDayUserInput()) ){
+				LocalDate localDate = LocalDate.now();
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyy");
+				record.setFromDayUserInput(localDate.format(formatter));
+			}
+		}
+	}
 	
 	/**
 	 * General method to render a file in a browser

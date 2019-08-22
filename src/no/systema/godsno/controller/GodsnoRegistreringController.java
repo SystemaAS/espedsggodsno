@@ -83,6 +83,7 @@ public class GodsnoRegistreringController {
 	private final String LOGGER_CODE_NEW = "N";
 	private final String DEFAULT_TPAPIR_TYPE_T1 = "T1";
 	private final String DEFAULT_TPAPIR_TYPE_T2 = "T2";
+	private final String DATE_MASK_NORWAY = "ddMMyy";
 	
 	@Autowired
 	private GodsnoService godsnoService;
@@ -115,6 +116,8 @@ public class GodsnoRegistreringController {
 		String action = request.getParameter("action");
 		String avd = request.getParameter("avd");
 		String sign = request.getParameter("sign");
+		String overrideFromDayUserInput = request.getParameter("overrideFromDayUserInput");
+		
 		String updateFlag = request.getParameter("updateFlag");
 		String gognManualCounter = strMgr.leadingStringWithNumericFiller(request.getParameter("gognManualCounter"), 2, "0");
 		String gotrnrOrig = request.getParameter("gotrnrOrig");
@@ -352,9 +355,13 @@ public class GodsnoRegistreringController {
 			}else if (action.equals(GodsnoConstants.ACTION_CREATE) || action.equals("ERROR_ON_CREATE")){
 				//some default values
 				recordToValidate.setGomott("Diverse mottak.");
-				String calcGodsNr = this.calculateGodsNrAutomatically_withoutCounter(avd, appUser, model, recordToValidate);
+				String calcGodsNr = this.calculateGodsNrAutomatically_withoutCounter(avd, overrideFromDayUserInput, appUser, model, recordToValidate);
+				String dayNrOfYear = dateMgr.getDayNrOfYear();
+				if(strMgr.isNotNull(overrideFromDayUserInput)){
+					dayNrOfYear = dateMgr.getDayNrOfYear(overrideFromDayUserInput, this.DATE_MASK_NORWAY);
+				}
 				//START This is used only for user input but we send it also as information when the godsnr was automatically calculated
-				model.addAttribute("dayOfYear", dateMgr.getDayNrOfYear());
+				model.addAttribute("dayOfYear", dayNrOfYear);
 				//get Godsnr bev.kode since we will be creating a new record...
 				List<GodsfiDao> fiList = (List)this.getListGodsfi(appUser);
 				//OBSOLETE? ... List<GodsafDao> afList = (List)this.getBeviljningsKodeList(appUser);
@@ -746,58 +753,90 @@ public class GodsnoRegistreringController {
 	 * There are several STEPs involved in the calculation of the GodsNr
 	 * The returning godsnr (to the end-user) will be without the final counter. 
 	 * The counter (2 last numbers) will be first calculated when the final record is saved
-	 * 
+	 
 	 * @param avd
+	 * @param overrideFromDayUserInput
 	 * @param appUser
 	 * @param model
+	 * @param recordToValidate
+	 * @return
 	 */
-	private String calculateGodsNrAutomatically_withoutCounter(String avd, SystemaWebUser appUser, ModelMap model, GodsjfDao recordToValidate){
+	private String calculateGodsNrAutomatically_withoutCounter(String avd, String overrideFromDayUserInput, SystemaWebUser appUser, ModelMap model, GodsjfDao recordToValidate){
+		boolean ONLY_ONE_BEVKODE_FOR_FIRM = false;
+		
 		String retval = "";
 		String ALERT_CODE_BEVKODE_MISSING = "XXXXX";
-		GodsnrManager godsnrMgr = new GodsnrManager();
+		GodsnrManager godsnrMgr = new GodsnrManager(this.DATE_MASK_NORWAY);
 		//get Godsnr bev.kode since we will be creating a new record...
 		Collection<GodsafDao> list = this.getBeviljningsKodeList(appUser);
 		//save this list for information purposes on GUI
 		model.addAttribute("bevKodeList", list);
 		
-		//-------
-		//STEP 1: Calculate the godsNr bev.kode
-		//-------
-		if(strMgr.isNotNull(avd)){
-			godsnrMgr.getGodsnrBevKode_PatternA(avd, list);
-			logger.info("bev.kode (PATTERN A):" + godsnrMgr.getGodsNrBevKode());
-			if(godsnrMgr.getGodsNrBevKode()==null){
-				godsnrMgr.getGodsnrBevKode_PatternB(avd, list);
-				logger.info("bev.kode (PATTERN B):" + godsnrMgr.getGodsNrBevKode());
-				if(godsnrMgr.getGodsNrBevKode()==null){
-					godsnrMgr.setGodsNrBevKode(ALERT_CODE_BEVKODE_MISSING);
-				}
+		//Check if we use the only bevk. that exists,
+		List<GodsfiDao> fiList = (List)this.getListGodsfi(appUser);
+		
+		//TEST TEST TEST Single record!
+		/*List singletonList = new ArrayList();
+		for(GodsfiDao rec : fiList){
+			GodsfiDao x = new GodsfiDao();
+			x = rec;
+			if(rec.getGflbko().length()==5){
+				singletonList.add(x);
+				break;
 			}
-		}else{
-			godsnrMgr.setGodsNrBevKode(ALERT_CODE_BEVKODE_MISSING);
 		}
-		//
-		if(ALERT_CODE_BEVKODE_MISSING.equals(godsnrMgr.getGodsNrBevKode())){
-			godsnrMgr.setGodsNr(dateMgr.getYear());
-			retval = godsnrMgr.getGodsNr();
-		}else{
+		if(singletonList!=null && singletonList.size()==1){
+			ONLY_ONE_BEVKODE_FOR_FIRM = true;
+		}
+		*/
+		
+		if(fiList!=null && fiList.size()==1){
+			ONLY_ONE_BEVKODE_FOR_FIRM = true;
+		}
+		//We do not have to do nothing else since there is only one code ...
+		if(ONLY_ONE_BEVKODE_FOR_FIRM){
+			//PROD
+			godsnrMgr.getGodsnrBevKode_PatternC(fiList);
 			//-------
 			//STEP 2: Calculate the godsNr with: Year + bev.kode + daynr: yyyy12345ddd
 			//-------
-			godsnrMgr.setGodsNrWithBevKode(godsnrMgr.getGodsNrBevKode());
-			//put the 1-character (default = 0). If std-enhets-kode exists: put it there, otherwise = default = 0
-			String enhetsKode = "0";
-			if(strMgr.isNotNull(godsnrMgr.getStdEnhetsKode())){
-				enhetsKode = godsnrMgr.getStdEnhetsKode();
+			this.calculateGodsNrWithYearBevKodeDaynr(godsnrMgr, overrideFromDayUserInput);
+			
+		}else{
+			//-------
+			//STEP 1: Calculate the godsNr bev.kode
+			//-------
+			if(strMgr.isNotNull(avd)){
+				
+				godsnrMgr.getGodsnrBevKode_PatternA(avd, list);
+				logger.info("bev.kode (PATTERN A):" + godsnrMgr.getGodsNrBevKode());
+				if(godsnrMgr.getGodsNrBevKode()==null){
+					godsnrMgr.getGodsnrBevKode_PatternB(avd, list);
+					logger.info("bev.kode (PATTERN B):" + godsnrMgr.getGodsNrBevKode());
+					if(godsnrMgr.getGodsNrBevKode()==null){
+						godsnrMgr.setGodsNrBevKode(ALERT_CODE_BEVKODE_MISSING);
+					}
+				}
+			}else{
+				godsnrMgr.setGodsNrBevKode(ALERT_CODE_BEVKODE_MISSING);
 			}
-			godsnrMgr.setGodsNr(godsnrMgr.getGodsNr() + enhetsKode);
-			logger.info("STEP 2(godsnr):" + godsnrMgr.getGodsNr());
+			//
+			if( ALERT_CODE_BEVKODE_MISSING.equals(godsnrMgr.getGodsNrBevKode())){
+				godsnrMgr.setGodsNr(dateMgr.getYear());
+				retval = godsnrMgr.getGodsNr();
+			}else{
+				//-------
+				//STEP 2: Calculate the godsNr with: Year + bev.kode + daynr: yyyy12345ddd
+				//-------
+				this.calculateGodsNrWithYearBevKodeDaynr(godsnrMgr, overrideFromDayUserInput);
+			}
 		}
 		//Now send the proposed GodsNr
 		model.addAttribute("godsnr", godsnrMgr.getGodsNr());
 		//
 		return retval;
 	}
+	
 	
 	/**
 	 * Check for duplicate 
@@ -1227,6 +1266,26 @@ public class GodsnoRegistreringController {
 			}
 		}
 		return retval;
+	}
+	
+	
+	/**
+	 * 
+	 * @param godsnrMgr
+	 * @param overrideFromDayUserInput
+	 */
+	private void calculateGodsNrWithYearBevKodeDaynr(GodsnrManager godsnrMgr, String overrideFromDayUserInput){
+		//-------
+		//STEP 2: Calculate the godsNr with: Year + bev.kode + daynr: yyyy12345ddd
+		//-------
+		godsnrMgr.setGodsNrWithBevKode(godsnrMgr.getGodsNrBevKode(), overrideFromDayUserInput);
+		//put the 1-character (default = 0). If std-enhets-kode exists: put it there, otherwise = default = 0
+		String enhetsKode = "0";
+		if(strMgr.isNotNull(godsnrMgr.getStdEnhetsKode())){
+			enhetsKode = godsnrMgr.getStdEnhetsKode();
+		}
+		godsnrMgr.setGodsNr(godsnrMgr.getGodsNr() + enhetsKode);
+		logger.info("STEP 2(godsnr):" + godsnrMgr.getGodsNr());
 	}
 	
 	

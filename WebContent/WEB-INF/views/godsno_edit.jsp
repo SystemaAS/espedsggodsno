@@ -92,7 +92,10 @@
 						 			</c:if>
 					 			</td>
 					 			<c:if test="${ empty updateFlag}">
+					 				
 						 			<td align="right">
+						 				<input class="date" id="inboundUserDate" name="inboundUserDate" value="" type="hidden" />
+						 				<font style="color:skyblue;"><span id="dayOfYear">${dayOfYear}</span></font>&nbsp;&nbsp;&nbsp;&nbsp;
 						 				<img title="Bev.koder" id="bevKoderDialogImgReadOnly" style="vertical-align:middle; cursor:pointer;" width="14px" height="14px" src="resources/images/info4.png" border="0" alt="bev.koder">
 						 				&nbsp;
 						 			</td>

@@ -64,7 +64,7 @@
 					<td class="text14" title="gogn">&nbsp;Godsnr.</td>
 					<td class="text14" title="gogn2">&nbsp;Til Godsnr.</td>
 					
-					<td class="text14" title="fromDay">&nbsp;Ant.dager tilbake</td>
+					<%-- <td class="text14" title="fromDay">&nbsp;Ant.dager tilbake</td> --%>
 					<td class="text14" title="fromDayUserInput">
 						<img id="imgIdFromDayUserInput" style="vertical-align:middle;" src="resources/images/calendar.gif" width="12px" height="12px" border="0" alt="fra dato">
 					 	Fra dato
@@ -82,7 +82,7 @@
 					<td class="text14"><input type="text" class="inputText" name="gogn" id="gogn" size="17" maxlength="15" value='${searchFilter.gogn}'></td>
 		        	
 		        		<td class="text14"><input type="text" class="inputText" name="gogn2" id="gogn2" size="17" maxlength="15" value='${searchFilter.gogn2}'></td>
-		        	 
+		        	<%--  
 		        	<td class="text14">
 				 		<select class="inputTextMediumBlue" name="fromDay" id="fromDay" >
 				 			<option value="null" <c:if test="${searchFilter.fromDay == ''}"> selected </c:if> >-Velg-</option>
@@ -93,7 +93,8 @@
 	 						<option value="10" <c:if test="${searchFilter.fromDay == '10'}"> selected </c:if> >10 dager tilbake</option>
 	 						<option value="20" <c:if test="${searchFilter.fromDay == '20'}"> selected </c:if> >20 dager tilbake</option>
 						</select>									 		
-				 	</td>
+				 </td>
+				 --%>
 				
 				<td class="text14">
 					<input onKeyPress="return numberKey(event)" type="text" class="inputText" name="fromDayUserInput" id="fromDayUserInput" size="7" maxlength="6" value='${searchFilter.fromDayUserInput}'>
@@ -257,7 +258,16 @@
 					 				
 					<table>
 						<tr>
-							<td class="text14MediumBlue">Avd&nbsp;
+							<td class="text14MediumBlue">Dato</td>
+							<td colspan="3" class="text14MediumBlue">
+								<input onKeyPress="return numberKey(event)" type="text" class="inputText" name="overrideFromDayUserInput" id="overrideFromDayUserInput" size="7" maxlength="6" value=''>
+								<label title="day number in year" id="dnrOverrideFromDate" style="color:dodgerblue"></label>
+							</td>
+						</tr>
+						<tr height="2"><td></td></tr>
+						<tr>
+							<td class="text14MediumBlue">Avd</td>
+							<td class="text14MediumBlue">
 								<select class="selectMediumBlueE2" name="avd" id="avd" autofocus>
 			 						<option value="">-velg-</option>
 			 						<c:forEach var="record" items="${model.avdList}" >
@@ -266,7 +276,8 @@
 								</select>
 							</td>
 							<td width="5"></td>
-							<td class="text14MediumBlue">Sign&nbsp;
+							<td class="text14MediumBlue">Sign</td>
+							<td class="text14MediumBlue">
 								<select class="selectMediumBlueE2" name="sign" id="sign" >
 			 						<option value="">-velg-</option>
 			 						<c:forEach var="record" items="${model.signatureList}" >

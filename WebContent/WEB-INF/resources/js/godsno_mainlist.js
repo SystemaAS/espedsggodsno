@@ -17,14 +17,51 @@
 			  jq('#imgIdFromDayUserInput').click(); 
 		     }
 	  });
+	  jq('#fromDayUserInput').blur(function(){
+		  if(jq('#fromDayUserInput').val()!=''){
+			  jq('#imgIdFromDayUserInput').click(); 
+		  }
+	  });
+	  
+	  
+	  
 	  jq("#toDayUserInput").datepicker({ 
 		  dateFormat: 'ddmmy',
 		  onSelect: function (selected) {
 			  jq('#imgIdToDayUserInput').click(); 
 		     }
 	  });
+	  jq('#toDayUserInput').blur(function(){
+		  if(jq('#toDayUserInput').val()!=''){
+			  jq('#imgIdToDayUserInput').click(); 
+		  }
+	  });
+	  
+	  //extra dialog field
+	  jq('#overrideFromDayUserInput').blur(function(){
+		  if(jq('#overrideFromDayUserInput').val()!=''){
+			  if(jq('#overrideFromDayUserInput').val()!=''){
+				  date = getIsoDateFromNorwayDate(jq('#overrideFromDayUserInput').val());
+	    	  }
+	    	  jq('#dnrOverrideFromDate').text(getDayNrInYear(date));
+		  }
+	  });
+	  
 	 
   });
+  
+  function getIsoDateFromNorwayDate(str){
+	  var date = new Date();
+	  if(str.length==6){
+		  var day = str.substring(0,2);
+		  var month = str.substring(2,4);
+		  var year = str.substring(4,6);
+		  var isoDate = "20" + year + "-" + month + "-" + day;
+		  //console.log(isoDate);
+		  date = new Date(isoDate);
+	  }
+	  return date;
+  }
   
   jq(function() {
       jq('#searchForm').submit(function() {
@@ -77,7 +114,6 @@
       jq('#dnrToDate').click(function() {
     	  jq('#dnrToDate').text("");
       });
-      
       
   });    
   
@@ -153,6 +189,9 @@
 		  
 		  //setters (add more if needed)
 		  jq('#dialogCreateNewOrder').dialog( "option", "title", "Lage ny " );
+		  //init
+		  jq('#overrideFromDayUserInput').val(jq('#fromDayUserInput').val());
+		  jq('#dnrOverrideFromDate').text('');
 		  
 		  //deal with buttons for this modal window
 		  jq('#dialogCreateNewOrder').dialog({
@@ -161,8 +200,15 @@
 				 id: "dialogSaveTU",	
 				 text: "Fortsett",
 				 click: function(){
-					 		setBlockUI();
-			 				jq('#createNewOrderForm').submit();
+					 		
+					 		var date = getIsoDateFromNorwayDate(jq('#overrideFromDayUserInput').val());
+					 		var nr = getDayNrInYear(date);
+					 		if(isNaN(nr)){
+					 			//show something ... to the user
+					 		}else{
+					 			setBlockUI();
+						 		jq('#createNewOrderForm').submit();
+					 		}
 				 		}
 			 	 },
 	 	 		{
@@ -186,7 +232,6 @@
   //-----------------------------
   //END Create new order - Dialog
   //-----------------------------
-
   
   //---------------------------------------
   //DELETE Order

@@ -11,6 +11,7 @@ import no.systema.godsno.model.JsonContainerDaoGODSJT;
 import no.systema.godsno.service.GodsnoService;
 import no.systema.godsno.url.store.GodsnoUrlDataStore;
 import no.systema.jservices.common.dao.GodsafDao;
+import no.systema.jservices.common.dao.GodsfiDao;
 import no.systema.jservices.common.dao.GodsjtDao;
 import no.systema.main.model.SystemaWebUser;
 import no.systema.main.service.UrlCgiProxyService;
@@ -36,11 +37,36 @@ public class GodsnrManager {
 	public String getGodsNr(){ return this.godsNr;}
 	public void setGodsNr(String value){ this.godsNr=value;}
 	
-	public void setGodsNrWithBevKode(String godsnrBevKode){
+	private String dateMask;
+	public String getDateMask(){ return this.dateMask;}
+	public void setDateMask(String value){ this.dateMask=value;}
+	
+	/**
+	 * 
+	 * @param dateMask
+	 */
+	public GodsnrManager(String dateMask){
+		this.dateMask = dateMask;
+	}
+	
+	/**
+	 * 
+	 * @param godsnrBevKode
+	 * @param overrideFromDayUserInput
+	 */
+	public void setGodsNrWithBevKode(String godsnrBevKode, String overrideFromDayUserInput){
 		StringBuffer bf = new StringBuffer();
-		bf.append(dateMgr.getYear());
+		//defaults (today's day)
+		String year = dateMgr.getYear();
+		String dayNrOfYear = dateMgr.getDayNrOfYear();
+		//In case the user input is not empty and current day has been overriden
+		if(strMgr.isNotNull(overrideFromDayUserInput)){
+			year = dateMgr.getYear(overrideFromDayUserInput, this.dateMask); 
+			dayNrOfYear = dateMgr.getDayNrOfYear(overrideFromDayUserInput, this.dateMask);		
+		}
+		bf.append(year);
 		bf.append(this.adjustBevKode(godsnrBevKode));
-		bf.append(dateMgr.getDayNrOfYear());
+		bf.append(dayNrOfYear);
 		this.godsNr = bf.toString();
 	}
 	
@@ -195,6 +221,19 @@ public class GodsnrManager {
 			}
 		}
 		
+	}
+	/**
+	 * 
+	 * @param list
+	 */
+	public void getGodsnrBevKode_PatternC(Collection<GodsfiDao> list){
+		for (GodsfiDao record: list){
+			//logger.info("AAA:" + record.getGflbko());
+			//logger.info("BBB:" + record.getGfenh());
+			
+			this.godsNrBevKode = record.getGflbko();
+			this.stdEnhetsKode = record.getGfenh();
+		}
 	}
 	
 	/**

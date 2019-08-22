@@ -32,8 +32,42 @@
 	});
   
   jq(function() {
+	  
+	  jq("#inboundUserDate").datepicker({
+          dateFormat: 'ddmmy',
+          showOn: 'button',
+          buttonImage: 'resources/images/calendar.gif',
+          buttonImageOnly: true,
+          buttonText: 'Endre dagnr. på godsnr.',
+          onSelect: function (selected) {
+    		  var date = getIsoDateFromNorwayDate(jq('#inboundUserDate').val());
+    		  //visual only
+    		  jq('#dayOfYear').text(getDayNrInYear(date));
+    		  //override the part of the gogn that builds the godsNr
+    		  jq('#owngogn_3').val(jq('#dayOfYear').text());
+    		  //change the readonly godsnr part of the string (gogn)
+    		  var tmp = "";
+    		  if(jq('#gogn').length){ tmp = jq('#gogn').val(); }
+    		  if(jq('#tmpGogn').length){ tmp = jq('#tmpGogn').val(); }
+    		  
+    		  
+    		  if(typeof tmp != 'undefined'){
+	    		  if(tmp!='' && tmp.length>12){
+	    			  var dayNrOld = tmp.substring(9,12);
+					  console.log(dayNrOld);
+					  tmp = tmp.replace(dayNrOld, jq('#dayOfYear').text());
+					  //change the dayNr
+					  if(jq('#gogn').length){ jq('#gogn').val(tmp); }
+					  if(jq('#tmpGogn').length){ jq('#tmpGogn').val(tmp); }
+					  
+				  }
+    		  }
+	      }
+      });
+	  
 	  jq("#gogrdt").datepicker({ 
 		  dateFormat: 'ddmmy'
+		  
 	  });
 	  jq("#golsdt").datepicker({ 
 		  dateFormat: 'ddmmy'
@@ -65,17 +99,18 @@
 	  	});
 	  
 	  jq('#owngogn_2').on('change', function(){
-		  var rawValue = this.value;
-		  var record = rawValue.split("_");
-		  var bevKode = record[0];
-		  var enh = '0'; //default
-		  if(record[1]!=''){
-			  enh = record[1];
+		  if(jq('#owngogn_2').val()!=''){
+			  var rawValue = this.value;
+			  var record = rawValue.split("_");
+			  var bevKode = record[0];
+			  var enh = '0'; //default
+			  if(record[1]!=''){
+				  enh = record[1];
+			  }
+			  //console.log(bevKode + "XX" + enh);
+			  var tmpGogn = jq('#owngogn_1').val() + bevKode + jq('#owngogn_3').val() + enh ;
+			  jq('#tmpGogn').val(tmpGogn + "xx");//The suffix xx will be known after the "Save" and calculation of the whole gogn
 		  }
-		  //console.log(bevKode + "XX" + enh);
-		  var tmpGogn = jq('#owngogn_1').val() + bevKode + jq('#owngogn_3').val() + enh ;
-		  jq('#tmpGogn').val(tmpGogn + "xx");//The suffix xx will be known after the "Save" and calculation of the whole gogn
-		  
 	  });
 	  
 	  jq("#ownTmpGognOffset").click(function() {
@@ -93,7 +128,23 @@
 	  });
   });
   
-  
+  function getIsoDateFromNorwayDate(str){
+	  var date = new Date();
+	  if(str.length==6){
+		  var day = str.substring(0,2);
+		  var month = str.substring(2,4);
+		  var year = str.substring(4,6);
+		  var isoDate = "20" + year + "-" + month + "-" + day;
+		  //console.log(isoDate);
+		  date = new Date(isoDate);
+	  }
+	  return date;
+  }
+  function getDayNrInYear(date){
+	  var today = date;
+	  var dayOfYear = Math.ceil((today - new Date(today.getFullYear(),0,1)) / 86400000);
+	  return dayOfYear;
+  }
   
   jq(function() {
       jq('#editForm').submit(function() { 
