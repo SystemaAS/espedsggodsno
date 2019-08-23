@@ -23,6 +23,10 @@ import org.springframework.context.annotation.Scope;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import org.springframework.ui.ModelMap;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -50,6 +54,7 @@ import no.systema.godsno.service.GodsnoLoggerService;
 import no.systema.godsno.validator.GodsnoRegistreringValidator;
 import no.systema.godsno.url.store.GodsnoUrlDataStore;
 import no.systema.godsno.util.GodsnoConstants;
+import no.systema.godsno.util.manager.CodeDropDownMgr;
 import no.systema.godsno.util.manager.GodsnrManager;
 import no.systema.godsno.model.JsonContainerDaoGODSAF;
 import no.systema.godsno.model.JsonContainerDaoGODSFI;
@@ -88,6 +93,9 @@ public class GodsnoRegistreringController {
 	@Autowired
 	private GodsnoService godsnoService;
 
+	@Autowired
+	private CodeDropDownMgr codeDropDownMgr;
+	
 	@Autowired
 	private GodsnoLoggerService godsnoLoggerService;
 	
@@ -248,7 +256,12 @@ public class GodsnoRegistreringController {
 										//set complete godsnr from GUI
 										recordToValidate.setGogn(tmpGogn);
 										//(1) Create main record
-										logger.info("doCreate with Gogn = <end-user> input ...");
+										logger.info("doCreate with (tmpGogn) Gogn = <end-user> input via checkbox:" + recordToValidate.getGogn());
+										dmlRetval = this.updateRecord(appUser.getUser(), recordToValidate, GodsnoConstants.MODE_ADD, errMsg);
+										
+									}else if(this.isTotallyCompletedGognFromUser(recordToValidate.getGogn())){
+										//(1) Create main record
+										logger.info("doCreate with (gogn) Gogn = <end-user> input via checkbox:" + recordToValidate.getGogn());
 										dmlRetval = this.updateRecord(appUser.getUser(), recordToValidate, GodsnoConstants.MODE_ADD, errMsg);
 										
 									}else{
@@ -257,10 +270,16 @@ public class GodsnoRegistreringController {
 										//if they are not equal: use tmpGogn minus <xx> in order to respect the user entrance ...
 										if(strMgr.isNotNull(tmpGogn)){
 											tmpGogn = tmpGogn.replace("xx", "");
-											logger.info("GOGN:" + recordToValidate.getGogn() + " tmpGOGN:" + tmpGogn);
+											logger.info("GOGN tmpGogn:" + recordToValidate.getGogn());
 											if(!tmpGogn.equals(recordToValidate.getGogn())){
 												recordToValidate.setGogn(tmpGogn);
 											}
+										}else if(strMgr.isNotNull(recordToValidate.getGogn())) {
+											logger.info("GOGN REAL:" + recordToValidate.getGogn());
+											if(recordToValidate.getGogn().contains("xx")){
+												recordToValidate.setGogn(recordToValidate.getGogn().replace("xx", ""));
+											}
+											
 										}
 										
 										//Start process 
@@ -330,12 +349,18 @@ public class GodsnoRegistreringController {
 				if(isValidRecord){
 					GodsjfDao updatedDao = this.getRecordGodsjf(appUser, recordToValidate);
 					this.adjustFieldsForFetch(updatedDao);
+					//get default date in order to keep creating new records from this UI
+					overrideFromDayUserInput = this.getUserDateFromGodsNrDayNr(updatedDao);
+					model.addAttribute("overrideFromDayUserInput", overrideFromDayUserInput);
 					model.addAttribute(GodsnoConstants.DOMAIN_RECORD, updatedDao);
 					auxDao = updatedDao;
 					
 				}else{
 					//in case of validation errors
 					this.adjustFieldsForFetch(recordToValidate);
+					//get default date in order to keep creating new records from this UI
+					overrideFromDayUserInput = this.getUserDateFromGodsNrDayNr(recordToValidate);
+					model.addAttribute("overrideFromDayUserInput", overrideFromDayUserInput);
 					model.addAttribute(GodsnoConstants.DOMAIN_RECORD, recordToValidate);
 					auxDao = recordToValidate;
 				}
@@ -374,6 +399,8 @@ public class GodsnoRegistreringController {
 					action = "doCreate";
 				}
 			}
+			//get aspects
+			this.setCodeDropDownMgr(appUser, model);
 			
 			model.addAttribute("action", action);
 			model.addAttribute("avd", avd);
@@ -405,9 +432,9 @@ public class GodsnoRegistreringController {
 	 * @param tmpGogn
 	 * @return
 	 */
-	public boolean isTotallyCompletedGognFromUser(String tmpGogn){
+	public boolean isTotallyCompletedGognFromUser(String value){
 		boolean retval = false;
-		if(strMgr.isNotNull(tmpGogn) && !tmpGogn.contains("xx")){
+		if(strMgr.isNotNull(value) && !value.contains("xx")){
 			retval = true;
 		}
 		return retval;
@@ -916,6 +943,38 @@ public class GodsnoRegistreringController {
 		recordToValidate.setGogrdt(this.convertToDate_NO(recordToValidate.getGogrdt()));
 		recordToValidate.setGolsdt(this.convertToDate_NO(recordToValidate.getGolsdt()));
 		recordToValidate.setGotrdt(this.convertToDate_NO(recordToValidate.getGotrdt()));
+		
+	}
+	/**
+	 * 
+	 * @param recordToValidate
+	 * @return
+	 */
+	private String getUserDateFromGodsNrDayNr(GodsjfDao recordToValidate){
+		//set defaults
+		DateFormat formatter = new SimpleDateFormat("ddMMyy");
+		Date date = Calendar.getInstance().getTime();
+		String retval = formatter.format(date);
+		
+		try{
+			String tmp = recordToValidate.getGogn();
+			String numberOfDays = null;
+			
+			if( tmp!=null && tmp.length()==15 ){
+				tmp = tmp.substring(9,12);
+				numberOfDays = tmp;
+				date = new SimpleDateFormat("D yyyy").parse(numberOfDays + " " + Calendar.getInstance().get(Calendar.YEAR));
+				retval = formatter.format(date);
+			}
+			//
+			logger.info("Converted dayNrYear to date:" + retval);
+			
+		}catch(Exception e){
+			e.printStackTrace();
+			
+		}
+		
+		return retval;
 	}
 	/**
 	 * 
@@ -1288,6 +1347,17 @@ public class GodsnoRegistreringController {
 		logger.info("STEP 2(godsnr):" + godsnrMgr.getGodsNr());
 	}
 	
+	/**
+	 * 
+	 * @param appUser
+	 * @param model
+	 */
+	private void setCodeDropDownMgr(SystemaWebUser appUser, Map model){
+		//Sign / AVD
+		model.put("signatureList", this.codeDropDownMgr.getSignatures(appUser.getUser()) );
+		model.put("avdList", this.codeDropDownMgr.getAvdList(appUser.getUser()) );
+		
+	}
 	
 	
 	//SERVICES

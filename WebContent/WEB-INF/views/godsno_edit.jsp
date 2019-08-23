@@ -35,6 +35,10 @@
 				<c:choose>
 					<c:when test="${not empty updateFlag}">
 						<font class="tabLink">Godsregistrering</font>
+						&nbsp;&nbsp;
+						<a title="Lage ny" id="createNewOrderTabIdLink" style="display:inline;" runat="server" href="#">
+							<img style="vertical-align:middle;" src="resources/images/add.png" width="14px" height="14px" border="0" alt="add">
+						</a>
 					</c:when>
 					<c:otherwise>
 						<font class="tabLink">Forhåndsregistrering</font>
@@ -70,6 +74,7 @@
 				<input type="hidden" name="action" id="action" value='${action}'>
 				<input type="hidden" name="avd" id="avd" value='${avd}'>
 				
+				
 				<c:if test="${not empty updateFlag}">
 					<input type="hidden" name="gogn" id="gogn" value="${record.gogn}">
 					<%-- this is for an update of the key gortrnr --%>
@@ -90,17 +95,16 @@
 					               		<img style="vertical-align:bottom;" title="Tillegg av transitt på godsnr." src="resources/images/copy.png" border="0" alt="copy">
 						               	</a>
 						 			</c:if>
-					 			</td>
-					 			<c:if test="${ empty updateFlag}">
-					 				
-						 			<td align="right">
-						 				<input class="date" id="inboundUserDate" name="inboundUserDate" value="" type="hidden" />
-						 				<font style="color:skyblue;"><span id="dayOfYear">${dayOfYear}</span></font>&nbsp;&nbsp;&nbsp;&nbsp;
+						 		</td>	
+					 			<td align="right">
+					 				<input class="date" id="inboundUserDate" name="inboundUserDate" value="" type="hidden" />
+						 			<font style="color:skyblue;"><span id="dayOfYear">${dayOfYear}</span></font>&nbsp;&nbsp;&nbsp;&nbsp;
+						 			<c:if test="${ empty updateFlag}">
 						 				<img title="Bev.koder" id="bevKoderDialogImgReadOnly" style="vertical-align:middle; cursor:pointer;" width="14px" height="14px" src="resources/images/info4.png" border="0" alt="bev.koder">
 						 				&nbsp;
-						 			</td>
-					 			</c:if>
-						 			
+						 			</c:if>	
+					 			</td>
+					 			
 			 				</tr>
 			            </table>
 			            </td>
@@ -142,16 +146,19 @@
 											
 											</td>
 											<td class="text14">
-												<img onMouseOver="showPop('gogn_info');" onMouseOut="hidePop('gogn_info');"style="vertical-align:middle;" width="14px" height="14px" src="resources/images/info3.png" border="0" alt="info">
+												<img onMouseOver="showPop('tmpgogn_info');" onMouseOut="hidePop('tmpgogn_info');"style="vertical-align:middle;" width="14px" height="14px" src="resources/images/info3.png" border="0" alt="info">
 												<input tabindex=-1 readonly type="text" class="inputTextReadOnly" name="tmpGogn" id="tmpGogn" size="20"  value="${tmpGogn}">
 												<input style="cursor:pointer" title="Endre manuelt" tabindex=-1 type="checkbox" id="ownTmpGognOffset" name="ownTmpGognOffset" value="1" >
 												
 												<div class="text11" style="position: relative;" align="left">
-												<span style="position:absolute; left:10px; top:3px; width:250px" id="gogn_info" class="popupWithInputText"  >
+												<span style="position:absolute; left:10px; top:3px; width:250px" id="tmpgogn_info" class="popupWithInputText"  >
 													<font class="text11">
 									           			<b>Godsnr.</b>
 									           			<div>
 									           			<p><b>xx</b> blir erstattet med neste nr fra telleverk ved fullføring.</p>
+									           			<p>Hvis du bytter ut <b>xx</b> med ditt eget nummer, vil ingen telleverk aktiveres.</p>
+									           			<p>Hvis du erstatter alt unntatt <b>xx</b> vil nummeret ditt aktivere neste nr fra telleverk.</p>
+									           			
 									           			</div>
 								           			</font>
 												</span>
@@ -160,10 +167,25 @@
 						 				</c:when>
 						 				<c:otherwise>
 						 					<td >
-							 					<input tabindex=-1 readonly type="text" class="inputTextReadOnly" name="gogn" id="gogn" size="20" value="${godsnr}">
+							 					<img onMouseOver="showPop('gogn_info');" onMouseOut="hidePop('gogn_info');"style="vertical-align:middle;" width="14px" height="14px" src="resources/images/info3.png" border="0" alt="info">
+												<input tabindex=-1 readonly type="text" class="inputTextReadOnly" name="gogn" id="gogn" size="20" value="${godsnr}xx">
 							 					<font class="text16RedBold" >*</font>
 							 					<img title="search" id="divBevKodeListDialogImgReadOnly" style="vertical-align:middle; cursor:pointer;" width="10px" height="10px" src="resources/images/sort_down.png" border="0" alt="bev.koder">
-							 					
+							 					<input style="cursor:pointer" title="Endre manuelt" tabindex=-1 type="checkbox" id="ownTmpGognOffset" name="ownTmpGognOffset" value="1" >
+												
+												<div class="text11" style="position: relative;" align="left">
+												<span style="position:absolute; left:10px; top:3px; width:250px" id="gogn_info" class="popupWithInputText"  >
+													<font class="text11">
+									           			<b>Godsnr.</b>
+									           			<div>
+									           			<p><b>xx</b> blir erstattet med neste nr fra telleverk ved fullføring.</p>
+									           			<p>Om du ersätter <b>xx</b> med eget nummer blir ingen telleverk aktiverad.</p>
+									           			<p>Om du ersätter allt utom <b>xx</b> kommer ditt nummer att aktivera televerk.</p>
+									           			</div>
+								           			</font>
+												</span>
+												</div>
+												
 							 					<div id="divBevKodeList" style="display:none;position: relative;height:10em;" class="ownScrollableSubWindowDynamicWidthHeight" align="left" >
 						 						<table id="tblBevKodeList" class="inputTextMediumBlueMandatoryField">
 						 							<tr><td colspan="2" class="text12"><b>Bev.koder</b></td></tr>
@@ -731,3 +753,49 @@
 		</div>
 	</td>	
  </tr>
+ 
+ <%-- Pop-up window --%>
+<tr>
+<td>
+	<div id="dialogCreateNewOrder" title="Dialog">
+		<form  action="godsno_edit.do" name="createNewOrderForm" id="createNewOrderForm" method="post">
+		 	<input type="hidden" name="action" id="action" value="doCreate">
+		 				 				
+		 	<p class="text14" >&nbsp;Velg inng.parametre</p>
+			 				
+			<table>
+				<tr>
+					<td class="text14MediumBlue">Dato</td>
+					<td colspan="3" class="text14MediumBlue">
+						<input onKeyPress="return numberKey(event)" type="text" class="inputText" name="overrideFromDayUserInput" id="overrideFromDayUserInput" size="7" maxlength="6" value='${overrideFromDayUserInput}'>
+						<label title="day number in year" id="dnrOverrideFromDate" style="color:dodgerblue"></label>
+					</td>
+				</tr>
+				<tr height="2"><td></td></tr>
+				<tr>
+					<td class="text14MediumBlue">Avd</td>
+					<td class="text14MediumBlue">
+						<select class="selectMediumBlueE2" name="avd" id="avd" autofocus>
+	 						<option value="">-velg-</option>
+	 						<c:forEach var="record" items="${avdList}" >
+		 				  		<option value="${record.koaavd}"<c:if test="${record.koaavd == user.asavd}"> selected </c:if> >${record.koaavd}</option>
+							</c:forEach>  
+						</select>
+					</td>
+					<td width="5"></td>
+					<td class="text14MediumBlue">Sign</td>
+					<td class="text14MediumBlue">
+						<select class="selectMediumBlueE2" name="sign" id="sign" >
+	 						<option value="">-velg-</option>
+	 						<c:forEach var="record" items="${signatureList}" >
+		 				  		<option value="${record.kosfsi}"<c:if test="${user.signatur == record.kosfsi}"> selected </c:if> >${record.kosfsi}</option>
+							</c:forEach>  
+						</select>
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+</td>
+</tr>
+		

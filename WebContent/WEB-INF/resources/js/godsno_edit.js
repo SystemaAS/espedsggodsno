@@ -65,6 +65,10 @@
 	      }
       });
 	  
+	  jq("#overrideFromDayUserInput").datepicker({ 
+		  dateFormat: 'ddmmy'
+	  });
+	  
 	  jq("#gogrdt").datepicker({ 
 		  dateFormat: 'ddmmy'
 		  
@@ -115,15 +119,27 @@
 	  
 	  jq("#ownTmpGognOffset").click(function() {
 		  if(jq('#ownTmpGognOffset').prop('checked')){
-			  jq("#tmpGogn").attr("readonly", false); 
-			  jq("#tmpGogn").removeClass("inputTextReadOnly");
-			  jq("#tmpGogn").addClass("inputTextMediumBlue");
-			  
+			  if(jq("#tmpGogn").length){
+				  jq("#tmpGogn").attr("readonly", false); 
+				  jq("#tmpGogn").removeClass("inputTextReadOnly");
+				  jq("#tmpGogn").addClass("inputTextMediumBlue");
+				  
+			  }else if (jq("#gogn").length){
+				  jq("#gogn").attr("readonly", false); 
+				  jq("#gogn").removeClass("inputTextReadOnly");
+				  jq("#gogn").addClass("inputTextMediumBlue");
+			  }
 		  }else{
-			  jq("#tmpGogn").attr("readonly", true); 
-			  jq("#tmpGogn").removeClass("inputTextMediumBlue");
-			  jq("#tmpGogn").addClass("inputTextReadOnly");
-			  
+			  if(jq("#tmpGogn").length){
+				  jq("#tmpGogn").attr("readonly", true); 
+				  jq("#tmpGogn").removeClass("inputTextMediumBlue");
+				  jq("#tmpGogn").addClass("inputTextReadOnly");
+				  
+			  }else if (jq("#gogn").length){
+				  jq("#gogn").attr("readonly", true); 
+				  jq("#gogn").removeClass("inputTextMediumBlue");
+				  jq("#gogn").addClass("inputTextReadOnly");
+			  }
 		  }
 	  });
   });
@@ -633,5 +649,78 @@
 			  }
 	    })
 	    
+  }
+  
+  
+  
+//----------------------------------------  
+  //START Model dialog "Create new order"
+  //--------------------------------------
+  //Initialize <div> here
+  jq(function() { 
+	  jq("#dialogCreateNewOrder").dialog({
+		  autoOpen: false,
+		  maxWidth:400,
+          maxHeight: 220,
+          width: 300,
+          height: 250,
+		  modal: true
+	  });
+  });
+  
+  //Present dialog box onClick (href in parent JSP)
+  jq(function() {
+	  jq("#createNewOrderTabIdLink").click(function() {
+		  
+		  //setters (add more if needed)
+		  jq('#dialogCreateNewOrder').dialog( "option", "title", "Lage ny " );
+		  //init
+		  //jq('#overrideFromDayUserInput').val(jq('#overrideFromDayUserInput').val());
+		  //jq('#dnrOverrideFromDate').text('');
+		  
+		  //deal with buttons for this modal window
+		  jq('#dialogCreateNewOrder').dialog({
+			 buttons: [ 
+	            {
+				 id: "dialogSaveTU",	
+				 text: "Fortsett",
+				 click: function(){
+					 		
+					 		var date = getIsoDateFromNorwayDate(jq('#overrideFromDayUserInput').val());
+					 		var nr = getDayNrInYear(date);
+					 		if(isNaN(nr)){
+					 			//show something ... to the user
+					 		}else{
+					 			setBlockUI();
+						 		jq('#createNewOrderForm').submit();
+					 		}
+				 		}
+			 	 },
+	 	 		{
+			 	 id: "dialogCancelTU",
+			 	 text: "Avbryt", 
+				 click: function(){
+					 		//back to initial state of form elements on modal dialog
+					 		//jq("#dialogSaveSU").button("option", "disabled", true);
+					 		
+					 		jq( this ).dialog( "close" );
+					 		jq("#opd").focus();
+				 		} 
+	 	 		 } ] 
+		  });
+		  //init values
+		  //jq("#dialogSaveTU").button("option", "disabled", false);
+		  //open now
+		  jq('#dialogCreateNewOrder').dialog('open');
+	  });
+  });
+  //-----------------------------
+  //END Create new order - Dialog
+  //-----------------------------
+  
+  function getDayNrInYear(date){
+	  var today = date;
+	  var dayOfYear = Math.ceil((today - new Date(today.getFullYear(),0,1)) / 86400000);
+	  return dayOfYear;
   }
   
