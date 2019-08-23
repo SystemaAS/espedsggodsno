@@ -101,9 +101,14 @@ public class GodsnoControllerChildWindow {
 		String redirect = request.getParameter("rd");
 		String hegn = request.getParameter("hegn");
 		String gotrnr = request.getParameter("gotrnr");
+		String opd_offset = request.getParameter("opd_offset");
 		//String pos1_lst = request.getParameter("pos1_lst");
 		model.put("hegn", hegn);
 		model.put("gotrnr", gotrnr);
+		//render checkbox checked
+		if(strMgr.isNotNull(opd_offset)){
+			model.put("opd_offset", "1");
+		}
 		//check user (should be in session already)
 		if(appUser==null){
 			return loginView;
@@ -112,7 +117,7 @@ public class GodsnoControllerChildWindow {
 			
 			appUser.setActiveMenu(SystemaWebUser.ACTIVE_MENU_GODSREGNO);
 			//get list
-			mainList = this.getList(appUser, hegn, model);
+			mainList = this.getList(appUser, hegn, model, opd_offset);
 			
 			//--------------------------------------
     		//Final successView with domain objects
@@ -136,7 +141,7 @@ public class GodsnoControllerChildWindow {
 	 * @param godsreg
 	 * @return
 	 */
-	private Collection<JsonContainerOrderListRecord> getList(SystemaWebUser appUser, String godsno, Map model){
+	private Collection<JsonContainerOrderListRecord> getList(SystemaWebUser appUser, String godsno, Map model, String opd_offset){
 		Collection<JsonContainerOrderListRecord> outputListOfOrders = new ArrayList();
 		
 		final String BASE_URL = GodsnoUrlDataStore.GODSNO_BASE_MAIN_ORDER_LIST_HEADF_URL;
@@ -159,13 +164,31 @@ public class GodsnoControllerChildWindow {
     	if(jsonPayload!=null){
     		JsonContainerOrderListContainer orderListContainer = this.godsnoMainOrderListService.getMainListContainer(jsonPayload);
     		if(orderListContainer!=null && (orderListContainer.getDtoList()!=null && orderListContainer.getDtoList().size()>0) ){
-    			String strPos = this.getGodsnrPosString(appUser, godsno);
+    			Map<Integer,List> map = new HashMap<Integer, List>();
+    			String strPos = this.getGodsnrPosString(appUser, godsno, map);
+    			model.put("trnrList", (List)map.get(1));
     			//
     			String previousHekna = "";
     			String previousHeknaName = "";
     			for(JsonContainerOrderListRecord record: orderListContainer.getDtoList()){
     				if(strMgr.isNotNull(strPos) && strPos.contains(record.getHepos1())){
-    					//exclude this record
+    					
+    					if(strMgr.isNull(opd_offset)){
+    						//exclude this record - default
+    						//NOTHING
+    					}else{
+    						//include record at the end-user demand
+    						//this is only to avoid an extra round-trip to the SQL-back-end
+        					if(!previousHekna.equals(record.getHekna())){
+        						this.getHeknaName(appUser, record);
+        						previousHekna = record.getHekna();
+        						previousHeknaName = record.getHeknaName();
+        					}else{
+        						record.setHeknaName(previousHeknaName);
+        					}
+        					outputListOfOrders.add(record);
+    					}
+    					
     				}else{
     					//this is only to avoid an extra round-trip to the SQL-back-end
     					if(!previousHekna.equals(record.getHekna())){
@@ -224,7 +247,7 @@ public class GodsnoControllerChildWindow {
 	 * @param godsno
 	 * @return
 	 */
-	private String getGodsnrPosString(SystemaWebUser appUser, String godsno){
+	private String getGodsnrPosString(SystemaWebUser appUser, String godsno, Map map){
 		StringBuffer sbPos = new StringBuffer();
 		String RECORD_SEPARATOR = ";";
 		
@@ -249,6 +272,7 @@ public class GodsnoControllerChildWindow {
     	if(jsonPayload!=null){
     		JsonContainerDaoGODSJT listContainer = this.godsnoService.getContainerGodsjt(jsonPayload);
     		outputList = listContainer.getList();
+    		map.put(1, outputList);
     		if(outputList!=null && !outputList.isEmpty()){
     			logger.info("TRUE - Godsnr-Pos1");
     			for(GodsjtDao rec : outputList){

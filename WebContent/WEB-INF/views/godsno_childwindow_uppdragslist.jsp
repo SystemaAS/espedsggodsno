@@ -19,12 +19,27 @@
 	<table class="tableBorderWithRoundCorners3D" cellspacing="0" border="0" cellpadding="0">
 		<tr>
 			<td>
-				<table>
+				<table style="width:90%;">
 				<tr>
 					<td class="text14">&nbsp;Godsnr.</td>
 					<td class="text14" style="color:navy;"><b>${model.hegn}</b></td>
 					<td class="text14">&nbsp;Transittnr.</td>
 					<td class="text14" style="color:navy;"><b>${model.gotrnr}</b></td>
+					<td class="text14" align="center">
+						<form name="offsetForm" id="offsetForm" action="godsno_childwindow_uppdragslist.do?action=doFind" method="post" >
+							<input type="hidden" name="hegn" id="hegn" value='${model.hegn}'>
+							<input type="hidden" name="gotrnr" id="gotrnr" value='${model.gotrnr}'>
+							<c:choose>
+								<c:when test="${not empty model.opd_offset}">
+									<input checked onChange="setBlockUI();this.form.submit();" style="cursor:pointer" title="Alle oppdrag och MRN" tabindex=-1 type="checkbox" id="opd_offset" name="opd_offset" value="1" >
+								</c:when>
+								<c:otherwise>
+									<input onChange="setBlockUI();this.form.submit();" style="cursor:pointer" title="Alle oppdrag och MRN" tabindex=-1 type="checkbox" id="opd_offset" name="opd_offset" value="1" >
+								</c:otherwise>
+							</c:choose>
+							<label class="isa_warning" for = "opd_offset">Vis alle pos - selv om de er opptatt</label>
+						</form>
+					</td>							
 				</tr>
 				
 				<tr>
@@ -55,6 +70,7 @@
 							<th width="2%" class="text14">&nbsp;Velg&nbsp;</th>
 							<th width="2%" class="text14" title="Pos1">&nbsp;Pos1&nbsp;</th>
 		                    <th width="2%" class="text14" title="Pos2">&nbsp;Pos2&nbsp;</th>
+		                    <th class="text14" title="Oppdrag">&nbsp;Oppd.&nbsp;</th>
 		                    <th class="text14" title="Selger">&nbsp;Selger&nbsp;</th>
 		                    <th class="text14" title="Kjøper">&nbsp;Kjøper&nbsp;</th>
 		                    <th width="2%" class="text14" title="Agentnr.">&nbsp;Ag.nr.&nbsp;</th>
@@ -77,6 +93,7 @@
 			               	</td>
 			               <td width="2%" align="center" class="text14NoneColor">&nbsp;${record.hepos1}</td>
 			               <td width="2%" align="center" class="text14NoneColor">&nbsp;${record.hepos2}</td>
+			               <td class="text14NoneColor">&nbsp;${record.heopd}</td>
 			               <td class="text14NoneColor">&nbsp;${record.henas}</td>
 		               	   <td class="text14NoneColor">&nbsp;${record.henak}</td>
 		               	   <td width="2%" align="center" class="text14NoneColor">&nbsp;${record.hekna}</td>
@@ -99,6 +116,39 @@
 		          		&nbsp;<input class="inputFormSubmit" type="button" name="cancel" id="cancel" value='Avbryt'>
 		          </td>
 		         </tr>
+		         
+		         <c:if test="${not empty model.opd_offset}">
+			         <tr height="10"><td></td></tr>
+			         <tr><td><h3>Extra info.</h3></td></tr>
+			         <table id="extraTrnrList" >
+							<thead>
+							<tr class="tableHeaderField" >
+								<th class="tableHeaderFieldFirst12">&nbsp;Godsnr&nbsp;</th>
+								<th class="tableHeaderField12">&nbsp;MRN&nbsp;</th>
+								<th class="tableHeaderField12">&nbsp;Pos1&nbsp;</th>
+								<th class="tableHeaderField12">&nbsp;Pos2&nbsp;</th>
+			                    
+			                </tr> 
+			                </thead>
+			                
+			                <tbody>
+			                <c:forEach var="record" items="${model.trnrList}" varStatus="counter">
+			                	<tr >
+					           <td align="center" class="tableCellFirst12" >${record.gtgn}</td>
+				               <td align="center" class="tableCell12" >${record.gttrnr}</td>
+				               <td align="left" class="tableCell12" >${record.gtpos1}</td>
+				               <td align="left" class="tableCell12" >${record.gtpos2}</td>
+				               
+				               
+				            </tr> 
+				            </c:forEach>
+				            </tbody>
+			            </table>
+		          </c:if>
+		         
+		         
+		         
+		         
        			</table>
 		</td>
 		</tr>
