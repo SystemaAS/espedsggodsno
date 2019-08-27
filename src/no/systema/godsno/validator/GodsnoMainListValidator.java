@@ -42,24 +42,28 @@ public class GodsnoMainListValidator implements Validator {
 		
 		//Check rules
 		if(record!=null){
-			/*
+			
 			if(strMgr.isNull(record.getGogn()) && strMgr.isNull(record.getGotrnr()) && strMgr.isNull(record.getGomott()) && 
-					strMgr.isNull(record.getGoturn()) && strMgr.isNull(record.getGobiln()) && strMgr.isNull(record.getFromDay()) ){
+					strMgr.isNull(record.getGoturn()) && strMgr.isNull(record.getGobiln()) && strMgr.isNull(record.getFromDay()) &&
+					(strMgr.isNull(record.getFromDayUserInput()) || "null".equals(record.getFromDayUserInput())) ){
 				errors.rejectValue("gogn", "systema.godsno.edit.form.update.error.rule.at.least.one.filter.value"); 	
-			}*/
+			}
 			/*
 			if( (strMgr.isNull(record.getFromDay()) || "null".equals(record.getFromDay())) ){
 				errors.rejectValue("gogn", "systema.godsno.edit.form.update.error.rule.at.least.one.filter.value");
 			}*/
+			
+			/*
 			if("0".equals(record.getFromDay())){
 				//OK since this is the redirect from DashboardController (after login)	
 			}else{
 				
 				if( (strMgr.isNull(record.getFromDayUserInput()) || "null".equals(record.getFromDayUserInput())) ){
+					
 					errors.rejectValue("gogn", "systema.godsno.edit.form.update.error.rule.at.least.one.filter.value");
 
 				}
-			}
+			}*/
 		}
 	}	
 	
