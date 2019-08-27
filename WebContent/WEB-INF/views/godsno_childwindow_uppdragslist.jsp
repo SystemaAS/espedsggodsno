@@ -37,7 +37,7 @@
 									<input onChange="setBlockUI();this.form.submit();" style="cursor:pointer" title="Alle oppdrag och MRN" tabindex=-1 type="checkbox" id="opd_offset" name="opd_offset" value="1" >
 								</c:otherwise>
 							</c:choose>
-							<label class="isa_warning" for = "opd_offset">Vis alle pos - selv om de er opptatt</label>
+							<label class="isa_warning" for = "opd_offset">Vis alle pos (selv om allerede plukket)</label>
 						</form>
 					</td>							
 				</tr>
@@ -58,19 +58,20 @@
 					
 					<tr class="text11" >
 					
-					<td class="ownScrollableSubWindowDynamicWidthHeight" width="100%" >
+					<td class="ownScrollableSubWindowDynamicWidthHeight" style="width:100%" >
 					 
 					 
 					<%-- this is the datatables grid (content)--%>
 					<form action="N/A_is_done_with_jquery....?action=doFind" name="searchForm" id="searchForm" method="post">
 							
-					<table id="oppdragsList" class="display compact cell-border" width="100%" >
+					<table id="oppdragsList" class="display compact cell-border" style="width:100%" >
 						<thead>
 						<tr class="tableHeaderField" >
 							<th width="2%" class="text14">&nbsp;Velg&nbsp;</th>
 							<th width="2%" class="text14" title="Pos1">&nbsp;Pos1&nbsp;</th>
 		                    <th width="2%" class="text14" title="Pos2">&nbsp;Pos2&nbsp;</th>
-		                    <th class="text14" title="Oppdrag">&nbsp;Oppd.&nbsp;</th>
+		                    <th align="right" class="text14" title="Avd">&nbsp;Avd.&nbsp;</th>
+		                    <th align="left" class="text14" title="Oppdrag">&nbsp;Oppd.&nbsp;</th>
 		                    <th class="text14" title="Selger">&nbsp;Selger&nbsp;</th>
 		                    <th class="text14" title="Kjøper">&nbsp;Kjøper&nbsp;</th>
 		                    <th width="2%" class="text14" title="Agentnr.">&nbsp;Ag.nr.&nbsp;</th>
@@ -93,7 +94,8 @@
 			               	</td>
 			               <td width="2%" align="center" class="text14NoneColor">&nbsp;${record.hepos1}</td>
 			               <td width="2%" align="center" class="text14NoneColor">&nbsp;${record.hepos2}</td>
-			               <td class="text14NoneColor">&nbsp;${record.heopd}</td>
+			               <td align="right" class="text14NoneColor">&nbsp;${record.heavd}</td>
+			               <td align="left" class="text14NoneColor">&nbsp;${record.heopd}</td>
 			               <td class="text14NoneColor">&nbsp;${record.henas}</td>
 		               	   <td class="text14NoneColor">&nbsp;${record.henak}</td>
 		               	   <td width="2%" align="center" class="text14NoneColor">&nbsp;${record.hekna}</td>
@@ -119,12 +121,12 @@
 		         
 		         <c:if test="${not empty model.opd_offset}">
 			         <tr height="10"><td></td></tr>
-			         <tr><td><h3>Extra info.</h3></td></tr>
-			         <table id="extraTrnrList" >
+			         <tr><td><h3>Ekstra info.</h3></td></tr>
+			         <table id="extraTrnrList" class="display compact cell-border" style="width:100%" >
 							<thead>
 							<tr class="tableHeaderField" >
-								<th class="tableHeaderFieldFirst12">&nbsp;Godsnr&nbsp;</th>
-								<th class="tableHeaderField12">&nbsp;MRN&nbsp;</th>
+								<th class="tableHeaderFieldFirst12">&nbsp;Godsnr.&nbsp;</th>
+								<th class="tableHeaderField12">&nbsp;Transittnr.&nbsp;</th>
 								<th class="tableHeaderField12">&nbsp;Pos1&nbsp;</th>
 								<th class="tableHeaderField12">&nbsp;Pos2&nbsp;</th>
 			                    

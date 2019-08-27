@@ -20,7 +20,7 @@
 	  	jq('#godsnoPosButton').click(function() {
 	  		
 	  		jq('#godsnoPosButton').attr('target','_blank');
-			window.open('godsno_childwindow_uppdragslist.do?action=doFind&hegn=' + jq('#gogn').val() + '&gotrnr=' + jq('#gotrnr').val(), "oppWin", "top=300px,left=500px,height=550px,width=900px,scrollbars=no,status=no,location=no");
+			window.open('godsno_childwindow_uppdragslist.do?action=doFind&hegn=' + jq('#gogn').val() + '&gotrnr=' + jq('#gotrnr').val(), "oppWin", "top=200px,left=500px,height=800px,width=1200px,scrollbars=no,status=no,location=no");
 			
 	    });
 	    jq('#godsnoPosButton').keypress(function(e){ //extra feature for the end user

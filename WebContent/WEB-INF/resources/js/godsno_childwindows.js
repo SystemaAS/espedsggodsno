@@ -86,6 +86,23 @@
     jq('input.oppdragsList_filter').on( 'keyup click', function () {
     		filtersInit();
     } );
+    
+    
+    
+    jq('#extraTrnrList').dataTable( {
+  	  //"searchHighlight": true,
+  	  "dom": '<"top">t<"bottom"><"clear">', 
+  	  "scrollCollapse":  true,
+    	  "tabIndex": -1,
+    	  "order": [[ 1, "asc" ]],
+  	  "lengthMenu": [ 25, 50, 100],
+  	  "language": {
+  		  "url": getLanguage(lang)
+        }
+  	  
+  	} );
+    
+    
   } );
   
   
