@@ -257,10 +257,11 @@
       //Posisjons-list
       jq('#posList').dataTable( {
       	  "dom": '<"top">t<"bottom"><"clear">', 
-      	  //"scrollY":  "250px",
+      	  "scrollY":  "300px",
     	  "scrollCollapse":  true,
     	  "tabIndex": -1,
-    	  "order": [[ 0, "asc" ],[1, "asc" ]]
+    	  "order": [[ 0, "asc" ],[1, "asc" ]],
+    	  "lengthMenu": [50]
       	} );
 
           //event on input field for search
