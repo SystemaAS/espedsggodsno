@@ -175,12 +175,12 @@
 			               		<%-- if we have at least ONE keyPos then ignore the rest of the records with the same Godsnr --%>
 			               		<c:choose>
 			               		<c:when test="${not empty model[keyPos]}">
-			               			<img style="cursor:pointer;" title="Pos" src="resources/images/bulletGreen.png" width="11" height="11" border="0" alt="Posisjon finnes">
+			               			<span style="display:none;">1</span><img style="cursor:pointer;" title="Pos" src="resources/images/bulletGreen.png" width="11" height="11" border="0" alt="Posisjon finnes">
 			               		</c:when>
 			               		<c:otherwise>
 			               			<%-- if we have don't have at least ONE keyPosg BUT there are Pos. in this Gordsnr that have not been chosen: show the red light --%>
 			               			<c:if test="${not empty model[keyPosg] || not empty model[keyPosMissing]}">
-			               				<img style="cursor:pointer;" title="Pos.exists...need to be chosen" src="resources/images/bulletRed.png" width="11" height="11" border="0" alt="Pos.exists...need to be chosen">
+			               				<span style="display:none;">2</span><img style="cursor:pointer;" title="Pos.exists...need to be chosen" src="resources/images/bulletRed.png" width="11" height="11" border="0" alt="Pos.exists...need to be chosen">
 			               			</c:if>
 			               		</c:otherwise>
 			               		</c:choose>

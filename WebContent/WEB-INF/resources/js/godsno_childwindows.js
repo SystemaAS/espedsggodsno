@@ -46,6 +46,12 @@
       });
   }); 
   
+  jq(function() {
+      jq("#selectAll").click(function(){
+          jq("input[type=checkbox]").prop('checked', jq(this).prop('checked'));
+      });
+  });
+    	
   
 
   

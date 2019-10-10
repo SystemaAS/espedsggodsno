@@ -67,11 +67,16 @@
 					<table id="oppdragsList" class="display compact cell-border" style="width:100%" >
 						<thead>
 						<tr class="tableHeaderField" >
-							<th width="2%" class="text14">&nbsp;Velg&nbsp;</th>
+							<th title="Velg alla" nowrap>
+								<font class="text12" style="font-weight:bold;">Alle</font>
+								<input style="cursor:pointer;" class="text12" type="checkbox" id="selectAll" >
+							</th>
+							
 							<th width="2%" class="text14" title="Pos1">&nbsp;Pos1&nbsp;</th>
 		                    <th width="2%" class="text14" title="Pos2">&nbsp;Pos2&nbsp;</th>
 		                    <th align="right" class="text14" title="Avd">&nbsp;Avd.&nbsp;</th>
 		                    <th align="left" class="text14" title="Oppdrag">&nbsp;Oppd.&nbsp;</th>
+		                    <th align="left" class="text14" title="Fortollingsoppdrag">&nbsp;Fortoll.opp.&nbsp;</th>
 		                    <th class="text14" title="Selger">&nbsp;Selger&nbsp;</th>
 		                    <th class="text14" title="Kjøper">&nbsp;Kjøper&nbsp;</th>
 		                    <th width="2%" class="text14" title="Agentnr.">&nbsp;Ag.nr.&nbsp;</th>
@@ -96,6 +101,24 @@
 			               <td width="2%" align="center" class="text14NoneColor">&nbsp;${record.hepos2}</td>
 			               <td align="right" class="text14NoneColor">&nbsp;${record.heavd}</td>
 			               <td align="left" class="text14NoneColor">&nbsp;${record.heopd}</td>
+			               <td align="center" title="${record.hepk4}" class="text14NoneColor">
+			               		<c:choose>
+			               			<c:when test="${not empty record.hepk4}">
+				               			<c:choose>
+					               			<c:when test="${record.hepk4 == 'J' || record.hepk4 == 'P'}">
+					               				<font style="color:green"><b>JA</b></font>
+					               			</c:when>
+					               			<c:otherwise>
+					               				&nbsp;
+					               			</c:otherwise>
+				               			</c:choose>
+			               			</c:when>
+			               			<c:otherwise>
+			               				&nbsp;
+			               			</c:otherwise>
+			               		</c:choose>
+			               		
+			               	</td>
 			               <td class="text14NoneColor">&nbsp;${record.henas}</td>
 		               	   <td class="text14NoneColor">&nbsp;${record.henak}</td>
 		               	   <td width="2%" align="center" class="text14NoneColor">&nbsp;${record.hekna}</td>
