@@ -12,6 +12,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import java.net.URLEncoder;
+
+import no.systema.godsno.util.manager.Log4jMgr;
 //application imports
 import no.systema.main.util.AppConstants;
 
@@ -30,12 +32,12 @@ public class LogoutController {
 	@RequestMapping(value="logout.do", method={RequestMethod.POST, RequestMethod.GET} )
 	public void logout(HttpSession session, HttpServletResponse response, HttpServletRequest request){
 		
-		//String user = request.getParameter("user");
-		//String pwd = request.getParameter("password");
-		//String aes = request.getParameter("aes");
-		
 		
 		if (session!=null){ 
+			Log4jMgr log4jMgr = new Log4jMgr();
+			log4jMgr.doLogoutLogger();
+			
+			//go on
             session.removeAttribute(AppConstants.SYSTEMA_WEB_USER_KEY);
             session.invalidate();
             logger.info("Session invalidated..." + Calendar.getInstance().getTime());       
