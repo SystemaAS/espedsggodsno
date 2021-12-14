@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +22,7 @@ import no.systema.z.main.maintenance.url.store.MaintenanceMainUrlDataStore;
 @Service
 public class CodeDropDownMgr {
 	private static final JsonDebugger jsonDebugger = new JsonDebugger(3000);
-	private static Logger logger = Logger.getLogger(CodeDropDownMgr.class.getName());
+	private static Logger logger = LogManager.getLogger(CodeDropDownMgr.class.getName());
 	
 	
 	@Autowired

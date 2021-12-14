@@ -6,7 +6,7 @@ package no.systema.godsno.filter;
 import java.lang.reflect.Field;
 import java.util.*;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.*;
 
 import no.systema.main.util.DateTimeManager;
 
@@ -17,7 +17,7 @@ import no.systema.main.util.DateTimeManager;
  * 
  */
 public class SearchFilterGodsnoMainList {
-	private static final Logger logger = Logger.getLogger(SearchFilterGodsnoMainList.class.getName());
+	private static final Logger logger = LogManager.getLogger(SearchFilterGodsnoMainList.class.getName());
 	
 	private String avd = null;
 	public void setAvd(String value) {  this.avd = value; }

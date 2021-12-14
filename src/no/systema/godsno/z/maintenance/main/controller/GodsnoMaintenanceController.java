@@ -4,8 +4,8 @@ import java.util.*;
 import javax.annotation.PostConstruct;
 
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+ 
+import org.apache.logging.log4j.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -59,7 +59,7 @@ import no.systema.godsno.z.maintenance.main.model.MaintenanceMainListObject;
 @Scope("session")
 public class GodsnoMaintenanceController {
 	private static final JsonDebugger jsonDebugger = new JsonDebugger(2000);
-	private static Logger logger = Logger.getLogger(GodsnoMaintenanceController.class.getName());
+	private static Logger logger = LogManager.getLogger(GodsnoMaintenanceController.class.getName());
 	private ModelAndView loginView = new ModelAndView("redirect:logout.do");
 	private LoginValidator loginValidator = new LoginValidator();
 	private StringManager strMgr = new StringManager();
@@ -79,7 +79,7 @@ public class GodsnoMaintenanceController {
 	@PostConstruct
 	public void initIt() throws Exception {
 		if("DEBUG".equals(AppConstants.LOG4J_LOGGER_LEVEL)){
-			logger.setLevel(Level.DEBUG);
+			 
 		}
 	}
 		

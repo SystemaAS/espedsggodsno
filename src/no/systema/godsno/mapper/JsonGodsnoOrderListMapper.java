@@ -4,7 +4,7 @@
 package no.systema.godsno.mapper;
 
 //jackson library
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.*;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper; 
 //application library
@@ -19,7 +19,7 @@ import no.systema.godsno.model.JsonContainerOrderListRecord;
  * 
  */
 public class JsonGodsnoOrderListMapper {
-	private static final Logger logger = Logger.getLogger(JsonGodsnoOrderListMapper.class.getName());
+	private static final Logger logger = LogManager.getLogger(JsonGodsnoOrderListMapper.class.getName());
 	/**
 	 * 
 	 * @param utfPayload

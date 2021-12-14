@@ -10,7 +10,7 @@ import java.util.*;
 import java.lang.annotation.Annotation;
 import no.systema.main.model.UrlDataStoreAnnotationForField;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.*;
 
 /**
  * 
@@ -20,7 +20,7 @@ import org.apache.log4j.Logger;
  */
 public class JavaReflectionManager {
 	private static JsonSpecialCharactersManager jsonFixMgr = new JsonSpecialCharactersManager();
-	private static Logger logger = Logger.getLogger(JavaReflectionManager.class.getName());
+	private static Logger logger = LogManager.getLogger(JavaReflectionManager.class.getName());
 	
 	private final String GREEN_STATUS = "OK";
 	private final String RED_STATUS = "NOK";

@@ -4,7 +4,7 @@
 package no.systema.godsno.mapper;
 
 //jackson library
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.*;
 //application library
 import no.systema.godsno.model.JsonContainerDaoGODSAF;
 import no.systema.godsno.model.JsonContainerDaoGODSHF;
@@ -27,7 +27,7 @@ import no.systema.main.mapper.jsonjackson.general.ObjectMapperAbstractGrandFathe
  * 
  */
 public class JsonGodsnoMapper extends ObjectMapperAbstractGrandFather {
-	private static final Logger logger = Logger.getLogger(JsonGodsnoMapper.class.getName());
+	private static final Logger logger = LogManager.getLogger(JsonGodsnoMapper.class.getName());
 	/**
 	 * 
 	 * @param utfPayload
