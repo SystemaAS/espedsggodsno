@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
-import org.apache.logging.log4j.*;
+import org.slf4j.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,7 +37,7 @@ import no.systema.main.util.StringManager;
  */
 @RestController
 public class GodsnoGodsfiAjaxRestController {
-	private static final Logger logger = LogManager.getLogger(GodsnoGodsfiAjaxRestController.class.getName());
+	private static final Logger logger = LoggerFactory.getLogger(GodsnoGodsfiAjaxRestController.class.getName());
 	private StringManager strMgr = new StringManager();
 	
 	@Autowired

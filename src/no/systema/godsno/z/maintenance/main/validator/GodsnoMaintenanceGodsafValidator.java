@@ -1,7 +1,7 @@
 package no.systema.godsno.z.maintenance.main.validator;
 
 import java.util.*;
-import org.apache.logging.log4j.*;
+import org.slf4j.*;
 import org.springframework.validation.Validator;
 import org.springframework.validation.Errors;
 import no.systema.main.util.StringManager;
@@ -17,7 +17,7 @@ import org.springframework.validation.ValidationUtils;
  *
  */
 public class GodsnoMaintenanceGodsafValidator implements Validator {
-	private static final Logger logger = LogManager.getLogger(GodsnoMaintenanceGodsafValidator.class.getName());
+	private static final Logger logger = LoggerFactory.getLogger(GodsnoMaintenanceGodsafValidator.class.getName());
 	private DateValidator dateValidator = new DateValidator();
 	
 	

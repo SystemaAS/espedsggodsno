@@ -5,7 +5,7 @@ import javax.annotation.PostConstruct;
 
 
  
-import org.apache.logging.log4j.*;
+import org.slf4j.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -49,7 +49,7 @@ import no.systema.godsno.util.manager.CodeDropDownMgr;
 @Scope("session")
 public class GodsnoMaintenanceGateController {
 	private static final JsonDebugger jsonDebugger = new JsonDebugger(2000);
-	private static Logger logger = LogManager.getLogger(GodsnoMaintenanceGateController.class.getName());
+	private static Logger logger = LoggerFactory.getLogger(GodsnoMaintenanceGateController.class.getName());
 	private ModelAndView loginView = new ModelAndView("redirect:logout.do");
 	private LoginValidator loginValidator = new LoginValidator();
 	private StringManager strMgr = new StringManager();

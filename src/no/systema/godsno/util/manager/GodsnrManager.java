@@ -5,7 +5,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Map;
 import java.util.regex.Pattern;
-import org.apache.logging.log4j.*;
+import org.slf4j.*;
 
 import no.systema.godsno.model.JsonContainerDaoGODSJT;
 import no.systema.godsno.service.GodsnoService;
@@ -28,7 +28,7 @@ import no.systema.main.util.StringManager;
  */
 public class GodsnrManager {
 
-	private static Logger logger = LogManager.getLogger(GodsnrManager.class.getName());
+	private static Logger logger = LoggerFactory.getLogger(GodsnrManager.class.getName());
 	private static final JsonDebugger jsonDebugger = new JsonDebugger(3000);
 	private StringManager strMgr = new StringManager();
 	DateTimeManager dateMgr = new DateTimeManager();

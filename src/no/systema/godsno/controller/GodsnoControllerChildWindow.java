@@ -5,7 +5,7 @@ import javax.annotation.PostConstruct;
 
 
  
-import org.apache.logging.log4j.*;
+import org.slf4j.*;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.stereotype.Controller;
@@ -53,7 +53,7 @@ import no.systema.jservices.common.dao.services.CundfDaoService;
 @Controller
 public class GodsnoControllerChildWindow {
 	private static final JsonDebugger jsonDebugger = new JsonDebugger(3000);
-	private static Logger logger = LogManager.getLogger(GodsnoControllerChildWindow.class.getName());
+	private static Logger logger = LoggerFactory.getLogger(GodsnoControllerChildWindow.class.getName());
 	private ModelAndView loginView = new ModelAndView("redirect:logout.do");
 	private LoginValidator loginValidator = new LoginValidator();
 	private StringManager strMgr = new StringManager();

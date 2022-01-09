@@ -8,7 +8,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.logging.log4j.*;
+import org.slf4j.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,7 +39,7 @@ import no.systema.godsno.model.JsonContainerDaoGODSHF;
 @Service
 public class GodsnoLoggerService {
 	private static final JsonDebugger jsonDebugger = new JsonDebugger(3000);
-	private static Logger logger = LogManager.getLogger(GodsnoLoggerService.class.getName());
+	private static Logger logger = LoggerFactory.getLogger(GodsnoLoggerService.class.getName());
 	private StringManager strMgr = new StringManager();
 	DateTimeManager dateMgr = new DateTimeManager();
 	private GodshfDao dao = null;
@@ -91,7 +91,7 @@ public class GodsnoLoggerService {
     	if(jsonPayload!=null){
     		JsonContainerDaoGODSHF listContainer = this.godsnoService.getContainerGodshf(jsonPayload);
     		outputList = (List)listContainer.getList();
-    		logger.info(outputList.size());
+    		//logger.info(outputList.size());
     		outputList.forEach(record -> {
     			//logger.info(record.getGogn() + " " + record.getGohpgm() + " " + record.getGohdat());
     			
